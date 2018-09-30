@@ -1,0 +1,28 @@
+[
+    {
+        "userId" : "12",
+        "fullName": "Rafaellos M.",
+        "registrationDate": "1/1/01",
+        "userRating": {
+            "average" : "5",
+            "onTime" : "5",
+            "skills" : "5",
+            "behavior" : "5"
+        },
+        "ratings" : [
+            {
+                "userId" : "11",
+                "username": "Panayiotis",
+                "comment" : "No comment",
+                "dateTime" : "1/1/1",
+                "rating": {
+                    "average" : "5",
+                    "onTime" : "5",
+                    "skills" : "5",
+                    "behavior" : "5"
+                }
+            }
+        ]
+
+    }
+]

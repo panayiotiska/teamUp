@@ -1,0 +1,16 @@
+[
+    {
+        "id" : "12",
+        "adminFbId" : "123",
+        "name" : "Test game",
+        "dateTime" : "12/12/19 12:45 AM",
+        "location" : "Thessaloniki"
+    },
+    {
+        "id" : "912",
+        "adminFbId" : "523",
+        "name" : "Local basketball",
+        "dateTime" : "12/1/18 12:45 AM",
+        "location" : "Kalamaria"
+    }
+]

@@ -1,0 +1,32 @@
+[
+    {
+        "id" : "12",
+        "adminFbId" : "123",
+        "name" : "Test game",
+        "dateTime" : "12/12/19 12:45 AM",
+        "location" : "Thessaloniki",
+        "teams" : [
+    [
+                    {
+                        "userId" : "123",
+                        "username" : "Jimmys" 
+                    },
+                    {
+                        "userId": "222",
+                        "username" : "Babis" 
+                    }
+                ],
+                [
+                    {
+                        "userId" : "198",
+                        "username" : "Johny" 
+                    },
+                    {
+                        "userId": "99",
+                        "username" : "Mike" 
+                    }
+                ]
+        
+        ]
+    }
+]
