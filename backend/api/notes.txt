@@ -1,0 +1,34 @@
+
+GET /users/me
+GET /users/me/ratings
+GET /users/:id/ratings
+
+POST /users
+POST /users/accessToken
+POST /users/:id/ratings
+
+PATCH /users/me
+PATCH /users/:id/ratings
+
+DELETE /users/me
+DELETE /users/accessToken
+DELETE /users/:id/ratings
+
+GET /games
+GET /games/:id
+GET /games/:id/teams
+GET /games/:id/ratings
+
+POST /games
+POST /games/:id
+POST /games/:id/teams
+POST /games/:id/ratings
+
+PATCH /games/:id
+PATCH /games/:id/teams
+PATCH /games/:id/ratings
+
+DELETE /games
+DELETE /games/:id/
+DELETE /games/:id/teams/
+DELETE /games/:id/ratings

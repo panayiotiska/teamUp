@@ -1,11 +1,9 @@
-let express = require('express');        
-let app = express();
-let bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());                  
+const express = require('express');        
+const app = express();
+const port = process.env.PORT || 3000;
 
-app.use('/api/v1/', require('./routes'));
+app.use('/api/v1', require('./routes/index'));
 
-app.listen(3000, () => {
-    console.log("Server running on port 3000");
+app.listen(port, () => {
+    console.log("MSG: teamUp API service is running on local port 3000");
    });

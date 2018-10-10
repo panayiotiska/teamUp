@@ -1,5 +1,4 @@
-[
-    {
+{
         "userId" : "12",
         "fullName": "Rafaellos M.",
         "registrationDate": "1/1/01",
@@ -24,5 +23,4 @@
             }
         ]
 
-    }
-]
+}
