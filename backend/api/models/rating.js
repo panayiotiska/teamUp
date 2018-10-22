@@ -1,30 +1,24 @@
 const Sequelize = require('sequelize');
-const db = require('../db/connection');
+const db = require('../db');
 
 const Rating = db.define('ratings', {
     id: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
         allowNull: false,
-        primaryKey: true
+        primaryKey: true,
+        autoIncrement: true
     },
     createdBy: {
         type: Sequelize.STRING,
         allowNull: false
     },
     createdAt: { 
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW,
-        allowNull: false,
-        validate: {
-            isDate: true
-        }
+        type: Sequelize.STRING,
+        allowNull: false
     },
     updatedAt: {
-        type: Sequelize.DATE,
-        allowNull: true,
-        validate: {
-            isDate: true
-        }
+        type: Sequelize.STRING,
+        allowNull: true
     },
     comment: {
         type: Sequelize.STRING,

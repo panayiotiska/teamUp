@@ -1,10 +1,16 @@
-const users = require('express').Router();
-const errorChecking = require('../error_handler');
+const dateFormat = require('dateformat');
+// Models
 const User = require('../models/user');
 const Ratings = require('../models/rating');
-const userdata  = require('../data/user.json');
+const userRating = require('../models/userRating');
 
-// Get profile details
+// Users route
+const users = require('express').Router();
+
+// Send custom error message response
+const errorChecking = require('../error_handler');
+
+// Get User Details
 users.get('/me', isAuthenticated, async (req, res) => {
     try {
         // Find user profile via ID
@@ -24,7 +30,7 @@ users.get('/me', isAuthenticated, async (req, res) => {
     }
 });
 
-// Get profile ratings
+// Get User Ratings
 users.get('/:id/ratings', isAuthenticated, async (req, res) => {
     try {
         const ratings = await User.findById(req.params.id, {
@@ -41,7 +47,7 @@ users.get('/:id/ratings', isAuthenticated, async (req, res) => {
     }
 });
 
-// Create user account
+// Create User
 users.post('/', async (req, res) => {
     try {
         // Check if user is already registered
@@ -56,7 +62,7 @@ users.post('/', async (req, res) => {
                     id: req.body.data[0].id,
                     firstName: req.body.data[0].firstName,
                     lastName: req.body.data[0].lastName,
-                    createdAt: Date.now(),
+                    createdAt: dateFormat("dd-mm-yyyy HH:MM"),
                     phoneNumber: req.body.data[0].phoneNumber,
                     deviceToken: req.body.data[0].deviceToken,
                     accessToken: req.body.data[0].accessToken
@@ -83,12 +89,12 @@ users.post('/', async (req, res) => {
     
 });
 
-// Generate access token
+// Generate Access Token
 users.post('/accessToken', (req, res) => {
     res.json({msg: "accessToken=123456"}); 
 });
 
-// Submit rating
+// Create Rating
 users.post('/:id/ratings', async (req, res) => {
     try {
         const user = await User.findOne({
@@ -97,16 +103,15 @@ users.post('/:id/ratings', async (req, res) => {
             },
             raw: true,
             attributes: ['id']
-        });
+        });        
     
-        const rating = Ratings.build({
-            id: 12,
+        const rating = await Ratings.build({
             createdBy: user.id,
-            createdAt: Date.now(),
-            comment: "Very good",
-            onTime: 5,
-            skills: 2,
-            behavior: 1
+            createdAt: dateFormat("dd-mm-yyyy HH:MM"),
+            comment: req.body.data[0].comment,
+            onTime: req.body.data[0].onTime,
+            skills: req.body.data[0].skills,
+            behavior: req.body.data[0].behavior
         });
         
         // Guard
@@ -114,16 +119,23 @@ users.post('/:id/ratings', async (req, res) => {
 
         // Submit rating
         await rating.save();
+
+        await userRating.create({
+            userId: req.params.id,
+            ratingId: rating.id
+        });
         
-        errorChecking(res, null, 201, "Rating submitted successfully.");
+        // HTTP 201 Created
+        await res.sendStatus(201);
 
     } catch (error) {
         //TODO: Log errors
-        errorChecking(res, null, 500, "Internal Server Error");
+        res.sendStatus(401);
+        //errorChecking(res, null, 401, "Internal Server Error");
     }
 });
 
-// Update profile details
+// Update User Details
 users.patch('/me', async (req, res) => {
     // TODO Check for authorization & authentication before making any user changes
     try {
@@ -134,7 +146,7 @@ users.patch('/me', async (req, res) => {
             const tmpUser = await user.update({
                 firstName: req.body.data[0].firstName,
                 lastName: req.body.data[0].lastName,
-                updatedAt: Date.now(),
+                updatedAt: dateFormat("dd-mm-yyyy HH:MM"),
                 phoneNumber: req.body.data[0].phoneNumber,
                 deviceToken: req.body.data[0].deviceToken
             });
@@ -159,7 +171,7 @@ users.patch('/me', async (req, res) => {
     }
 });
 
-// Update rating
+// Update Rating
 users.patch('/:id/ratings', async (req, res) => {
     // TODO Check for authorization & authentication before making any user changes
     try {
@@ -168,7 +180,7 @@ users.patch('/:id/ratings', async (req, res) => {
         // Rating does exist
         if(rating !== null){
             const tmpRating = await rating.update({
-                updatedAt: Date.now(),
+                updatedAt: dateFormat("dd-mm-yyyy HH:MM"),
                 comment:req.body.data[0].comment,
                 onTime: req.body.data[0].onTime,
                 skills: req.body.data[0].skills,
@@ -181,8 +193,8 @@ users.patch('/:id/ratings', async (req, res) => {
             // Update user details
             await tmpRating.save();
 
-            // HTTP 204 No Content
-            await res.sendStatus(204);
+            // HTTP 200 OK
+            await res.sendStatus(200);
             
         }else{
             await res.sendStatus(401);
@@ -194,7 +206,7 @@ users.patch('/:id/ratings', async (req, res) => {
     }
 });
 
-// Delete my account
+// Delete User (my account)
 users.delete('/me', async (req, res) => {
     // TODO Check for authorization & authentication before making any user changes
     try {
@@ -220,12 +232,12 @@ users.delete('/me', async (req, res) => {
     }
 });
 
-// Sign out - Destroy session access token
+// Sign Out - Destroy Access Token
 users.delete('/accessToken', (req, res) => {
     res.json({msg: "Access Token deleted"}); 
 });
 
-// Delete rating
+// Delete Rating
 users.delete('/:id/ratings', async (req, res) => {
    // TODO Check for authorization & authentication before making any user changes
     try {
@@ -258,12 +270,6 @@ users.delete('/:id/ratings', async (req, res) => {
         
     }
 });
-
-// // rate user
-// users.use('/ratings', require('./ratings'));
-
-
-
 
 function isAuthenticated(req, res, next) {
     // do any checks you want to in here

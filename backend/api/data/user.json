@@ -1,26 +1,11 @@
 {
-        "userId" : "12",
-        "fullName": "Rafaellos M.",
-        "registrationDate": "1/1/01",
-        "userRating": {
-            "average" : "5",
-            "onTime" : "5",
-            "skills" : "5",
-            "behavior" : "5"
-        },
-        "ratings" : [
-            {
-                "userId" : "11",
-                "username": "Panayiotis",
-                "comment" : "No comment",
-                "dateTime" : "1/1/1",
-                "rating": {
-                    "average" : "5",
-                    "onTime" : "5",
-                    "skills" : "5",
-                    "behavior" : "5"
-                }
-            }
-        ]
-
+    "user": { 
+        "id": "100000273908932",
+        "firstName": "Aldi",
+        "lastName": "Martin",
+        "createdAt": "2018-08-27T20:46:06.000Z",
+        "phoneNumber": "11111111",
+        "deviceToken": "aaaaaaaaaaaa",
+        "accessToken": "aaaaaaaaaaa"
+    }
 }
