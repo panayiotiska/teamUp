@@ -29,11 +29,11 @@ games.get('/', async (req, res) => {
             }
         });
 
-        // Send data - HTTP 200 OK
+        // Send response - HTTP 200 OK
         sendCustomResponse(res, 200, games);
     } catch (error) {
         // TODO: Log errors
-        // Send response - HTTP 500 Internal Server Error
+        // Send error response - HTTP 500 Internal Server Error
         sendCustomErrorResponse(res, 500, "Couldn't get games.")
     }
 });
@@ -64,10 +64,11 @@ games.get('/:id', async (req, res) => {
             }
         });
         
-        // Send response - HTTP 200
+        // Send response - HTTP 200 OK
         sendCustomResponse(res, 200, game);
     } catch (error) {
         // TODO: Log error
+        // Send error response - HTTP 500 Internal Server Error
         sendCustomErrorResponse(res, 500, "Couldn't get game details.");
     }
 });
@@ -117,7 +118,7 @@ games.post('/', async (req, res) => {
         sendCustomResponse(res, 201);
     } catch (error) {
         //TODO: Log error
-        // Send response
+        // Send error response - HTTP 500 Internal Server Error
         sendCustomErrorResponse(res, 500, "Couldn't create game.")
     }
 });
