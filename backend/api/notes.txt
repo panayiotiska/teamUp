@@ -4,14 +4,14 @@ GET /users/me/ratings
 GET /users/:id/ratings
 
 POST /users
-POST /users/accessToken
+POST /users/authToken
 POST /users/:id/ratings
 
 PATCH /users/me
 PATCH /users/:id/ratings
 
 DELETE /users/me
-DELETE /users/accessToken
+DELETE /users/authToken
 DELETE /users/:id/ratings
 
 GET /games

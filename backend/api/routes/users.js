@@ -12,22 +12,22 @@ const {sendCustomResponse, sendCustomErrorResponse} = require('../handlers/custo
 
 const Sequelize = require('sequelize');
 
-// Get User Details
+// Get user details
 users.get('/me', async (req, res) => {
     try {
         // Find user
         const userProfileData = await User.findOne({
             where: {
                 // This should be based on the user's id
-                accessToken: req.headers["access-token"]
+                authToken: req.headers["access-token"]
             },
             attributes: {
                 // Exclude sensitive information from being returned back in the response
-                exclude: ['deviceToken', 'accessToken']
+                exclude: ['deviceToken', 'authToken']
             }
           });
 
-        // // Send response - HTTP 200 OK
+        // Send response - HTTP 200 OK
         // sendCustomResponse(res, 200, [userProfileData]);
         if(userProfileData){
             sendCustomResponse(res, 200, [userProfileData]);
@@ -41,7 +41,7 @@ users.get('/me', async (req, res) => {
     }
 });
 
-// Get User Ratings
+// Get user ratings
 users.get('/:id/ratings', async (req, res) => {
     try {
         // Get all user ratings
@@ -85,14 +85,17 @@ users.get('/:id/ratings', async (req, res) => {
 // Create User
 users.post('/', async (req, res) => {
     try {
-        // Check if user is already registered
+        // Check if the user is already in our database
+        // TODO: Use a combination of user id and device token to check if the user is already registered
         const userAccount = await User.find({
-                where: {id: req.body.data[0].id},
+                where: {
+                    id: req.body.data[0].id
+                }
             });
 
-            // User account doesn't exist
+            // If the user account doesn't exist
             if(userAccount === null){
-                // Build a new user instance
+                // Build a new User instance
                 const user = await User.build({
                     id: req.body.data[0].id,
                     firstName: req.body.data[0].firstName,
@@ -100,33 +103,33 @@ users.post('/', async (req, res) => {
                     createdAt: dateFormat("dd-mm-yyyy HH:MM"),
                     phoneNumber: req.body.data[0].phoneNumber,
                     deviceToken: req.body.data[0].deviceToken,
-                    accessToken: req.body.data[0].accessToken
+                    authToken: req.body.data[0].authToken
                 });
 
                 // Guard
-                // Validate the data against the model
+                // Validate the data against the User model
                 await user.validate();
 
                 // Create user
                 await user.save();
 
-                await errorChecking(res, null, 201, "User created.")
+                // Send response - HTTP 201 Created
+                sendCustomResponse(res, 201);
             } else {
-                // User already exists.
-                errorChecking(res, null, 409, "User already exists.")
+                // TODO: Log error
+                // User already exists in our database
+                sendCustomErrorResponse(res, 409, "Couldn't create user. Already exists.")
             }
     } catch (error) {
-        // TODO: Log errors
-        console.log(error);
-        
-        errorChecking(res, null, 500, "Internal server error.\nCouldn't create user.")
+        // TODO: Log error
+        // Send response - 500 Internal Server Error
+        sendCustomErrorResponse(res, 500, "Couldn't create user.");
     }
-    
 });
 
-// Generate Access Token
-users.post('/accessToken', (req, res) => {
-    res.json({msg: "accessToken=123456"}); 
+// Generate authorization token 
+users.post('/authToken', (req, res) => {
+    res.json({msg: "authToken=123456"}); 
 });
 
 // Create Rating
@@ -134,7 +137,7 @@ users.post('/:id/ratings', async (req, res) => {
     try {
         const user = await User.findOne({
             where: {
-                accessToken: req.headers["access-token"]
+                authToken: req.headers["access-token"]
             },
             raw: true,
             attributes: ['id']
@@ -268,8 +271,8 @@ users.delete('/me', async (req, res) => {
 });
 
 // Sign Out - Destroy Access Token
-users.delete('/accessToken', (req, res) => {
-    res.json({msg: "Access Token deleted"}); 
+users.delete('/authToken', (req, res) => {
+    res.json({msg: "Authorization Token deleted"}); 
 });
 
 // Delete Rating
@@ -278,7 +281,7 @@ users.delete('/:id/ratings', async (req, res) => {
     try {
         const user = await User.findOne({
             where: {
-                accessToken: req.headers["access-token"]
+                authToken: req.headers["access-token"]
             },
             raw: true,
             attributes: ['id']

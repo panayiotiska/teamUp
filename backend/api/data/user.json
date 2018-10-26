@@ -6,6 +6,6 @@
         "createdAt": "2018-08-27T20:46:06.000Z",
         "phoneNumber": "11111111",
         "deviceToken": "aaaaaaaaaaaa",
-        "accessToken": "aaaaaaaaaaa"
+        "authToken": "aaaaaaaaaaa"
     }
 }

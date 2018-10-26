@@ -38,7 +38,7 @@ const User = db.define('user', {
     deviceToken: {
         type: Sequelize.STRING
     },
-    accessToken: {
+    authToken: {
         type: Sequelize.STRING
     }
   });
@@ -66,7 +66,7 @@ db.sync({force: true}).then(async () => {
                 phoneNumber: userdata.user.phoneNumber,
                 createdAt: dateFormat("dd-mm-yyyy HH:MM"),
                 deviceToken: "11111111",
-                accessToken: "MzQ2MjhlOTE2ZTZmYTQ4ZDhiYjVlNWYyY2M4NDRmOTk2ZmViNWQ2NDA0OGJiZDQzNGRjODFiMjNlN2ZhYzU2ZA=="
+                authToken: "MzQ2MjhlOTE2ZTZmYTQ4ZDhiYjVlNWYyY2M4NDRmOTk2ZmViNWQ2NDA0OGJiZDQzNGRjODFiMjNlN2ZhYzU2ZA=="
             },
             {
                 id: "100000273908940",
@@ -75,7 +75,7 @@ db.sync({force: true}).then(async () => {
                 lastName: "Doe",
                 phoneNumber: "6981000000",
                 deviceToken: "22222222",
-                accessToken: "aldi-accessToken"
+                authToken: "aldi-authToken"
             }
         ]);
     

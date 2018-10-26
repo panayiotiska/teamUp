@@ -75,7 +75,7 @@ games.post('/', async (req, res) => {
     try {
         const user = await User.findOne({
             where: {
-                accessToken: req.headers["access-token"]
+                authToken: req.headers["authToken"]
             },
             raw: true,
             attributes: ['id']
