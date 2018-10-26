@@ -24,7 +24,7 @@ users.get('/me', isAuthenticated, async (req, res) => {
 
         if(profileData){
             // Send profile data - HTTP 200 OK
-            sendCustomResponse(res, 200, profileData);
+            sendCustomResponse(res, 200, [profileData]);
         }else{
             // User isn't authenticated / authorized to access this profile data
             sendCustomErrorResponse(res, 401, "You are unauthorized to perform this action.");

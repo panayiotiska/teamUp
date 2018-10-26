@@ -4,7 +4,8 @@ function sendCustomResponse(res, statusCode, data){
     res.json({
         status: {
             code: 0,
-            errors: []
+            description: "success"
+            // Missing the 'errors' field cause we don't need it on a successfull response
         },
         data: data
     });
@@ -16,9 +17,10 @@ function sendCustomErrorResponse(res, statusCode, errMsg){
     res.json({
         status: {
             code: -1,
+            description: "error",
             errors: [errMsg]
         },
-        data: []
+        data: [] // Should always be returned as an array
     });
 }
 
