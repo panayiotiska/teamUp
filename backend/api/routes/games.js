@@ -63,10 +63,12 @@ games.get('/:id', async (req, res) => {
                 exclude: ['locationId']
             }
         });
-        res.json({data: [game]});
+        
+        // Send response - HTTP 200
+        sendCustomResponse(res, 200, game);
     } catch (error) {
-        console.log(error);
-        res.sendStatus(401);
+        // TODO: Log error
+        sendCustomErrorResponse(res, 500, "Couldn't get game details.");
     }
 });
 
