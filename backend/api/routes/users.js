@@ -1,14 +1,13 @@
+// API /users route
+const users = require('express').Router();
+//DateFormat 
 const dateFormat = require('dateformat');
-// Models
+// Database models
 const User = require('../models/user');
 const Ratings = require('../models/rating');
 const userRating = require('../models/userRating');
-
-// Users route
-const users = require('express').Router();
-
-// Send custom error message response
-const {errorChecking, sendCustomResponse} = require('../error_handler');
+// Custom Response Handler
+const {sendCustomResponse, sendCustomErrorResponse} = require('../handlers/customResponse');
 
 // Get User Details
 users.get('/me', isAuthenticated, async (req, res) => {
@@ -23,10 +22,17 @@ users.get('/me', isAuthenticated, async (req, res) => {
             }
           });
 
-        errorChecking(res, ((profileData) ? [profileData] : null), 404, "Couldn't retrieve profile data.");
+        if(profileData){
+            // Send profile data - HTTP 200 OK
+            sendCustomResponse(res, 200, profileData);
+        }else{
+            // User isn't authenticated / authorized to access this profile data
+            sendCustomErrorResponse(res, 401, "You are unauthorized to perform this action.");
+        }
     } catch (error) {
         // TODO: Log the errors
-        errorChecking(res, null, 500, "Internal Server Error\nThere was an error while retrieving profile data.");
+        // If anything else happens serverside, send a generalized error message
+        sendCustomErrorResponse(res, 500, "Internal Server Error\nThere was an error while retrieving profile data.")
     }
 });
 
@@ -35,17 +41,17 @@ users.get('/:id/ratings', isAuthenticated, async (req, res) => {
     try {
         // Get all user ratings
         const user = await User.findById(req.params.id, {
-            include: { 
+            include: [{ 
                 model: Ratings,
                 through: {
                     model: userRating,
                     attributes: []
                     }
             }
+        ]
         });
 
         // Iterate through each rating
-
         for (const rating of user['ratings']) {
             // Find rating author.
             const ratingAuthor = await User.findOne({
@@ -63,7 +69,7 @@ users.get('/:id/ratings', isAuthenticated, async (req, res) => {
             }
         }
         // Send 
-        await sendCustomResponse(res, 200, {data: user['ratings']});
+        sendCustomResponse(res, 200, user.ratings);
 
         //errorChecking(res, ((ratings) ? ratings['ratings']: ratings), 404, "Couldn't find any ratings.");
     } catch (error) {

@@ -1,9 +1,12 @@
+// API /games route
 const games = require('express').Router();
+//DateFormat
 const dateFormat = require('dateformat');
+const Sequelize = require('sequelize');
+// Custom Response Handler
+const {sendCustomResponse, sendCustomErrorResponse} = require('../handlers/customResponse');
 
-const {sendCustomResponse} = require('../error_handler');
-
-// Models
+// Database models
 const User = require('../models/user');
 const Game = require('../models/game');
 const userGame = require('../models/userGame');
@@ -19,9 +22,14 @@ games.get('/', async (req, res) => {
                     attributes: {
                         exclude: ['id']
                     }
+                },
+                {
+                    model: User,
+                    attributes: []
                 }
             ],
             attributes: {
+                include: [[Sequelize.literal('users.phoneNumber'), 'phoneNumber']],
                 exclude: ['locationId']
             }
         });

@@ -46,7 +46,6 @@ const User = db.define('user', {
 // A user can have many reviews
 User.belongsToMany(Rating, {through: userRating, constraints: false});
 Rating.belongsToMany(User, {through: userRating});
-userRating.belongsTo(Rating);
 
 User.belongsToMany(Game, {through: userGame, constraints: false});
 Game.belongsToMany(User, {through: userGame});
