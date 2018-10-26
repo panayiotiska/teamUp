@@ -127,31 +127,36 @@ db.sync({force: true}).then(async () => {
         await Location.bulkCreate([
                 {
                     id: "1",
-                    name: "Thessaloniki",
+                    city: "Thessaloniki",
+                    countryCode: "GR",
                     latitude: 32.7295749,
                     longitude: -17.022417
                 },
                 {
                     id: 2,
-                    name: "Kalamaria",
+                    city: "Kalamaria",
+                    countryCode: "GR",
                     latitude: 30.289195,
                     longitude: 110.224358
                 },
                 {
                     id: "3",
-                    name: "Kamara",
+                    city: "Kamara",
+                    countryCode: "GR",
                     latitude: 1.5156,
                     longitude: -77.49498
                 },
                 {
                     id: "4",
-                    name: "Nea Krini",
+                    city: "Nea Krini",
+                    countryCode: "GR",
                     latitude: 41.6020598,
                     longitude: -87.4108352
                 },
                 {
                     id: "5",
                     name: "Eyosmos",
+                    countryCode: "GR",
                     latitude: 36.307064,
                     longitude: 120.39631
                 }

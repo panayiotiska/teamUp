@@ -6,7 +6,13 @@ const Location = db.define('locations', {
         type: Sequelize.STRING,
         primaryKey: true
     },
-    name: {
+    city: {
+        type: Sequelize.STRING,
+        validate: {
+            notNull: true
+        }
+    },
+    countryCode: {
         type: Sequelize.STRING,
         validate: {
             notNull: true
