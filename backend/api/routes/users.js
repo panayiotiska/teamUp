@@ -9,51 +9,57 @@ const userRating = require('../models/userRating');
 // Custom Response Handler
 const {sendCustomResponse, sendCustomErrorResponse} = require('../handlers/customResponse');
 
+
+const Sequelize = require('sequelize');
+
 // Get User Details
-users.get('/me', isAuthenticated, async (req, res) => {
+users.get('/me', async (req, res) => {
     try {
-        // Find user profile via ID
-        const profileData = await User.find({
+        // Find user
+        const userProfileData = await User.findOne({
             where: {
+                // This should be based on the user's id
                 accessToken: req.headers["access-token"]
             },
             attributes: {
+                // Exclude sensitive information from being returned back in the response
                 exclude: ['deviceToken', 'accessToken']
             }
           });
 
-        if(profileData){
-            // Send profile data - HTTP 200 OK
-            sendCustomResponse(res, 200, [profileData]);
+        // // Send response - HTTP 200 OK
+        // sendCustomResponse(res, 200, [userProfileData]);
+        if(userProfileData){
+            sendCustomResponse(res, 200, [userProfileData]);
         }else{
-            // User isn't authenticated / authorized to access this profile data
-            sendCustomErrorResponse(res, 401, "You are unauthorized to perform this action.");
+            sendCustomErrorResponse(res, 401, "You are unauthorized to perform this action.")
         }
     } catch (error) {
         // TODO: Log the errors
-        // If anything else happens serverside, send a generalized error message
-        sendCustomErrorResponse(res, 500, "Internal Server Error\nThere was an error while retrieving profile data.")
+        // Send a generalized error message - HTTP 500 Internal Server Error
+        sendCustomErrorResponse(res, 500, "Internal Server Error\nThere was an error while retrieving the requested profile data.")
     }
 });
 
 // Get User Ratings
-users.get('/:id/ratings', isAuthenticated, async (req, res) => {
+users.get('/:id/ratings', async (req, res) => {
     try {
         // Get all user ratings
         const user = await User.findById(req.params.id, {
-            include: [{ 
+            include:
+            { 
                 model: Ratings,
                 through: {
                     model: userRating,
                     attributes: []
                     }
             }
-        ]
         });
 
         // Iterate through each rating
         for (const rating of user['ratings']) {
-            // Find rating author.
+            // Find rating author
+            // Extract author's id, firstName and lastName attributes
             const ratingAuthor = await User.findOne({
                 where: {
                     id: rating.createdBy
@@ -61,20 +67,18 @@ users.get('/:id/ratings', isAuthenticated, async (req, res) => {
                 attributes: ['id', 'firstName', 'lastName']
             });
 
-            // Update createdBy property by reference.
+            // Update createdBy property by reference
             rating.createdBy = {
                 id: ratingAuthor.id,
                 firstName: ratingAuthor.firstName,
                 lastName: ratingAuthor.lastName
             }
         }
-        // Send 
+        // Send response - HTTP 200 OK
         sendCustomResponse(res, 200, user.ratings);
-
-        //errorChecking(res, ((ratings) ? ratings['ratings']: ratings), 404, "Couldn't find any ratings.");
     } catch (error) {
         // TODO: Log the errors
-        errorChecking(res, null, 500, "Couldn't retrieve ratings.");
+        sendCustomErrorResponse(res, 500, "Internal Server Error\nCouldn't retrieve ratings.");
     }
 });
 
@@ -301,18 +305,5 @@ users.delete('/:id/ratings', async (req, res) => {
         
     }
 });
-
-function isAuthenticated(req, res, next) {
-    // do any checks you want to in here
-  
-    // CHECK THE USER STORED IN SESSION FOR A CUSTOM VARIABLE
-    // you can do this however you want with whatever variables you set up
-    if (true) {
-        return next();
-    } else {
-        res.sendStatus(401);
-    }
-       
-  }
 
 module.exports = users;

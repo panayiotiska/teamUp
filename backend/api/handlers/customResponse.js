@@ -5,22 +5,20 @@ function sendCustomResponse(res, statusCode, data){
         status: {
             code: 0,
             description: "success"
-            // Missing the 'errors' field cause we don't need it on a successfull response
         },
-        data: data
+        data: data // Should always be an array of data
     });
 }
 
 // Send a customized response containing specific error messages
-function sendCustomErrorResponse(res, statusCode, errMsg){
+function sendCustomErrorResponse(res, statusCode, errorMsg){
     res.statusCode = statusCode;
     res.json({
         status: {
             code: -1,
             description: "error",
-            errors: [errMsg]
-        },
-        data: [] // Should always be returned as an array
+            errorMsg: errorMsg
+        }
     });
 }
 
