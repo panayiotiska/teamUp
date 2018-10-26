@@ -16,4 +16,11 @@ function errorChecking(res, data, httpStatusCode, msg){
 // Send custom response
 // TODO: create function to send custom response
 
-module.exports = errorChecking;
+
+function sendCustomResponse(res, statusCode, data){
+    res.statusCode = statusCode;
+    res.json(data);
+}
+
+module.exports.errorChecking = errorChecking;
+module.exports.sendCustomResponse =  sendCustomResponse;

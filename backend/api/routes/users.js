@@ -8,7 +8,7 @@ const userRating = require('../models/userRating');
 const users = require('express').Router();
 
 // Send custom error message response
-const errorChecking = require('../error_handler');
+const {errorChecking, sendCustomResponse} = require('../error_handler');
 
 // Get User Details
 users.get('/me', isAuthenticated, async (req, res) => {
@@ -33,14 +33,39 @@ users.get('/me', isAuthenticated, async (req, res) => {
 // Get User Ratings
 users.get('/:id/ratings', isAuthenticated, async (req, res) => {
     try {
-        const ratings = await User.findById(req.params.id, {
+        // Get all user ratings
+        const user = await User.findById(req.params.id, {
             include: { 
                 model: Ratings,
-                through: {attributes: []}
-            },
+                through: {
+                    model: userRating,
+                    attributes: []
+                    }
+            }
         });
 
-        errorChecking(res, ((ratings) ? ratings['ratings']: ratings), 404, "Couldn't find any ratings.");
+        // Iterate through each rating
+
+        for (const rating of user['ratings']) {
+            // Find rating author.
+            const ratingAuthor = await User.findOne({
+                where: {
+                    id: rating.createdBy
+                },
+                attributes: ['id', 'firstName', 'lastName']
+            });
+
+            // Update createdBy property by reference.
+            rating.createdBy = {
+                id: ratingAuthor.id,
+                firstName: ratingAuthor.firstName,
+                lastName: ratingAuthor.lastName
+            }
+        }
+        // Send 
+        await sendCustomResponse(res, 200, {data: user['ratings']});
+
+        //errorChecking(res, ((ratings) ? ratings['ratings']: ratings), 404, "Couldn't find any ratings.");
     } catch (error) {
         // TODO: Log the errors
         errorChecking(res, null, 500, "Couldn't retrieve ratings.");

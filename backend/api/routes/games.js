@@ -1,6 +1,8 @@
 const games = require('express').Router();
 const dateFormat = require('dateformat');
 
+const {sendCustomResponse} = require('../error_handler');
+
 // Models
 const User = require('../models/user');
 const Game = require('../models/game');
@@ -25,7 +27,8 @@ games.get('/', async (req, res) => {
         });
 
         // Send data - HTTP 200 OK
-        await res.json({data: games});    
+        await sendCustomResponse(res, 200, {games: games});
+        //await res.json({data: games});    
     } catch (error) {
         // TODO: Log errors
         console.log(error);        
