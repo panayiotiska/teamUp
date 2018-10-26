@@ -9,9 +9,6 @@ const userRating = require('../models/userRating');
 // Custom Response Handler
 const {sendCustomResponse, sendCustomErrorResponse} = require('../handlers/customResponse');
 
-
-const Sequelize = require('sequelize');
-
 // Get user details
 users.get('/me', async (req, res) => {
     try {
@@ -36,8 +33,8 @@ users.get('/me', async (req, res) => {
         }
     } catch (error) {
         // TODO: Log the errors
-        // Send a generalized error message - HTTP 500 Internal Server Error
-        sendCustomErrorResponse(res, 500, "Internal Server Error\nThere was an error while retrieving the requested profile data.")
+        // Send error response - HTTP 500 Internal Server Error
+        sendCustomErrorResponse(res, 500, "Couldn't get profile data.")
     }
 });
 
@@ -78,11 +75,12 @@ users.get('/:id/ratings', async (req, res) => {
         sendCustomResponse(res, 200, user.ratings);
     } catch (error) {
         // TODO: Log the errors
-        sendCustomErrorResponse(res, 500, "Internal Server Error\nCouldn't retrieve ratings.");
+        // Send error response - HTTP 500 Internal Server Error
+        sendCustomErrorResponse(res, 500, "Couldn't get ratings.");
     }
 });
 
-// Create User
+// Create new user
 users.post('/', async (req, res) => {
     try {
         // Check if the user is already in our database
@@ -122,7 +120,7 @@ users.post('/', async (req, res) => {
             }
     } catch (error) {
         // TODO: Log error
-        // Send response - 500 Internal Server Error
+        // Send error response - 500 Internal Server Error
         sendCustomErrorResponse(res, 500, "Couldn't create user.");
     }
 });
@@ -132,17 +130,19 @@ users.post('/authToken', (req, res) => {
     res.json({msg: "authToken=123456"}); 
 });
 
-// Create Rating
+// Create new rating
 users.post('/:id/ratings', async (req, res) => {
     try {
+        // TODO: Find the author of this post by checking via the auth token
         const user = await User.findOne({
             where: {
-                authToken: req.headers["access-token"]
+                authToken: req.headers["authToken"]
             },
             raw: true,
             attributes: ['id']
-        });        
-    
+        });
+        
+        // Build an instance of the Rating model    
         const rating = await Ratings.build({
             createdBy: user.id,
             createdAt: dateFormat("dd-mm-yyyy HH:MM"),
@@ -153,27 +153,29 @@ users.post('/:id/ratings', async (req, res) => {
         });
         
         // Guard
+        // Validate the data agains the Rating model
         await rating.validate();
 
         // Submit rating
         await rating.save();
 
+        // Update 'userRating' association table
         await userRating.create({
             userId: req.params.id,
             ratingId: rating.id
         });
         
-        // HTTP 201 Created
-        await res.sendStatus(201);
+        // Send response - HTTP 201 Created
+        sendCustomResponse(res, 201);
 
     } catch (error) {
         //TODO: Log errors
-        res.sendStatus(401);
-        //errorChecking(res, null, 401, "Internal Server Error");
+        // Send error response - HTTP 500 Internal Server Error
+        sendCustomErrorResponse(res, 500, "Couldn't submit rating.");
     }
 });
 
-// Update User Details
+// Update user details
 users.patch('/me', async (req, res) => {
     // TODO Check for authorization & authentication before making any user changes
     try {
@@ -195,24 +197,26 @@ users.patch('/me', async (req, res) => {
             // Update user details
             await tmpUser.save();
 
-            // HTTP 204 No Content
-            await res.sendStatus(204);
+            // Send response - HTTP 204 No Content
+            sendCustomResponse(res, 204);
             
         }else{
             // We don't have to expose that the user doesn't exist in our database.
-            // HTTP 401 Unauthorized
-            await res.sendStatus(401);
+            // Send error response - HTTP 401 Unauthorized
+            sendCustomErrorResponse(res, 401, "You are unauthorized to perform this action.");
         }
     } catch (error) {
-        // TODO: Log errors        
-        await errorChecking(res, null, 500, "Internal Server Error");
+        // TODO: Log errors  
+        // Send error response - HTTP 500 Internal Server Error      
+        sendCustomErrorResponse(res, 500, "Couldn't update profile.")
     }
 });
 
-// Update Rating
+// Update rating
 users.patch('/:id/ratings', async (req, res) => {
     // TODO Check for authorization & authentication before making any user changes
     try {
+        // Find rating by its id
         const rating = await Ratings.findById(req.body.data[0].id);
         
         // Rating does exist
@@ -231,20 +235,20 @@ users.patch('/:id/ratings', async (req, res) => {
             // Update user details
             await tmpRating.save();
 
-            // HTTP 200 OK
-            await res.sendStatus(200);
+            // Send response - HTTP 200 OK
+            sendCustomResponse(res, 200);
             
         }else{
-            await res.sendStatus(401);
+            sendCustomErrorResponse(res, 401, "You are unauthorized to perform this action.")
         }
     } catch (error) {
         // TODO: Log errors
-        errorChecking(res, null, 500, "Internal Server Error");
-        
+        // Send error response - HTTP 500 Internal Server Error
+        sendCustomErrorResponse(res, 500, "Couldn't update rating.");
     }
 });
 
-// Delete User (my account)
+// Delete user (my account)
 users.delete('/me', async (req, res) => {
     // TODO Check for authorization & authentication before making any user changes
     try {
@@ -257,25 +261,26 @@ users.delete('/me', async (req, res) => {
 
         // User was deleted successfully
         if(user){
-            // HTTP 202 Accepted
-            await res.sendStatus(202);
+            // Send response - HTTP 202 Accepted
+            sendCustomResponse(res, 202);
             
         }else{
-            // HTTP 401 Unauthorized
-            await res.sendStatus(401);
+            // Send response - HTTP 401 Unauthorized
+            sendCustomErrorResponse(res, 401, "You are unauthorized to perform this action.");
         }
     } catch (error) {
-        // TODO: Log errors    
-        await errorChecking(res, null, 500, "Internal Server Error");
+        // TODO: Log error
+        // Send response - HTTP 500 Internal Server Error
+        sendCustomErrorResponse(res, 500, "Couldn't delete user.");
     }
 });
 
-// Sign Out - Destroy Access Token
+// Sign Out - Destroy Auth Token
 users.delete('/authToken', (req, res) => {
     res.json({msg: "Authorization Token deleted"}); 
 });
 
-// Delete Rating
+// Delete rating
 users.delete('/:id/ratings', async (req, res) => {
    // TODO Check for authorization & authentication before making any user changes
     try {
@@ -287,6 +292,7 @@ users.delete('/:id/ratings', async (req, res) => {
             attributes: ['id']
         });
 
+        // Delete rating from the database
         const rating = await Ratings.destroy({
             where: {
                 id: req.body.data[0].id,
@@ -294,17 +300,19 @@ users.delete('/:id/ratings', async (req, res) => {
             }
         });
         
-        // Rating does exist
+        // Rating deleted successfully
         if(rating){
-            // HTTP 202 Accepted
-            await res.sendStatus(202);
+            // Send response - HTTP 202 Accepted
+            sendCustomResponse(res, 202);
             
         }else{
-            await res.sendStatus(401);
+            // Send response - HTTP 401 Unauthorized
+            sendCustomErrorResponse(res, 401, "You are unauthorized to perform this action.")
         }
     } catch (error) {
         // TODO: Log errors
-        errorChecking(res, null, 500, "Internal Server Error");
+        // Send error response - HTTP 500 Internal Server Error
+        sendCustomErrorResponse(res, 500, "Couldn't delete rating.");
         
     }
 });
