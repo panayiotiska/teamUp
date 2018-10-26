@@ -12,10 +12,40 @@ const Game = require('../models/game');
 const userGame = require('../models/userGame');
 const Location = require('../models/location');
 
-// Get Games
+// Get games
 games.get('/', async (req, res) => {
     try {
         const games = await Game.findAll({
+            include: [
+                {
+                    model: Location,
+                    attributes: {
+                        exclude: ['id', 'latitude', 'longitude']
+                    }
+                }
+            ],
+            attributes: {
+                exclude: ['locationId', 'createdAt', 'updatedAt', 'opponents', 'description']
+            }
+        });
+
+        // Send data - HTTP 200 OK
+        sendCustomResponse(res, 200, games);
+    } catch (error) {
+        // TODO: Log errors
+        // Send response - HTTP 500 Internal Server Error
+        sendCustomErrorResponse(res, 500, "Couldn't get games.")
+    }
+});
+
+// Get game details
+games.get('/:id', async (req, res) => {
+    try {
+        // Get game details based on its id
+        const game = await Game.findOne({
+            where: {
+                id: req.params.id
+            },
             include: [
                 {
                     model: Location,
@@ -33,31 +63,6 @@ games.get('/', async (req, res) => {
                 exclude: ['locationId']
             }
         });
-
-        // Send data - HTTP 200 OK
-        await sendCustomResponse(res, 200, {games: games});
-        //await res.json({data: games});    
-    } catch (error) {
-        // TODO: Log errors
-        console.log(error);        
-        await res.sendStatus(500);
-    }
-});
-
-// Game Details
-games.get('/:id', async (req, res) => {
-    try {
-        const game = await Game.findById(req.params.id, {
-            attributes: {
-                exclude: ['locationId']
-            },
-            include: {
-                model: Location,
-                attributes: {
-                    exclude: ['id']
-                }
-            }
-        });
         res.json({data: [game]});
     } catch (error) {
         console.log(error);
@@ -70,9 +75,11 @@ games.get('/:id/teams', (req, res) => {
     res.json({msg: "Get the teams of a game"});
 });
 
-// Create Game
+// Create new game
 games.post('/', async (req, res) => {
     try {
+        // Find the user(id) that wants to create this game
+        // TODO: Use authorization and authentication to find out who the user really is.
         const user = await User.findOne({
             where: {
                 authToken: req.headers["authToken"]
@@ -81,6 +88,7 @@ games.post('/', async (req, res) => {
             attributes: ['id']
         });
 
+        // Build Game instance
         const game = await Game.create({
             createdBy: user.id,
             createdAt: dateFormat("dd-mm-yyyy HH:MM"),
@@ -97,14 +105,18 @@ games.post('/', async (req, res) => {
         });
 
         // Guard
+        // Validate the data against the Game model
         await game.validate();
 
+        // Create game
         await game.save();
 
-        await res.sendStatus(201);
+        // Send response - HTTP 201 Created
+        sendCustomResponse(res, 201);
     } catch (error) {
-        console.log(error);
-        res.sendStatus(401);
+        //TODO: Log error
+        // Send response
+        sendCustomErrorResponse(res, 500, "Couldn't create game.")
     }
 });
 
