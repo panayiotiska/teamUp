@@ -11,8 +11,10 @@ const {sendCustomResponse, sendCustomErrorResponse} = require('../handlers/custo
 // Database models
 const User = require('../models/user');
 const Game = require('../models/game');
+const Team = require('../models/team');
 const userGame = require('../models/userGame');
 const Location = require('../models/location');
+const userTeam = require('../models/userTeam');
 
 // Get games
 games.get('/', async (req, res) => {
@@ -76,8 +78,68 @@ games.get('/:id', async (req, res) => {
 });
 
 // Get game teams
-games.get('/:id/teams', (req, res) => {
-    res.json({msg: "Get the teams of a game"});
+games.get('/:id/teams', async (req, res) => {
+    try {
+            // Get the firstTeamId and secondTeamId from the specified game
+            const game = await Game.findOne({
+                where: {
+                    id: req.params.id
+                },
+                include: {
+                    model: Team,
+                    through: {
+                        model: userGame,
+                        attributes: []
+                    },
+                    attributes: ['firstTeamId', 'secondTeamId']
+                },
+                attributes: []
+            });
+
+            // Get users of the first team
+            const team1 = await userTeam.findAll({
+                where: {
+                    teamId: game.teams[0].firstTeamId
+                },
+                include: {
+                    model: User,
+                    attributes: ['id', 'firstName', 'lastName']
+                },
+                attributes: {
+                    exclude: ['userId', 'teamId']
+                }
+            });          
+            
+            // Get users of the second team
+            const team2 = await userTeam.findAll({
+                where: {
+                    teamId: game.teams[0].secondTeamId
+                },
+                include: {
+                    model: User,
+                    attributes: ['id', 'firstName', 'lastName']
+                },
+                attributes: {
+                    exclude: ['userId', 'teamId']
+                }
+            });          
+
+            // Send response - HTTP 200 OK
+            sendCustomResponse(res, 200, [
+                {
+                    teamId: game.teams[0].firstTeamId,
+                    users: team1
+                },
+                {
+                    teamId: game.teams[0].secondTeamId,
+                    users: team2
+                }
+        ]);
+    } catch (error) {
+        //TODO: Log error
+        // Send error response - HTTP 500 Internal Server Error      
+        sendCustomErrorResponse(res, 500, "Couldn't get teams.")
+    }
 });
 
 // Create new game

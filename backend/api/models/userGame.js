@@ -13,4 +13,4 @@ const userGame = db.define('userGames', {
     }
 });
 
-  module.exports = userGame;
+module.exports = userGame;

@@ -8,6 +8,9 @@ const Location = require('./location');
 const userGame = require('./userGame');
 const Game = require('./game');
 
+const Team = require('./team');
+const userTeam = require('./userTeam');
+
 // DB connection
 const db = require('../db');
 
@@ -43,7 +46,7 @@ const User = db.define('user', {
     }
   });
 
-// A user can have many reviews
+// Model associations
 User.belongsToMany(Rating, {through: userRating, constraints: false});
 Rating.belongsToMany(User, {through: userRating});
 
@@ -52,7 +55,12 @@ Game.belongsToMany(User, {through: userGame});
 
 userGame.belongsTo(Game);
 
+Game.belongsToMany(Team, {through: userGame, constraints: false});
 
+User.belongsToMany(Team, {through: userTeam, constraints: false});
+Team.belongsToMany(User, {through: userTeam, constraints: false});
+
+userTeam.belongsTo(User);
 
 
 // Create and populate the database tables with mock data
@@ -193,14 +201,40 @@ db.sync({force: true}).then(async () => {
              {
                  userId: "100000273908932",
                  gameId: 1,
-                 locationId: 3
+                 locationId: 3,
+                 teamId: "777"
              },
              {
                 userId: "100000273908940",
                 gameId: 2,
-                locationId: 1
+                locationId: 1,
+                teamId: "999"
             }
          ]);
+
+         await Team.bulkCreate([
+            {
+                id: 777,
+                firstTeamId: "5555",
+                secondTeamId: "1111"
+            },
+            {
+                id: 999,
+                firstTeamId: "2222",
+                secondTeamId: "3333"
+            }
+        ]);
+
+        await userTeam.bulkCreate([
+            {
+                teamId: "5555",
+                userId: "100000273908940"
+            },
+            {
+                teamId: "1111",
+                userId: "100000273908932"
+            }
+        ])
 
     } catch (error) {
         console.log(error);
