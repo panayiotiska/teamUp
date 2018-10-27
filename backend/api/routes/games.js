@@ -85,12 +85,12 @@ games.post('/', async (req, res) => {
         // TODO: Use authorization and authentication to find out who the user really is.
         const user = await User.findOne({
             where: {
-                authToken: req.headers["authToken"]
+                authToken: req.headers["auth-token"]
             },
             raw: true,
             attributes: ['id']
-        });
-
+        });       
+        
         // Build Game instance
         const game = await Game.create({
             createdBy: user.id,
