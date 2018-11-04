@@ -134,43 +134,51 @@ users.post('/authToken', (req, res) => {
 users.post('/:id/ratings', async (req, res) => {
     try {
         // TODO: Find the author of this post by checking via the auth token
-        const user = await User.findOne({
+        const ratingAuthor = await User.findOne({
             where: {
-                authToken: req.headers["authToken"]
+                authToken: req.headers["auth-token"]
             },
             raw: true,
             attributes: ['id']
         });
-        
-        // Build an instance of the Rating model    
-        const rating = await Ratings.build({
-            createdBy: user.id,
-            createdAt: dateFormat("dd-mm-yyyy HH:MM"),
-            comment: req.body.data[0].comment,
-            onTime: req.body.data[0].onTime,
-            skills: req.body.data[0].skills,
-            behavior: req.body.data[0].behavior
-        });
-        
-        // Guard
-        // Validate the data agains the Rating model
-        await rating.validate();
 
-        // Submit rating
-        await rating.save();
+        if(ratingAuthor !== null){
+            // Find target user
+            const user = await User.findOne({
+                where: { id: req.params.id }
+            });
 
-        // Update 'userRating' association table
-        await userRating.create({
-            userId: req.params.id,
-            ratingId: rating.id
-        });
-        
-        // Send response - HTTP 201 Created
-        sendCustomResponse(res, 201);
+            if(user !== null){
+                // Build an instance of the Rating model    
+                const rating = await Rating.build({
+                    createdBy: ratingAuthor.id,
+                    createdAt: dateFormat("dd-mm-yyyy HH:MM"),
+                    comment: req.body.data[0].comment,
+                    onTime: req.body.data[0].onTime,
+                    skills: req.body.data[0].skills,
+                    behavior: req.body.data[0].behavior
+                });
+                
+                // Guard
+                // Validate the data against the Rating model
+                await rating.validate();
+
+                // Submit rating
+                await rating.save();
+
+                // Update 'userRatings' association table
+                user.addRating(rating);
+                
+                // Send response - HTTP 201 Created
+                sendCustomResponse(res, 201, null);
+            } else sendCustomErrorResponse(res, 500, "The user you are trying to rate does not exist.");
+        } else sendCustomErrorResponse(res, 401, "You are unauthorized to perform this action."); // Author doesn't exist.
 
     } catch (error) {
         //TODO: Log errors
         // Send error response - HTTP 500 Internal Server Error
+        console.log(error);
+        
         sendCustomErrorResponse(res, 500, "Couldn't submit rating.");
     }
 });
