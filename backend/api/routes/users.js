@@ -1,13 +1,11 @@
-// API /users route
 const users = require('express').Router();
-//DateFormat 
 const dateFormat = require('dateformat');
-// Database models
-const User = require('../models/user');
-const Ratings = require('../models/rating');
-const userRating = require('../models/userRating');
+
 // Custom Response Handler
 const {sendCustomResponse, sendCustomErrorResponse} = require('../handlers/customResponse');
+
+const User = require('../models').User;
+const Rating = require('../models').Rating;
 
 // Get user details
 users.get('/me', async (req, res) => {
@@ -85,13 +83,16 @@ users.post('/', async (req, res) => {
     try {
         // Check if the user is already in our database
         // TODO: Use a combination of user id and device token to check if the user is already registered
-        const userAccount = await User.find({
+        const userAccount = await User.findOne({
                 where: {
-                    id: req.body.data[0].id
+                    $or: {
+                        id: req.body.data[0].id,
+                        deviceToken: req.body.data[0].deviceToken
+                    }
                 }
             });
 
-            // If the user account doesn't exist
+            // User account doesn't exist
             if(userAccount === null){
                 // Build a new User instance
                 const user = await User.build({
@@ -120,6 +121,7 @@ users.post('/', async (req, res) => {
             }
     } catch (error) {
         // TODO: Log error
+        console.log(error);
         // Send error response - 500 Internal Server Error
         sendCustomErrorResponse(res, 500, "Couldn't create user.");
     }

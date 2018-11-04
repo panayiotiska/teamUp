@@ -1,36 +1,14 @@
-const Sequelize = require('sequelize');
-const db = require('../db');
-
-const Location = db.define('locations', {
-    id: {
-        type: Sequelize.STRING,
-        primaryKey: true
-    },
-    city: {
-        type: Sequelize.STRING,
-        validate: {
-            notNull: true
-        }
-    },
-    countryCode: {
-        type: Sequelize.STRING,
-        validate: {
-            notNull: true
-        }
-    },
-    latitude: {
-        type: Sequelize.FLOAT,
-        validate: {
-            isFloat: true
-        }
-    },
-    longitude: {
-        type: Sequelize.FLOAT,
-        validate: {
-            isFloat: true
-        }
-    }
-});
-
-
-module.exports = Location;
+'use strict';
+module.exports = (sequelize, DataTypes) => {
+  const Location = sequelize.define('Location', {
+    city: DataTypes.STRING,
+    address: DataTypes.STRING,
+    countryCode: DataTypes.STRING,
+    latitude: DataTypes.FLOAT,
+    longitude: DataTypes.FLOAT
+  }, {});
+  Location.associate = function(models) {
+    // associations can be defined here
+  };
+  return Location;
+};

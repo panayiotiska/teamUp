@@ -9,13 +9,13 @@ const uuid = require('uuid/v4');
 // Custom Response Handler
 const {sendCustomResponse, sendCustomErrorResponse} = require('../handlers/customResponse');
 
-// Database models
-const User = require('../models/user');
-const Game = require('../models/game');
-const Team = require('../models/team');
-const userGame = require('../models/userGame');
-const Location = require('../models/location');
-const userTeam = require('../models/userTeam');
+// // Database models
+// const User = require('../models/user');
+// const Game = require('../models/game');
+// const Team = require('../models/team');
+// const userGame = require('../models/userGame');
+// const Location = require('../models/location');
+// const userTeam = require('../models/userTeam');
 
 // Get games
 games.get('/', async (req, res) => {

@@ -1,53 +1,23 @@
-const Sequelize = require('sequelize');
-const db = require('../db');
+'use strict';
+module.exports = (sequelize, DataTypes) => {
+  const Game = sequelize.define('Game', {
+    name: DataTypes.STRING,
+    description: DataTypes.STRING,
+    size: DataTypes.INTEGER,
+    type: DataTypes.INTEGER,
+    opponents: DataTypes.BOOLEAN,
+    eventDate: DataTypes.DATE
+  }, {});
+  Game.associate = function(models) {
+    // Game belongsToMany User
+    Game.belongsToMany(models.User, { through: 'userGames', foreignKey: 'gameId' });
 
-const Location = require('./location');
-const userGame = require('./userGame');
+    // Game belongsTo Location
+    Game.belongsTo(models.Location, { foreignKey: 'locationId' });
 
+    Game.belongsTo(models.Team, {as: 'firstTeam', foreignKey : 'firstTeamId' });
+    Game.belongsTo(models.Team, {as: 'secondTeam', foreignKey : 'secondTeamId' });
 
-const Game = db.define('games', {
-    id: {
-        type: Sequelize.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
-    createdBy: {
-        type: Sequelize.STRING,
-        allowNull: false
-    },
-    createdAt: {
-        type: Sequelize.STRING,
-        allowNull: false
-    },
-    updatedAt: {
-        type: Sequelize.STRING
-    },
-    name: {
-        type: Sequelize.STRING(25),
-        allowNull: false
-    },
-    type: {
-        type: Sequelize.INTEGER,
-        validate: {
-            isInt: true
-        }
-    },
-    size: {
-        type: Sequelize.INTEGER,
-        validate: {
-            min: 0,
-            max: 11
-        }
-    },
-    opponents: {
-        type: Sequelize.BOOLEAN
-    },
-    eventDate: {
-        type: Sequelize.STRING
-    },
-    description: {
-        type: Sequelize.STRING(50)
-    }
-});
-
-module.exports = Game;
+  };
+  return Game;
+};

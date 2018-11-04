@@ -1,7 +1,0 @@
-{
-    "host": "localhost",
-    "port": "3306",
-    "username": "Your database username, e.g. root",
-    "password": "Your database password, e.g. mypassword",
-    "database": "The database to work on, e.g. teamUpDB"
-}
