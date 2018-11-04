@@ -310,7 +310,7 @@ games.patch('/:id', async (req, res) => {
 });
 
 // Change Game Team
-games.patch('/:id/teams', (req, res) => {
+games.patch('/:gameId/teams/:teamId', (req, res) => {
     res.json({msg: "Change team"});
 });
 
@@ -320,7 +320,7 @@ games.delete('/', (req, res) => {
 });
 
 // Remove User from Game Team
-games.delete('/:id/teams', (req, res) => {
+games.delete('/:gameId/teams/:teamId', (req, res) => {
     res.json({msg: "Remove a player from the team"});
 });
 

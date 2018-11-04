@@ -7,7 +7,7 @@ const {sendCustomResponse, sendCustomErrorResponse} = require('../handlers/custo
 const User = require('../models').User;
 const Rating = require('../models').Rating;
 
-// Get user profile details
+// get user profile details
 users.get('/me', async (req, res) => {
     try {
         // Find user
