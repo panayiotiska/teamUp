@@ -68,23 +68,43 @@ users.get('/:id/ratings', async (req, res) => {
         const user = await User.findOne({
             where: {
                 id: req.params.id
-            }
+            },
+            attributes: [],
+            include: [{
+                model: Rating,
+                through: 'userRatings',
+                through: {
+                    attributes: []
+                }
+            }]
         });
 
         // User found
         if(user !== null){
-            const ratings = await user.getRatings({
-                include: [{
-                    m
-                }]
-            });
-
-            console.log(ratings);
-            
-            sendCustomResponse(res, 200, ratings);
-        } else sendCustomErrorResponse(res, 404, "Couldn't find ratings for that user."); // User doesn't exist
+            for (const rating of user.Ratings) {
+                // Find rating author
+                const ratingAuthor = await User.findOne({
+                    where: {
+                        id: rating.createdBy
+                    },
+                    attributes: ['id', 'firstName', 'lastName']
+                });
+                
+                // Update createdBy property by reference.
+                rating.createdBy = {
+                    id: ratingAuthor.id,
+                    firstName: ratingAuthor.firstName,
+                     lastName: ratingAuthor.lastName
+                }
+            }      
+            sendCustomResponse(res, 200, user.Ratings);
+        } else {
+            // User doesn't exist
+            sendCustomErrorResponse(res, 404, "Couldn't find ratings for that user.");
+        }
     } catch (error) {
         // TODO: Log the errors
+        console.log(error);
         // Send error response - HTTP 500 Internal Server Error
         sendCustomErrorResponse(res, 500, "Couldn't get ratings.");
     }
