@@ -81,57 +81,35 @@ games.get('/:id/teams', async (req, res) => {
             const game = await Game.findOne({
                 where: {
                     id: req.params.id
-                },
-                include: {
-                    model: Team,
-                    through: {
-                        model: userGame,
-                        attributes: []
-                    },
-                    attributes: ['firstTeamId', 'secondTeamId']
-                },
-                attributes: []
+                }
             });
 
-            // Get users of the first team
-            const team1 = await userTeam.findAll({
-                where: {
-                    teamId: game.teams[0].firstTeamId
-                },
+            // Get players of the first team       
+            const firstTeam = await game.getFirstTeam({
                 include: {
                     model: User,
-                    attributes: ['id', 'firstName', 'lastName']
+                    as: 'Player',
+                    through: 'teamPlayers'
                 },
                 attributes: {
-                    exclude: ['userId', 'teamId']
+                    exclude: ['createdAt', 'updatedAt']
                 }
-            });          
-            
-            // Get users of the second team
-            const team2 = await userTeam.findAll({
-                where: {
-                    teamId: game.teams[0].secondTeamId
-                },
+            });
+
+            // get players of the second team
+            const secondTeam = await game.getSecondTeam({
                 include: {
                     model: User,
-                    attributes: ['id', 'firstName', 'lastName']
+                    as: 'Player',
+                    through: 'teamPlayers'
                 },
                 attributes: {
-                    exclude: ['userId', 'teamId']
+                    exclude: ['createdAt', 'updatedAt']
                 }
-            });          
+            }); 
 
             // Send response - HTTP 200 OK
-            sendCustomResponse(res, 200, [
-                {
-                    teamId: game.teams[0].firstTeamId,
-                    users: team1
-                },
-                {
-                    teamId: game.teams[0].secondTeamId,
-                    users: team2
-                }
-        ]);
+            sendCustomResponse(res, 200, [firstTeam, secondTeam]);
     } catch (error) {
         //TODO: Log error
         // Send error response - HTTP 500 Internal Server Error      
