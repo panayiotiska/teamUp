@@ -4,6 +4,7 @@ const games = require('express').Router();
 //DateFormat
 const dateFormat = require('dateformat');
 const Sequelize = require('sequelize');
+const uuid = require('uuid/v4');
 
 // Custom Response Handler
 const {sendCustomResponse, sendCustomErrorResponse} = require('../handlers/customResponse');
@@ -38,7 +39,9 @@ games.get('/', async (req, res) => {
     } catch (error) {
         // TODO: Log errors
         // Send error response - HTTP 500 Internal Server Error
-        sendCustomErrorResponse(res, 500, "Couldn't get games.")
+        sendCustomErrorResponse(res, 500, "Couldn't get games.");
+        console.log(error);
+        
     }
 });
 
@@ -166,9 +169,12 @@ games.post('/', async (req, res) => {
             description: req.body.data[0].description,
             eventDate: req.body.data[0].eventDate,
             locationId: req.body.data[0].locationId,
-            include: {
+            include: [{
                 model: Location
-            }
+            },
+            {
+                model: userGame
+            }]
         });
 
         // Guard
@@ -178,12 +184,27 @@ games.post('/', async (req, res) => {
         // Create game
         await game.save();
 
+        // Update association tables
+        // Update userGames
+        const usrgm = await userGame.create({
+            userId: game.createdBy,
+            gameId: game.id,
+            locationId: game.locationId,
+            teamId: 1234
+        });
+
+        await usrgm.save();
+    
+
         // Send response - HTTP 201 Created
         sendCustomResponse(res, 201);
     } catch (error) {
         //TODO: Log error
         // Send error response - HTTP 500 Internal Server Error
-        sendCustomErrorResponse(res, 500, "Couldn't create game.")
+        sendCustomErrorResponse(res, 500, "Couldn't create game.");
+
+        console.log(error);
+        
     }
 });
 

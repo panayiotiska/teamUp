@@ -9,7 +9,12 @@ const userGame = db.define('userGames', {
         type: Sequelize.STRING
     },
     locationId: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        unique: false
+    },
+    teamId: {
+        type: Sequelize.STRING,
+        unique: true
     }
 });
 

@@ -50,6 +50,4 @@ const Game = db.define('games', {
     }
 });
 
-Game.belongsTo(Location, {through: userGame, constraints: false});
-
 module.exports = Game;

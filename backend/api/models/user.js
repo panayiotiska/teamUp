@@ -50,10 +50,11 @@ const User = db.define('user', {
 User.belongsToMany(Rating, {through: userRating, constraints: false});
 Rating.belongsToMany(User, {through: userRating});
 
-User.belongsToMany(Game, {through: userGame, constraints: false});
-Game.belongsToMany(User, {through: userGame});
+Game.belongsToMany(User, {through: userGame, constraints: false});
 
-userGame.belongsTo(Game);
+Game.belongsToMany(Location, {through: userGame});
+
+// userGame.belongsTo(Game);
 
 Game.belongsToMany(Team, {through: userGame, constraints: false});
 
@@ -176,7 +177,6 @@ db.sync({force: true}).then(async () => {
                createdBy: "100000273908932",
                createdAt: dateFormat("dd-mm-yyyy HH:MM"),
                name: "Rafaello's Game",
-               locationId: 3,
                description: "Back in town to play football.",
                type: 0,
                size: 11,
@@ -188,7 +188,6 @@ db.sync({force: true}).then(async () => {
                 createdBy: "100000273908940",
                 createdAt: dateFormat("dd-mm-yyyy HH:MM"),
                 name: "Aldi's Game",
-                locationId: 1,
                 description: "Get your team up 'n runnin'.",
                 type: 1,
                 size: 5,
