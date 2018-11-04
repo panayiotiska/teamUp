@@ -58,14 +58,9 @@ games.get('/:id', async (req, res) => {
                     attributes: {
                         exclude: ['id', 'createdAt', 'updatedAt']
                     }
-                },
-                {
-                    model: User,
-                    attributes: []
                 }
             ],
             attributes: {
-                include: [[Sequelize.literal('users.phoneNumber'), 'phoneNumber']],
                 exclude: ['locationId']
             }
         });
