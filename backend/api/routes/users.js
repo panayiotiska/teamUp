@@ -37,38 +37,25 @@ users.get('/me', async (req, res) => {
 // Get user ratings
 users.get('/:id/ratings', async (req, res) => {
     try {
-        // Get all user ratings
-        const user = await User.findById(req.params.id, {
-            include:
-            { 
-                model: Ratings,
-                through: {
-                    model: userRating,
-                    attributes: []
-                    }
+        // Find target user
+        const user = await User.findOne({
+            where: {
+                id: req.params.id
             }
         });
 
-        // Iterate through each rating
-        for (const rating of user['ratings']) {
-            // Find rating author
-            // Extract author's id, firstName and lastName attributes
-            const ratingAuthor = await User.findOne({
-                where: {
-                    id: rating.createdBy
-                },
-                attributes: ['id', 'firstName', 'lastName']
+        // User found
+        if(user !== null){
+            const ratings = await user.getRatings({
+                include: [{
+                    m
+                }]
             });
 
-            // Update createdBy property by reference
-            rating.createdBy = {
-                id: ratingAuthor.id,
-                firstName: ratingAuthor.firstName,
-                lastName: ratingAuthor.lastName
-            }
-        }
-        // Send response - HTTP 200 OK
-        sendCustomResponse(res, 200, user.ratings);
+            console.log(ratings);
+            
+            sendCustomResponse(res, 200, ratings);
+        } else sendCustomErrorResponse(res, 404, "Couldn't find ratings for that user."); // User doesn't exist
     } catch (error) {
         // TODO: Log the errors
         // Send error response - HTTP 500 Internal Server Error

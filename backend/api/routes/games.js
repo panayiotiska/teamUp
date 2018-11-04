@@ -10,12 +10,11 @@ const uuid = require('uuid/v4');
 const {sendCustomResponse, sendCustomErrorResponse} = require('../handlers/customResponse');
 
 // // Database models
-// const User = require('../models/user');
-// const Game = require('../models/game');
-// const Team = require('../models/team');
-// const userGame = require('../models/userGame');
-// const Location = require('../models/location');
-// const userTeam = require('../models/userTeam');
+const User = require('../models').User;
+const Game = require('../models').Game;
+const Team = require('../models').Team;
+const Location = require('../models').Location;
+
 
 // Get games
 games.get('/', async (req, res) => {
@@ -25,7 +24,7 @@ games.get('/', async (req, res) => {
                 {
                     model: Location,
                     attributes: {
-                        exclude: ['id', 'latitude', 'longitude']
+                        exclude: ['id', 'latitude', 'longitude', 'createdAt', 'updatedAt']
                     }
                 }
             ],
@@ -57,7 +56,7 @@ games.get('/:id', async (req, res) => {
                 {
                     model: Location,
                     attributes: {
-                        exclude: ['id']
+                        exclude: ['id', 'createdAt', 'updatedAt']
                     }
                 },
                 {
@@ -153,29 +152,36 @@ games.post('/', async (req, res) => {
         const user = await User.findOne({
             where: {
                 authToken: req.headers["auth-token"]
-            },
-            raw: true,
-            attributes: ['id']
-        });       
+            }
+        });  
+        
+        // Create location via another endpoint (/locations)
+
+        const loc = await Location.create({
+            city: "Thessaloniki",
+            countryCode: "GR",
+            latitude: 12.0,
+            longitude: 23.1
+        });
 
         // Build Game instance
         const game = await Game.create({
             createdBy: user.id,
-            createdAt: dateFormat("dd-mm-yyyy HH:MM"),
             name: req.body.data[0].name,
             type: req.body.data[0].type,
             size: req.body.data[0].size,
             opponents: req.body.data[0].opponents,
             description: req.body.data[0].description,
-            eventDate: req.body.data[0].eventDate,
-            locationId: req.body.data[0].locationId,
-            include: [{
-                model: Location
-            },
-            {
-                model: userGame
-            }]
+            eventDate: Date.now(),
+            locationId: loc.id
         });
+
+        const tm1 = await Team.create({
+        });
+        const tm2 = await Team.create({
+        });
+
+
 
         // Guard
         // Validate the data against the Game model
@@ -184,17 +190,9 @@ games.post('/', async (req, res) => {
         // Create game
         await game.save();
 
-        // Update association tables
-        // Update userGames
-        const usrgm = await userGame.create({
-            userId: game.createdBy,
-            gameId: game.id,
-            locationId: game.locationId,
-            teamId: 1234
-        });
-
-        await usrgm.save();
-    
+        await game.setFirstTeam(tm1);
+         game.setSecondTeam(tm2);
+        await user.addGame(game, { through: 'userGames' });
 
         // Send response - HTTP 201 Created
         sendCustomResponse(res, 201);
