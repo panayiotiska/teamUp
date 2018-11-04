@@ -29,7 +29,7 @@ games.get('/', async (req, res) => {
                 }
             ],
             attributes: {
-                exclude: ['locationId', 'createdAt', 'updatedAt', 'opponents', 'description']
+                exclude: ['locationId', 'createdAt', 'updatedAt', 'opponents', 'description', 'firstTeamId', 'secondTeamId']
             }
         });
 
@@ -205,7 +205,7 @@ games.post('/', async (req, res) => {
         await game.save();
 
         await game.setFirstTeam(tm1);
-         game.setSecondTeam(tm2);
+        await game.setSecondTeam(tm2);
         await user.addGame(game, { through: 'userGames' });
 
         // Send response - HTTP 201 Created

@@ -8,8 +8,20 @@ module.exports = (sequelize, DataTypes) => {
     firstName: DataTypes.STRING,
     lastName: DataTypes.STRING,
     deviceToken: DataTypes.STRING,
-    authToken: DataTypes.STRING
-  }, {});
+    authToken: DataTypes.STRING,
+    createdAt: {
+      type: DataTypes.DATE,
+      defaultValue: sequelize.literal('NOW()')
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      defaultValue: sequelize.literal('NOW()')
+    }
+  }, {
+    timestamps: true,
+    charset: 'utf8',
+    collate: 'utf8_unicode_ci'
+  });
   User.associate = function(models) {
     // User belongsToMany Game
     User.belongsToMany(models.Game, { through: 'userGames', foreignKey: 'userId' });

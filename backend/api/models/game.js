@@ -6,8 +6,20 @@ module.exports = (sequelize, DataTypes) => {
     size: DataTypes.INTEGER,
     type: DataTypes.INTEGER,
     opponents: DataTypes.BOOLEAN,
-    eventDate: DataTypes.DATE
-  }, {});
+    eventDate: DataTypes.DATE,
+    createdAt: {
+      type: DataTypes.DATE,
+      defaultValue: sequelize.literal('NOW()')
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      defaultValue: sequelize.literal('NOW()')
+    }
+  }, {
+    timestamps: true,
+    charset: 'utf8',
+    collate: 'utf8_unicode_ci'
+  });
   Game.associate = function(models) {
     // Game belongsToMany User
     Game.belongsToMany(models.User, { through: 'userGames', foreignKey: 'gameId' });
