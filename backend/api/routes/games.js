@@ -52,18 +52,51 @@ games.get('/:id', async (req, res) => {
             where: {
                 id: req.params.id
             },
-            include: [
-                {
-                    model: Location,
-                    attributes: {
-                        exclude: ['id', 'createdAt', 'updatedAt']
-                    }
+            include: [{
+                model: Location,
+                attributes: {
+                    exclude: ['id', 'createdAt', 'updatedAt']
                 }
-            ],
+            }],
             attributes: {
-                exclude: ['locationId']
+                exclude: ['locationId', 'createdAt', 'updatedAt']
             }
         });
+
+        // Get players of the first team       
+        const firstTeam = await game.getFirstTeam({
+            include: {
+                model: User,
+                as: 'Player',
+                through: 'teamPlayers',
+                through: {
+                    attributes: []
+                },
+                attributes: ['id', 'firstName', 'lastName']
+            },
+            attributes: {
+                exclude: ['createdAt', 'updatedAt']
+            }
+        });
+
+        // get players of the second team
+        const secondTeam = await game.getSecondTeam({
+            include: {
+                model: User,
+                as: 'Player',
+                through: 'teamPlayers',
+                through: {
+                    attributes: []
+                },
+                attributes: ['id', 'firstName', 'lastName']
+            },
+            attributes: {
+                exclude: ['createdAt', 'updatedAt']
+            }
+        }); 
+
+        game.dataValues.teams = [firstTeam.Player];
+        game.dataValues.teams[1] = secondTeam.Player;
         
         // Send response - HTTP 200 OK
         sendCustomResponse(res, 200, [game]);
