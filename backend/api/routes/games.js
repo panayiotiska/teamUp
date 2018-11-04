@@ -89,7 +89,11 @@ games.get('/:id/teams', async (req, res) => {
                 include: {
                     model: User,
                     as: 'Player',
-                    through: 'teamPlayers'
+                    through: 'teamPlayers',
+                    through: {
+                        attributes: []
+                    },
+                    attributes: ['id', 'firstName', 'lastName']
                 },
                 attributes: {
                     exclude: ['createdAt', 'updatedAt']
@@ -101,7 +105,11 @@ games.get('/:id/teams', async (req, res) => {
                 include: {
                     model: User,
                     as: 'Player',
-                    through: 'teamPlayers'
+                    through: 'teamPlayers',
+                    through: {
+                        attributes: []
+                    },
+                    attributes: ['id', 'firstName', 'lastName']
                 },
                 attributes: {
                     exclude: ['createdAt', 'updatedAt']
@@ -109,7 +117,7 @@ games.get('/:id/teams', async (req, res) => {
             }); 
 
             // Send response - HTTP 200 OK
-            sendCustomResponse(res, 200, [firstTeam, secondTeam]);
+            sendCustomResponse(res, 200, [firstTeam.Player, secondTeam.Player]);
     } catch (error) {
         //TODO: Log error
         // Send error response - HTTP 500 Internal Server Error      
