@@ -77,7 +77,7 @@ games.get('/:id', async (req, res) => {
 // Get game teams
 games.get('/:id/teams', async (req, res) => {
     try {
-            // Get the firstTeamId and secondTeamId from the specified game
+            // Find game
             const game = await Game.findOne({
                 where: {
                     id: req.params.id
@@ -180,8 +180,45 @@ games.post('/', async (req, res) => {
 });
 
 // Join a Game Team
-games.post('/:id/teams', (req, res) => {
-    res.json({msg: "Join game"});
+games.post('/:gameId/teams/:teamId', async (req, res) => {
+    try {
+
+        // Find user
+        const user = await User.findOne({
+            where: {
+                authToken: req.headers['auth-token']
+            }
+        });
+
+        if(user !== null){
+            // Find game
+            const game = await Game.findOne({
+                where: {
+                    id: req.params.gameId
+                }
+            });
+                
+            // Game found
+            if(game !== null){
+                // Get first and second team
+                if(req.params.teamId == game.firstTeamId){
+                    const firstTeam = await game.getFirstTeam();
+                    firstTeam.addPlayer(user, { through: 'teamPlayers' });
+                } else {
+                    const secondTeam = await game.getSecondTeam();
+                    secondTeam.addPlayer(user, { through: 'teamPlayers' });
+                }
+
+                sendCustomResponse(res, 200, null);
+            } else sendCustomResponse(res, 404, "Couldn't find the specified game.");
+        }
+
+        
+    } catch (error) {
+        console.log(error);
+        sendCustomErrorResponse(res, 500, "Couldn't join team")
+        
+    }
 });
 
 // Update game Details
