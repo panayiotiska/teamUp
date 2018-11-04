@@ -34,6 +34,33 @@ users.get('/me', async (req, res) => {
     }
 });
 
+// Get user profile by id
+users.get('/:id', async (req, res) => {
+    try {
+        // Search for the user in the database
+        const user = await User.findOne({
+            where: {
+                id: req.params.id
+            },
+            attributes: {
+                exclude: ['deviceToken', 'authToken']
+            }
+        });
+
+        // User has been found successfully
+        if(user){
+            sendCustomResponse(res, 200, [user]);
+        }else{
+            sendCustomErrorResponse(res, 404, "[DEBUG]: Couldn't find user with that id.")
+        }
+    } catch (error) {
+        // TODO: Log the error
+        // Send error request - HTTP 500 Internal Server Error
+        sendCustomErrorResponse(res, 500, "Couldn't search for user.")
+    }
+});
+
+
 // Get user ratings
 users.get('/:id/ratings', async (req, res) => {
     try {
