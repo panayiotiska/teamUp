@@ -198,7 +198,7 @@ users.patch('/me', async (req, res) => {
             await tmpUser.save();
 
             // Send response - HTTP 204 No Content
-            sendCustomResponse(res, 204);
+            sendCustomResponse(res, 204, null);
             
         }else{
             // We don't have to expose that the user doesn't exist in our database.
