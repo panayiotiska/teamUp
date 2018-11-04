@@ -3,8 +3,7 @@ function sendCustomResponse(res, statusCode, data){
     res.statusCode = statusCode;
     res.json({
         status: {
-            code: 0,
-            description: "success"
+            msg: "Success"
         },
         data: data // Should always be an array of data
     });
@@ -15,8 +14,7 @@ function sendCustomErrorResponse(res, statusCode, errorMsg){
     res.statusCode = statusCode;
     res.json({
         status: {
-            code: -1,
-            description: "error",
+            msg: "Error",
             errorMsg: errorMsg
         }
     });
