@@ -7,7 +7,7 @@ const {sendCustomResponse, sendCustomErrorResponse} = require('../handlers/custo
 const User = require('../models').User;
 const Rating = require('../models').Rating;
 
-// Get user details
+// Get user profile details
 users.get('/me', async (req, res) => {
     try {
         // Find user
@@ -22,8 +22,6 @@ users.get('/me', async (req, res) => {
             }
           });
 
-        // Send response - HTTP 200 OK
-        // sendCustomResponse(res, 200, [userProfileData]);
         if(userProfileData){
             sendCustomResponse(res, 200, [userProfileData]);
         }else{
@@ -113,7 +111,7 @@ users.post('/', async (req, res) => {
                 await user.save();
 
                 // Send response - HTTP 201 Created
-                sendCustomResponse(res, 201);
+                sendCustomResponse(res, 201, null);
             } else {
                 // TODO: Log error
                 // User already exists in our database
