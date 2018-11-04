@@ -201,6 +201,7 @@ games.post('/:gameId/teams/:teamId', async (req, res) => {
             // Game found
             if(game !== null){
                 // Get first and second team
+                // TODO: Check if the user is already part of the team 
                 if(req.params.teamId == game.firstTeamId){
                     const firstTeam = await game.getFirstTeam();
                     firstTeam.addPlayer(user, { through: 'teamPlayers' });
@@ -211,7 +212,7 @@ games.post('/:gameId/teams/:teamId', async (req, res) => {
 
                 sendCustomResponse(res, 200, null);
             } else sendCustomResponse(res, 404, "Couldn't find the specified game.");
-        }
+        } else sendCustomErrorResponse(res, 401, "You are unauthorized to perform this action. Unrecognized User.")
 
         
     } catch (error) {
@@ -241,9 +242,8 @@ games.patch('/:id', async (req, res) => {
                 type: req.body.data[0].type,
                 size: req.body.data[0].size,
                 opponents: req.body.data[0].opponents,
-                eventDate: req.body.data[0].eventDate,
-                description: req.body.data[0].description,
-                updatedAt: dateFormat("dd-mm-yyyy HH:MM")
+                eventDate: Date.now(),
+                description: req.body.data[0].description
             });
 
             // Guard
@@ -254,7 +254,7 @@ games.patch('/:id', async (req, res) => {
             await tmpGame.save();
 
             // Send response - HTTP 200 OK
-            sendCustomResponse(res, 200);
+            sendCustomResponse(res, 200, null);
         }else{
             // We don't have to expose that the game doesn't exist in our database.
             // Send error response - HTTP 401 Unauthorized
