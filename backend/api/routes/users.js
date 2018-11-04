@@ -159,11 +159,6 @@ users.post('/', async (req, res) => {
     }
 });
 
-// Generate authorization token 
-users.post('/authToken', (req, res) => {
-    res.json({msg: "authToken=123456"}); 
-});
-
 // Create new rating
 users.post('/:id/ratings', async (req, res) => {
     try {
@@ -304,7 +299,7 @@ users.delete('/me', async (req, res) => {
         // User was deleted successfully
         if(user){
             // Send response - HTTP 202 Accepted
-            sendCustomResponse(res, 202);
+            sendCustomResponse(res, 202, null);
             
         }else{
             // Send response - HTTP 401 Unauthorized
@@ -315,11 +310,6 @@ users.delete('/me', async (req, res) => {
         // Send response - HTTP 500 Internal Server Error
         sendCustomErrorResponse(res, 500, "Couldn't delete user.");
     }
-});
-
-// Sign Out - Destroy Auth Token
-users.delete('/authToken', (req, res) => {
-    res.json({msg: "Authorization Token deleted"}); 
 });
 
 // Delete rating
