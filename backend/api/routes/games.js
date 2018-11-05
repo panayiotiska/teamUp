@@ -31,6 +31,7 @@ games.get('/', async (req, res) => {
             attributes: {
                 exclude: ['locationId', 'createdAt', 'updatedAt', 'opponents', 'description', 'firstTeamId', 'secondTeamId']
             }
+            
         });
 
         // Send response - HTTP 200 OK
@@ -52,16 +53,34 @@ games.get('/:id', async (req, res) => {
             where: {
                 id: req.params.id
             },
-            include: [{
+            include: [
+                {
                 model: Location,
                 attributes: {
-                    exclude: ['id', 'createdAt', 'updatedAt']
-                }
-            }],
+                        exclude: ['id', 'createdAt', 'updatedAt']
+                    }
+                },
+                {
+                    model: User,
+                    through: 'userGames',
+                    through: {
+                        attributes: []
+                    },
+                    attributes: ['id', 'firstName', 'lastName']
+                } ,     
+            ],
             attributes: {
                 exclude: ['locationId', 'createdAt', 'updatedAt']
             }
         });
+
+        // Rename Location attribute to location
+        game.dataValues.location = game.Location; 
+        delete game.dataValues.Location;
+        
+        // Copy the user data into the createdBy attribute
+        game.dataValues.createdBy = game.Users[0];
+        delete game.dataValues.Users;
 
         // Get players of the first team       
         const firstTeam = await game.getFirstTeam({
@@ -93,15 +112,19 @@ games.get('/:id', async (req, res) => {
             attributes: {
                 exclude: ['createdAt', 'updatedAt']
             }
-        }); 
+        });
 
+        // Include teams
         game.dataValues.teams = [firstTeam.Player];
         game.dataValues.teams[1] = secondTeam.Player;
+        
         
         // Send response - HTTP 200 OK
         sendCustomResponse(res, 200, [game]);
     } catch (error) {
         // TODO: Log error
+        console.log(error);
+        
         // Send error response - HTTP 500 Internal Server Error
         sendCustomErrorResponse(res, 500, "Couldn't get game details.");
     }
