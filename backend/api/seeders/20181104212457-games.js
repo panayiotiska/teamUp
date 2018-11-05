@@ -23,7 +23,7 @@ module.exports = {
     // Create some games
     const games = await Game.bulkCreate([
       {
-        name: "Rafaello's Game",
+        name: "Rafaellos's Game",
         description: "We are the best. Let's see what you got.",
         size: 5,
         type: 0,
