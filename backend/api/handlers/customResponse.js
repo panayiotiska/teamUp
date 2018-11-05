@@ -3,20 +3,20 @@ function sendCustomResponse(res, statusCode, data){
     res.statusCode = statusCode;
     res.json({
         status: {
-            msg: "Success",
-            errorMsg: null
+            result: "success",
+            error: null
         },
         payload: data // Should always be an array of data
     });
 }
 
 // Send a customized response containing specific error messages
-function sendCustomErrorResponse(res, statusCode, errorMsg){
+function sendCustomErrorResponse(res, statusCode, errorMessage){
     res.statusCode = statusCode;
     res.json({
         status: {
-            msg: "Error",
-            errorMsg: errorMsg
+            result: "error",
+            error: errorMessage
         },
         payload: null
     });
