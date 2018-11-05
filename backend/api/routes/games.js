@@ -66,10 +66,11 @@ games.get('/:id', async (req, res) => {
                     through: {
                         attributes: []
                     },
-                    attributes: ['id', 'firstName', 'lastName']
-                } ,     
+                    attributes: []
+                }                   
             ],
             attributes: {
+                include: [[Sequelize.literal('Users.id'), 'createdBy']],
                 exclude: ['locationId', 'createdAt', 'updatedAt']
             }
         });
@@ -77,10 +78,6 @@ games.get('/:id', async (req, res) => {
         // Rename Location attribute to location
         game.dataValues.location = game.Location; 
         delete game.dataValues.Location;
-        
-        // Copy the user data into the createdBy attribute
-        game.dataValues.createdBy = game.Users[0];
-        delete game.dataValues.Users;
 
         // Get players of the first team       
         const firstTeam = await game.getFirstTeam({
