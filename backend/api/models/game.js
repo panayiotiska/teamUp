@@ -7,6 +7,10 @@ module.exports = (sequelize, DataTypes) => {
     type: DataTypes.INTEGER,
     opponents: DataTypes.BOOLEAN,
     eventDate: DataTypes.DATE,
+    status: {
+      type:   DataTypes.ENUM,
+      values: ['active', 'pending', 'completed']
+    },
     createdAt: {
       type: DataTypes.DATE,
       defaultValue: sequelize.literal('NOW()')
