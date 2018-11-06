@@ -33,9 +33,9 @@ module.exports = {
       },
       {
         name: "Panayiotis's Game",
-        description: "I only see the best results. Most goals than you can count.",
+        description: "I only see the best results. More shoots than you can count.",
         size: 11,
-        type: 0,
+        type: 1,
         opponents: true,
         eventDate: new Date(),
         locationId: 2

@@ -12,6 +12,7 @@ module.exports = {
           id: 100000273909010,
           firstName: "Rafaellos",
           lastName: "Monoyios",
+          phoneNumber: "+306949873324",
           deviceToken: "078204242018045720D636907952AC02C903BFDB919BAB80EA429EA5A9C00D7D",
           authToken: "rafAuthToken"
         },
@@ -19,6 +20,7 @@ module.exports = {
           id: 100000273909020,
           firstName: "Panayiotis",
           lastName: "Kattides",
+          phoneNumber: "+306976429248",
           deviceToken: "FDF06EB30E40C87E50FA7AB067BEB3364F458D4013CEB6504CF5D3B4EDFE0024",
           authToken: "panosAuthToken"
         },
@@ -26,6 +28,7 @@ module.exports = {
           id: 100000273909030,
           firstName: "Aldi",
           lastName: "Malka",
+          phoneNumber: "+306983146727",
           deviceToken: "20DDE3B8ABC3643C9994664CFE66F7CEE969013B64FE5D9E1EE625A2D4C8D10E",
           authToken: "aldiAuthToken"
         },
