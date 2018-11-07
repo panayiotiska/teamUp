@@ -225,7 +225,21 @@
             <a href="#authentication" class="toc-h1 toc-link" data-title="Authentication">Authentication</a>
           </li>
           <li>
-            <a href="#errors" class="toc-h1 toc-link" data-title="Errors">Errors</a>
+            <a href="#users" class="toc-h1 toc-link" data-title="Users">Users</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#create-user" class="toc-h2 toc-link" data-title="Create user">Create user</a>
+                  </li>
+                  <li>
+                    <a href="#get-user" class="toc-h2 toc-link" data-title="Get user">Get user</a>
+                  </li>
+                  <li>
+                    <a href="#update-user" class="toc-h2 toc-link" data-title="Update user">Update user</a>
+                  </li>
+                  <li>
+                    <a href="#delete-user" class="toc-h2 toc-link" data-title="Delete user">Delete user</a>
+                  </li>
+              </ul>
           </li>
       </ul>
         <ul class="toc-footer">
@@ -236,73 +250,69 @@
       <div class="dark-box"></div>
       <div class="content">
         <h1 id='introduction'>Introduction</h1>
-<p>Welcome to the teamUp API! You can use our API to access teamUp API endpoints, which can get information on various users, games, and user ratings in our database.</p>
+<p>Welcome to the teamUp API. You can use our API to access teamUp API resources.
+All resources are using JSON as the format to receive and send data.</p>
 <h1 id='authentication'>Authentication</h1>
+<p>In order to consume the API endpoints, a user has to authenticate with the API first.</p>
+<h1 id='users'>Users</h1>
+<p>Use the <code>/users</code> resource to create, update, and show details for users.</p>
+<h2 id='create-user'>Create user</h2>
+<p><code>POST /api/v1/users</code></p>
+
+<p>Creates a user account. In the JSON request body, include user account details. A user <strong>must</strong> have an id, first and last name, and optionally a mobile phone number.</p>
+
+<p>Request body</p>
+
 <blockquote>
-<p>To authorize, use this code:</p>
+<p>Sample request</p>
 </blockquote>
-<pre class="highlight http tab-http"><code><span class="nf">POST</span> <span class="nn">/api/v1/users/auth</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
-<span class="na">Host</span><span class="p">:</span> <span class="s">dev.api.teamup.local</span>
+<pre class="highlight http tab-http"><code><span class="err">  </span><span class="nf">POST</span> <span class="nn">/users</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="s">  Host: http://localhost:3000/api/v1/</span>
+<span class="s">  Content-Type: application/json</span>
+<span class="s">  cache-control: no-cache</span>
 
-</code></pre><h1 id='errors'>Errors</h1>
-<aside class="notice">
-This error section is stored in a separate file in <code>includes/_errors.md</code>. Slate allows you to optionally separate out your docs into many files...just save them to the <code>includes</code> folder and add them to the top of your <code>index.md</code>'s frontmatter. Files are included in the order listed.
-</aside>
+  {
+    "id": "100000273909039",
+    "firstName": "Rafaellos",
+    "lastName": "Mon",
+    "phoneNumber": "+86 764 564 9052",
+  }
+</code></pre>
+<blockquote>
+<p>Sample response</p>
+</blockquote>
+<pre class="highlight http tab-http"><code><span class="err">  </span><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">201</span> <span class="ne">Created</span>
+<span class="s">  X-Powered-By: Express</span>
+<span class="s">  Content-Type: application/json; charset=utf-8</span>
+<span class="s">  Content-Length: 99</span>
+<span class="s">  ETag: W/"63-U+3pylDx44qevKKpDSJ/98oGNAQ"</span>
+<span class="s">  Date: Wed, 07 Nov 2018 23:22:25 GMT</span>
+<span class="s">  Connection: keep-alive</span>
 
-<p>The Kittn API uses the following error codes:</p>
+  {
+    "id": "100000273909039",
+    "firstName": "Rafaellos",
+    "lastName": "Mon",
+    "phoneNumber": "+86 764 564 9052",
+  }
+</code></pre><h2 id='get-user'>Get user</h2>
+<p><code>GET /api/v1/users/{id}</code></p>
 
-<table><thead>
-<tr>
-<th>Error Code</th>
-<th>Meaning</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>400</td>
-<td>Bad Request -- Your request is invalid.</td>
-</tr>
-<tr>
-<td>401</td>
-<td>Unauthorized -- Your API key is wrong.</td>
-</tr>
-<tr>
-<td>403</td>
-<td>Forbidden -- The kitten requested is hidden for administrators only.</td>
-</tr>
-<tr>
-<td>404</td>
-<td>Not Found -- The specified kitten could not be found.</td>
-</tr>
-<tr>
-<td>405</td>
-<td>Method Not Allowed -- You tried to access a kitten with an invalid method.</td>
-</tr>
-<tr>
-<td>406</td>
-<td>Not Acceptable -- You requested a format that isn&#39;t json.</td>
-</tr>
-<tr>
-<td>410</td>
-<td>Gone -- The kitten requested has been removed from our servers.</td>
-</tr>
-<tr>
-<td>418</td>
-<td>I&#39;m a teapot.</td>
-</tr>
-<tr>
-<td>429</td>
-<td>Too Many Requests -- You&#39;re requesting too many kittens! Slow down!</td>
-</tr>
-<tr>
-<td>500</td>
-<td>Internal Server Error -- We had a problem with our server. Try again later.</td>
-</tr>
-<tr>
-<td>503</td>
-<td>Service Unavailable -- We&#39;re temporarily offline for maintenance. Please try again later.</td>
-</tr>
-</tbody></table>
+<p>Retrieves user account details.</p>
+<h2 id='update-user'>Update user</h2>
+<p><code>PATCH /api/v1/users/{id}</code></p>
 
+<p>Updates user account details.</p>
+<h2 id='delete-user'>Delete user</h2>
+<p><code>DELETE /api/v1/users/{id}</code></p>
+
+<p>Deletes a user account.</p>
+
+<blockquote>
+<p>Get the profile data of the currently authenticated user</p>
+</blockquote>
+<pre class="highlight http tab-http"><code><span class="nf">GET</span> <span class="nn">/api/v1/users/me</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</code></pre>
       </div>
       <div class="dark-box">
           <div class="lang-selector">

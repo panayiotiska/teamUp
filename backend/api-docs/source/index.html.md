@@ -35,7 +35,7 @@ Request body
 > Sample request
 
 ```http
-  POST /users HTTP/1.1
+  POST /api/v1/users HTTP/1.1
   Host: http://localhost:3000/api/v1/
   Content-Type: application/json
   cache-control: no-cache
