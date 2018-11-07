@@ -60,10 +60,16 @@ Request body
   Connection: keep-alive
 
   {
-    "id": "100000273909039",
-    "firstName": "Rafaellos",
-    "lastName": "Mon",
-    "phoneNumber": "+86 764 564 9052",
+    "result": {
+      "status": "success",
+      "error": null
+    },
+    "payload": {
+      "id": "100000273909039",
+      "firstName": "Rafaellos",
+      "lastName": "Mon",
+      "phoneNumber": "+86 764 564 9052",
+    }
   }
 ```
 

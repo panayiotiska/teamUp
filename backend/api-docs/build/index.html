@@ -266,7 +266,7 @@ All resources are using JSON as the format to receive and send data.</p>
 <blockquote>
 <p>Sample request</p>
 </blockquote>
-<pre class="highlight http tab-http"><code><span class="err">  </span><span class="nf">POST</span> <span class="nn">/users</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<pre class="highlight http tab-http"><code><span class="err">  </span><span class="nf">POST</span> <span class="nn">/api/v1/users</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="s">  Host: http://localhost:3000/api/v1/</span>
 <span class="s">  Content-Type: application/json</span>
 <span class="s">  cache-control: no-cache</span>
@@ -290,10 +290,16 @@ All resources are using JSON as the format to receive and send data.</p>
 <span class="s">  Connection: keep-alive</span>
 
   {
-    "id": "100000273909039",
-    "firstName": "Rafaellos",
-    "lastName": "Mon",
-    "phoneNumber": "+86 764 564 9052",
+    "result": {
+      "status": "success",
+      "error": null
+    },
+    "payload": {
+      "id": "100000273909039",
+      "firstName": "Rafaellos",
+      "lastName": "Mon",
+      "phoneNumber": "+86 764 564 9052",
+    }
   }
 </code></pre><h2 id='get-user'>Get user</h2>
 <p><code>GET /api/v1/users/{id}</code></p>
