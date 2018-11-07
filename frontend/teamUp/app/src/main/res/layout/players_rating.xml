@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:focusable="true"
+    android:clickable="true"
+    android:background="?android:selectableItemBackground"
+    android:padding="8dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/l_rating_image"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/profile"/>
+
+    <TextView
+        android:id="@+id/l_rating_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="2dp"
+        android:layout_toEndOf="@+id/l_rating_image"
+        android:text="Name"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <RatingBar
+        android:id="@+id/l_rating_ratingbar"
+        android:theme="@style/RatingBarYellow"
+        style="@style/Widget.AppCompat.RatingBar.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numStars="5"
+        android:rating="5"
+        android:stepSize="0.5"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="2dp"/>
+
+    <TextView
+        android:id="@+id/l_rating_overall_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/l_rating_ratingbar"
+        android:layout_marginBottom="1dp"
+        android:layout_marginEnd="2dp"
+        android:layout_toStartOf="@+id/l_rating_ratingbar"
+        android:text="(5.0)"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/l_rating_linear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/l_rating_image"
+        android:layout_marginBottom="4dp"
+        android:layout_marginStart="8dp"
+        android:layout_toEndOf="@+id/l_rating_image"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/l_rating_tupikotita_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Τυπικότητα: 5"
+            android:textAlignment="textStart"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/l_rating_ikanotita_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Ικανότητα: 5"
+            android:textAlignment="center"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/l_rating_sumperifora_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Συμπεριφορά: 5"
+            android:textAlignment="textEnd"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/l_rating_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="29/10/2017"
+        android:textSize="14sp"
+        android:layout_alignBaseline="@+id/l_rating_comment"
+        android:layout_alignParentEnd="true"/>
+
+    <TextView
+        android:id="@+id/l_rating_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Δεν υπάρχουν σχόλια."
+        android:layout_below="@+id/l_rating_image"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="4dp"
+        android:layout_toStartOf="@+id/l_rating_date"/>
+</RelativeLayout>
