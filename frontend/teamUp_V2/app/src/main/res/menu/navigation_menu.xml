@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <item android:title="ΠΑΙΧΝΙΔΙΑ">
+        <menu>
+
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_games"
+                    android:icon="@drawable/ic_dashboard_black_24dp"
+                    android:title="Παιχνίδια" />
+            </group>
+        </menu>
+    </item>
+
+    <item android:title="ΧΡΗΣΤΗΣ">
+        <menu>
+
+            <group>
+                <item
+                    android:id="@+id/nav_profile"
+                    android:icon="@drawable/ic_person_black_24dp"
+                    android:title="Προφίλ" />
+
+                <item
+                    android:id="@+id/nav_settings"
+                    android:icon="@drawable/ic_settings_black_24dp"
+                    android:title="Ρυθμίσεις" />
+            </group>
+        </menu>
+    </item>
+
+    <item android:title="ΕΞΟΔΟΣ">
+        <menu>
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/ic_subdirectory_arrow_left_black_24dp"
+                android:title="Αποσύνδεση" />
+        </menu>
+    </item>
+
+</menu>
