@@ -1,8 +1,6 @@
 // API /games route
 const games = require('express').Router();
 
-//DateFormat
-const dateFormat = require('dateformat');
 const Sequelize = require('sequelize');
 const uuid = require('uuid/v4');
 
@@ -15,6 +13,91 @@ const Game = require('../models').Game;
 const Team = require('../models').Team;
 const Location = require('../models').Location;
 
+// Create game
+games.post('/', async (req, res) => {
+    try {
+        // Find the user(id) that wants to create this game
+        // TODO: Use authorization and authentication to find out who the user really is.
+        const user = await User.findOne({
+            where: {
+                authToken: req.headers["auth-token"]
+            }
+        });  
+        
+        // Create location
+        await Location.findOrCreate({
+            where: {
+            city: req.body.location.city,
+            address: req.body.location.address,
+            countryCode: req.body.location.countryCode
+        }, defaults: {
+            city: req.body.location.city,
+            address: req.body.location.address,
+            country: req.body.location.country,
+            countryCode: req.body.location.countryCode,
+            postalCode: req.body.location.postalCode,
+            latitude: req.body.location.latitude,
+            longitude: req.body.location.longitude
+        }}).spread(async (location, created) => {
+
+            // Location created successfully
+            if(location !== null && user !== null){
+                // Build Game instance
+                const game = await Game.create({
+                    createdBy: user.id,
+                    name: req.body.name,
+                    type: req.body.type,
+                    size: req.body.size,
+                    opponents: req.body.opponents,
+                    description: req.body.description,
+                    eventDate: req.body.eventDate,
+                    locationId: location.id
+                });
+
+                // Create teams
+                const firstTeam = await Team.create();
+                const secondTeam = await Team.create();
+
+                // Guard
+                // Validate the data against the Game model
+                await game.validate();
+
+                // Create game
+                await game.save();
+
+                // Add teams to game
+                await game.setFirstTeam(firstTeam);
+                await game.setSecondTeam(secondTeam);
+
+                // Link game to user
+                await user.addGame(game, { through: 'userGames' });
+
+                // Delete timestamps
+                delete game.dataValues.createdAt;
+                delete game.dataValues.updatedAt;
+
+                // Replace locationId with actual location data
+                delete game.dataValues.locationId;
+                delete location.dataValues.createdAt;
+                delete location.dataValues.updatedAt;
+                game.dataValues.location = location.dataValues;
+
+                // Send response - HTTP 201 Created
+                sendCustomResponse(res, 201, game);
+            } else {
+                sendCustomErrorResponse(res, 401, "Unauthorized")
+            }
+        });
+
+    } catch (error) {
+        //TODO: Log error
+        // Send error response - HTTP 500 Internal Server Error
+        sendCustomErrorResponse(res, 500, "Couldn't create game.");
+
+        console.log(error);
+        
+    }
+});
 
 // Get games
 games.get('/', async (req, res) => {
@@ -117,7 +200,7 @@ games.get('/:id', async (req, res) => {
         
         
         // Send response - HTTP 200 OK
-        sendCustomResponse(res, 200, [game]);
+        sendCustomResponse(res, 200, game);
     } catch (error) {
         // TODO: Log error
         console.log(error);
@@ -175,68 +258,6 @@ games.get('/:id/teams', async (req, res) => {
         //TODO: Log error
         // Send error response - HTTP 500 Internal Server Error      
         sendCustomErrorResponse(res, 500, "Couldn't get teams.")
-    }
-});
-
-// Create new game
-games.post('/', async (req, res) => {
-    try {
-        // Find the user(id) that wants to create this game
-        // TODO: Use authorization and authentication to find out who the user really is.
-        const user = await User.findOne({
-            where: {
-                authToken: req.headers["auth-token"]
-            }
-        });  
-        
-        // Create location via another endpoint (/locations)
-
-        const loc = await Location.create({
-            city: "Thessaloniki",
-            countryCode: "GR",
-            latitude: 12.0,
-            longitude: 23.1
-        });
-
-        // Build Game instance
-        const game = await Game.create({
-            createdBy: user.id,
-            name: req.body.data[0].name,
-            type: req.body.data[0].type,
-            size: req.body.data[0].size,
-            opponents: req.body.data[0].opponents,
-            description: req.body.data[0].description,
-            eventDate: Date.now(),
-            locationId: loc.id
-        });
-
-        const tm1 = await Team.create({
-        });
-        const tm2 = await Team.create({
-        });
-
-
-
-        // Guard
-        // Validate the data against the Game model
-        await game.validate();
-
-        // Create game
-        await game.save();
-
-        await game.setFirstTeam(tm1);
-        await game.setSecondTeam(tm2);
-        await user.addGame(game, { through: 'userGames' });
-
-        // Send response - HTTP 201 Created
-        sendCustomResponse(res, 201);
-    } catch (error) {
-        //TODO: Log error
-        // Send error response - HTTP 500 Internal Server Error
-        sendCustomErrorResponse(res, 500, "Couldn't create game.");
-
-        console.log(error);
-        
     }
 });
 
