@@ -41,10 +41,10 @@ Request body
   cache-control: no-cache
 
   {
-    "id": "100000273909039",
-    "firstName": "Rafaellos",
-    "lastName": "Mon",
-    "phoneNumber": "+86 764 564 9052",
+    "id": "100000273909112",
+    "firstName": "John",
+    "lastName": "Doe",
+    "phoneNumber": "+86 764 564 9052"
   }
 ```
 
@@ -61,16 +61,16 @@ Request body
 
   {
     "result": {
-      "status": "success",
-      "error": null
+        "status": "success",
+        "error": null
     },
     "payload": {
-      "id": "100000273909039",
-      "firstName": "Rafaellos",
-      "lastName": "Mon",
-      "phoneNumber": "+86 764 564 9052",
+        "id": "100000273909112",
+        "firstName": "John",
+        "lastName": "Doe",
+        "phoneNumber": "+86 764 564 9052"
     }
-  }
+}
 ```
 
 ## Get user
