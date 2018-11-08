@@ -1,5 +1,4 @@
 const users = require('express').Router();
-const dateFormat = require('dateformat');
 
 // Custom Response Handler
 const { sendCustomResponse, sendCustomErrorResponse } = require('../handlers/customResponse');
@@ -275,7 +274,7 @@ users.patch('/me', async (req, res) => {
             const tmpUser = await user.update({
                 firstName: req.body.data[0].firstName,
                 lastName: req.body.data[0].lastName,
-                updatedAt: dateFormat("dd-mm-yyyy HH:MM"),
+                updatedAt: new Date(),
                 phoneNumber: req.body.data[0].phoneNumber,
                 deviceToken: req.body.data[0].deviceToken
             });
@@ -311,7 +310,7 @@ users.patch('/:id/ratings', async (req, res) => {
         // Rating does exist
         if (rating !== null) {
             const tmpRating = await rating.update({
-                updatedAt: dateFormat("dd-mm-yyyy HH:MM"),
+                updatedAt: new Date(),
                 comment: req.body.data[0].comment,
                 onTime: req.body.data[0].onTime,
                 skills: req.body.data[0].skills,
