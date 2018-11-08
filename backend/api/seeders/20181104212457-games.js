@@ -27,6 +27,7 @@ module.exports = {
         description: "We are the best. Let's see what you got.",
         size: 5,
         type: 0,
+        status: 'active',
         opponents: true,
         eventDate: "2018-11-20T21:00:00.000Z",
         locationId: 1
@@ -36,6 +37,7 @@ module.exports = {
         description: "I only see the best results. More shoots than you can count.",
         size: 6,
         type: 1,
+        status: 'active',
         opponents: true,
         eventDate: "2018-11-13T14:00:00.000Z",
         locationId: 2
@@ -45,6 +47,7 @@ module.exports = {
         description: "Don't forget to bring your own attitude. You're gonna need it.",
         size: 11,
         type: 0,
+        status: 'active',
         opponents: true,
         eventDate: "2018-11-18T18:00:00.000Z",
         locationId: 3
