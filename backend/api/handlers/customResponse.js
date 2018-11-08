@@ -1,21 +1,21 @@
-// Customize a successfull response with a HTTP Status Code and data
+// Customize a successful HTTP response
 function sendCustomResponse(res, statusCode, data){
     res.statusCode = statusCode;
     res.json({
-        status: {
-            result: "success",
+        result: {
+            status: "success",
             error: null
         },
-        payload: data // Should always be an array of data
+        payload: data // Should be always an array of data
     });
 }
 
-// Send a customized response containing specific error messages
+// Send a customized HTTP response containing specific error messages
 function sendCustomErrorResponse(res, statusCode, errorMessage){
     res.statusCode = statusCode;
     res.json({
-        status: {
-            result: "error",
+        result: {
+            status: "error",
             error: errorMessage
         },
         payload: null
