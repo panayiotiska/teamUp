@@ -5,7 +5,7 @@ const Sequelize = require('sequelize');
 const uuid = require('uuid/v4');
 
 // Custom Response Handler
-const {sendCustomResponse, sendCustomErrorResponse} = require('../handlers/customResponse');
+const { sendCustomResponse, sendCustomErrorResponse } = require('../handlers/customResponse');
 
 // // Database models
 const User = require('../models').User;
@@ -22,26 +22,27 @@ games.post('/', async (req, res) => {
             where: {
                 authToken: req.headers["auth-token"]
             }
-        });  
-        
+        });
+
         // Create location
         await Location.findOrCreate({
             where: {
-            city: req.body.location.city,
-            address: req.body.location.address,
-            countryCode: req.body.location.countryCode
-        }, defaults: {
-            city: req.body.location.city,
-            address: req.body.location.address,
-            country: req.body.location.country,
-            countryCode: req.body.location.countryCode,
-            postalCode: req.body.location.postalCode,
-            latitude: req.body.location.latitude,
-            longitude: req.body.location.longitude
-        }}).spread(async (location, created) => {
+                city: req.body.location.city,
+                address: req.body.location.address,
+                countryCode: req.body.location.countryCode
+            }, defaults: {
+                city: req.body.location.city,
+                address: req.body.location.address,
+                country: req.body.location.country,
+                countryCode: req.body.location.countryCode,
+                postalCode: req.body.location.postalCode,
+                latitude: req.body.location.latitude,
+                longitude: req.body.location.longitude
+            }
+        }).spread(async (location, created) => {
 
             // Location created successfully
-            if(location !== null && user !== null){
+            if (location !== null && user !== null) {
                 // Build Game instance
                 const game = await Game.create({
                     createdBy: user.id,
@@ -96,7 +97,7 @@ games.post('/', async (req, res) => {
         sendCustomErrorResponse(res, 500, "Couldn't create game.");
 
         console.log(error);
-        
+
     }
 });
 
@@ -104,6 +105,9 @@ games.post('/', async (req, res) => {
 games.get('/', async (req, res) => {
     try {
         const games = await Game.findAll({
+            where: {
+                status: 'active'
+            },
             include: [
                 {
                     model: Location,
@@ -114,8 +118,8 @@ games.get('/', async (req, res) => {
             ],
             attributes: {
                 exclude: ['locationId', 'createdAt', 'updatedAt', 'opponents', 'description', 'firstTeamId', 'secondTeamId']
-            }
-            
+            },
+            order: [['eventDate', 'ASC']]
         });
 
         // Send response - HTTP 200 OK
@@ -125,7 +129,7 @@ games.get('/', async (req, res) => {
         // Send error response - HTTP 500 Internal Server Error
         sendCustomErrorResponse(res, 500, "Couldn't get games.");
         console.log(error);
-        
+
     }
 });
 
@@ -139,8 +143,8 @@ games.get('/:id', async (req, res) => {
             },
             include: [
                 {
-                model: Location,
-                attributes: {
+                    model: Location,
+                    attributes: {
                         exclude: ['id', 'createdAt', 'updatedAt']
                     }
                 },
@@ -151,7 +155,7 @@ games.get('/:id', async (req, res) => {
                         attributes: []
                     },
                     attributes: []
-                }                   
+                }
             ],
             attributes: {
                 include: [[Sequelize.literal('Users.id'), 'createdBy'], [Sequelize.literal('Users.phoneNumber'), 'contact']],
@@ -160,7 +164,7 @@ games.get('/:id', async (req, res) => {
         });
 
         // Rename Location attribute to location
-        game.dataValues.location = game.Location; 
+        game.dataValues.location = game.Location;
         delete game.dataValues.Location;
 
         // Get players of the first team       
@@ -198,14 +202,14 @@ games.get('/:id', async (req, res) => {
         // Include teams
         game.dataValues.teams = [firstTeam.Player];
         game.dataValues.teams[1] = secondTeam.Player;
-        
-        
+
+
         // Send response - HTTP 200 OK
         sendCustomResponse(res, 200, [game]);
     } catch (error) {
         // TODO: Log error
         console.log(error);
-        
+
         // Send error response - HTTP 500 Internal Server Error
         sendCustomErrorResponse(res, 500, "Couldn't get game details.");
     }
@@ -214,47 +218,47 @@ games.get('/:id', async (req, res) => {
 // Get game teams
 games.get('/:id/teams', async (req, res) => {
     try {
-            // Find game
-            const game = await Game.findOne({
-                where: {
-                    id: req.params.id
-                }
-            });
+        // Find game
+        const game = await Game.findOne({
+            where: {
+                id: req.params.id
+            }
+        });
 
-            // Get players of the first team       
-            const firstTeam = await game.getFirstTeam({
-                include: {
-                    model: User,
-                    as: 'Player',
-                    through: 'teamPlayers',
-                    through: {
-                        attributes: []
-                    },
-                    attributes: ['id', 'firstName', 'lastName']
+        // Get players of the first team       
+        const firstTeam = await game.getFirstTeam({
+            include: {
+                model: User,
+                as: 'Player',
+                through: 'teamPlayers',
+                through: {
+                    attributes: []
                 },
-                attributes: {
-                    exclude: ['createdAt', 'updatedAt']
-                }
-            });
+                attributes: ['id', 'firstName', 'lastName']
+            },
+            attributes: {
+                exclude: ['createdAt', 'updatedAt']
+            }
+        });
 
-            // get players of the second team
-            const secondTeam = await game.getSecondTeam({
-                include: {
-                    model: User,
-                    as: 'Player',
-                    through: 'teamPlayers',
-                    through: {
-                        attributes: []
-                    },
-                    attributes: ['id', 'firstName', 'lastName']
+        // get players of the second team
+        const secondTeam = await game.getSecondTeam({
+            include: {
+                model: User,
+                as: 'Player',
+                through: 'teamPlayers',
+                through: {
+                    attributes: []
                 },
-                attributes: {
-                    exclude: ['createdAt', 'updatedAt']
-                }
-            }); 
+                attributes: ['id', 'firstName', 'lastName']
+            },
+            attributes: {
+                exclude: ['createdAt', 'updatedAt']
+            }
+        });
 
-            // Send response - HTTP 200 OK
-            sendCustomResponse(res, 200, [firstTeam.Player, secondTeam.Player]);
+        // Send response - HTTP 200 OK
+        sendCustomResponse(res, 200, [firstTeam.Player, secondTeam.Player]);
     } catch (error) {
         //TODO: Log error
         // Send error response - HTTP 500 Internal Server Error      
@@ -273,19 +277,19 @@ games.post('/:gameId/teams/:teamId', async (req, res) => {
             }
         });
 
-        if(user !== null){
+        if (user !== null) {
             // Find game
             const game = await Game.findOne({
                 where: {
                     id: req.params.gameId
                 }
             });
-                
+
             // Game found
-            if(game !== null){
+            if (game !== null) {
                 // Get first and second team
                 // TODO: Check if the user is already part of the team 
-                if(req.params.teamId == game.firstTeamId){
+                if (req.params.teamId == game.firstTeamId) {
                     const firstTeam = await game.getFirstTeam();
                     firstTeam.addPlayer(user, { through: 'teamPlayers' });
                 } else {
@@ -297,11 +301,11 @@ games.post('/:gameId/teams/:teamId', async (req, res) => {
             } else sendCustomResponse(res, 404, "Couldn't find the specified game.");
         } else sendCustomErrorResponse(res, 401, "You are unauthorized to perform this action. Unrecognized User.")
 
-        
+
     } catch (error) {
         console.log(error);
         sendCustomErrorResponse(res, 500, "Couldn't join team")
-        
+
     }
 });
 
@@ -319,7 +323,7 @@ games.patch('/:id', async (req, res) => {
         });
 
         // Found the game
-        if(game !== null){
+        if (game !== null) {
             const tmpGame = await game.update({
                 name: req.body.data[0].name,
                 type: req.body.data[0].type,
@@ -338,12 +342,12 @@ games.patch('/:id', async (req, res) => {
 
             // Send response - HTTP 200 OK
             sendCustomResponse(res, 200, null);
-        }else{
+        } else {
             // We don't have to expose that the game doesn't exist in our database.
             // Send error response - HTTP 401 Unauthorized
             sendCustomErrorResponse(res, 401, "You are unauthorized to perform this action. - DEBUG: Game doesn't exist");
         }
-        
+
     } catch (error) {
         // TODO: Log error
         // Send error response - HTTP 500 Internal Server Error
@@ -353,17 +357,17 @@ games.patch('/:id', async (req, res) => {
 
 // Change Game Team
 games.patch('/:gameId/teams/:teamId', (req, res) => {
-    res.json({msg: "Change team"});
+    res.json({ msg: "Change team" });
 });
 
 // Delete Game
 games.delete('/', (req, res) => {
-    res.json({msg: "Delete a game"});
+    res.json({ msg: "Delete a game" });
 });
 
 // Remove User from Game Team
 games.delete('/:gameId/teams/:teamId', (req, res) => {
-    res.json({msg: "Remove a player from the team"});
+    res.json({ msg: "Remove a player from the team" });
 });
 
 module.exports = games;
