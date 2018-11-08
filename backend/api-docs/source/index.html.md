@@ -138,5 +138,37 @@ Connection: close
 > Sample response
 
 ```http
+HTTP/1.1 201 Created
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 371
+ETag: W/"173-E/TbcajRqNFfDHruMTZ0/BSZ+go"
+Date: Thu, 08 Nov 2018 01:17:30 GMT
+Connection: close
 
+{
+	"result": {
+		"status": "success",
+		"error": null
+	},
+	"payload": {
+		"id": 18,
+		"name": "John's Game",
+		"type": 1,
+		"size": 5,
+		"opponents": true,
+		"description": "We can win as we always do.",
+		"eventDate": "2018-11-25T17:00:00.000Z",
+		"firstTeamId": 35,
+		"secondTeamId": 36,
+		"location": {
+			"id": 6,
+			"city": "Thessaloniki",
+			"address": "Makedonikis Aminis 1",
+			"countryCode": "GR",
+			"latitude": 40.6379,
+			"longitude": 22.9448
+		}
+	}
+}
 ```
