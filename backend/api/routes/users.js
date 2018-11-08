@@ -6,35 +6,9 @@ const {sendCustomResponse, sendCustomErrorResponse} = require('../handlers/custo
 
 const User = require('../models').User;
 const Rating = require('../models').Rating;
+const Sequelize = require('../models').Sequelize;
 
-// get user profile details
-users.get('/me', async (req, res) => {
-    try {
-        // Find user
-        const userProfileData = await User.findOne({
-            where: {
-                // This should be based on the user's id
-                authToken: req.headers["access-token"]
-            },
-            attributes: {
-                // Exclude sensitive information from being returned back in the response
-                exclude: ['deviceToken', 'authToken']
-            }
-          });
-
-        if(userProfileData){
-            sendCustomResponse(res, 200, [userProfileData]);
-        }else{
-            sendCustomErrorResponse(res, 401, "You are unauthorized to perform this action.")
-        }
-    } catch (error) {
-        // TODO: Log the errors
-        // Send error response - HTTP 500 Internal Server Error
-        sendCustomErrorResponse(res, 500, "Couldn't get profile data.")
-    }
-});
-
-// Get user profile by id
+// Get user profile
 users.get('/:id', async (req, res) => {
     try {
         // Search for the user in the database
