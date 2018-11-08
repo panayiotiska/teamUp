@@ -1,13 +1,15 @@
 'use strict';
 
 module.exports = {
-  up: (queryInterface, Sequelize) => {
+  up: async (queryInterface, Sequelize) => {
     /*
       Add altering commands here.
       Return a promise to correctly handle asynchronicity.
     */
-      Example:
-      return queryInterface.bulkInsert('Users', [
+      const User = require('../models').User;
+      const avgRatings = require('../models').avgRatings;
+
+      const users = await User.bulkCreate([
         {
           id: 100000273909010,
           firstName: "Rafaellos",
@@ -52,17 +54,34 @@ module.exports = {
         {id:100000273909170,firstName:"Honey",lastName:"Chomiszewski",deviceToken:"162b687852cd2c9a4d311bad44b92677da7d640fc489f9a89ff1cdd37ec62f8d",authToken:"1d2a0930-f4de-4383-a58d-a56864751809"},
         {id:100000273909173,firstName:"Kylie",lastName:"Fiorentino",deviceToken:"fb3515816c68760db57e5eeac9c7440d668d369541a4420291560e42db34cd0e",authToken:"54b8196c-14b2-490f-912b-be2879595e18"},
         {id:100000273909143,firstName:"Alyda",lastName:"Minker",deviceToken:"f0dadaa3511495e80cae223b3c2c0a7d000ab791371ebfb7790ebe5e9ced7acf",authToken:"be16c321-c7c1-4580-9cf9-eb145a4595d7"}
-    ], {});
-  
-  },
+    ]);
 
-  down: (queryInterface, Sequelize) => {
-    /*
-      Add reverting commands here.
-      Return a promise to correctly handle asynchronicity.
+    const ratings = await avgRatings.bulkCreate([
+      {
+        avgSkills: 4,
+        avgOnTime: 4,
+        avgBehavior: 4,
+        totalAvg: 4,
+        ratingsCount: 4
+      },
+      {
+        avgSkills: 0,
+        avgOnTime: 0,
+        avgBehavior: 0,
+        totalAvg: 0,
+        ratingsCount: 0
+      },
+      {
+        avgSkills: 0,
+        avgOnTime: 0,
+        avgBehavior: 0,
+        totalAvg: 0,
+        ratingsCount: 0
+    }
+    ]);
 
-      Example:
-      return queryInterface.bulkDelete('Person', null, {});
-    */
+    ratings[0].setUser(users[0]);
+    ratings[1].setUser(users[1]);
+    ratings[2].setUser(users[2]);
   }
 };

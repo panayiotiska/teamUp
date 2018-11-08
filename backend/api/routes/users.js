@@ -7,6 +7,7 @@ const {sendCustomResponse, sendCustomErrorResponse} = require('../handlers/custo
 const User = require('../models').User;
 const Rating = require('../models').Rating;
 const Sequelize = require('../models').Sequelize;
+const avgRatings = require('../models').avgRatings;
 
 // Create user
 users.post('/', async (req, res) => {
@@ -39,12 +40,35 @@ users.post('/', async (req, res) => {
                 // Create user
                 await user.save();
 
+                // Initialize average rating data
+                const avgRating = await avgRatings.create({
+                    avgSkills: 0,
+                    avgOnTime: 0,
+                    avgBehavior: 0,
+                    totalAvg: 0,
+                    ratingsCount: 0
+                });
+
+                // Associate user with the avgRating
+                await avgRating.setUser(user);
+
+                // Modify avgRating JSON Object
+                delete avgRating.dataValues.id;
+                delete avgRating.dataValues.userId;
+                delete avgRating.dataValues.createdAt;
+                delete avgRating.dataValues.updatedAt;
+
+                // Modify User JSON object
+
                 // Delete timestamps
                 delete user.dataValues.createdAt;
                 delete user.dataValues.updatedAt;
 
+                // Add avgRating
+                user.dataValues.rating = avgRating.dataValues;
+
                 // Send response - HTTP 201 Created
-                sendCustomResponse(res, 201, user);
+                sendCustomResponse(res, 201, [user]);
             } else {
                 // TODO: Log error
                 // User already exists in our database
@@ -66,6 +90,12 @@ users.get('/:id', async (req, res) => {
             where: {
                 id: req.params.id
             },
+            include: [{
+                model: avgRatings,
+                attributes: {
+                    exclude: ['id', 'createdAt', 'updatedAt', 'userId']
+                }
+            }],
             attributes: {
                 exclude: ['deviceToken', 'authToken']
             }
@@ -73,6 +103,10 @@ users.get('/:id', async (req, res) => {
 
         // User has been found successfully
         if(user){
+            // Modify user JSON object
+            user.dataValues.rating = user.dataValues.avgRating;
+            delete user.dataValues.avgRating;
+
             sendCustomResponse(res, 200, [user]);
         }else{
             sendCustomErrorResponse(res, 404, "[DEBUG]: Couldn't find user with that id.")

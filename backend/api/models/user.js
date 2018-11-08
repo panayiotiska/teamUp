@@ -32,6 +32,9 @@ module.exports = (sequelize, DataTypes) => {
 
     // User belongsToMany Team
     User.belongsToMany(models.Team, { as: 'Player', through: 'teamPlayers', foreignKey: 'userId' });
+
+    // User belongsTo avgRatings
+    User.hasOne(models.avgRatings, { foreignKey: 'userId' });
   };
   return User;
 };
