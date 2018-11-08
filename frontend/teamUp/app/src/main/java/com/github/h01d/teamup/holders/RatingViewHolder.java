@@ -21,7 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class RatingViewHolder extends  RecyclerView.ViewHolder
+public class RatingViewHolder extends RecyclerView.ViewHolder
 {
     private View view;
     private Context context;

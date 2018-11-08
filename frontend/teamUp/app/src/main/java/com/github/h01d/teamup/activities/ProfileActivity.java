@@ -129,9 +129,15 @@ public class ProfileActivity extends AppCompatActivity
                     String lastName = tmp.getString("lastName");
                     String createdAt = tmp.getString("createdAt");
 
+                    float avgSkills = Float.parseFloat(tmp.getJSONObject("rating").getString("avgSkills"));
+                    float avgOnTime = Float.parseFloat(tmp.getJSONObject("rating").getString("avgOnTime"));
+                    float avgBehavior = Float.parseFloat(tmp.getJSONObject("rating").getString("avgBehavior"));
+                    float totalAvg = Float.parseFloat(tmp.getJSONObject("rating").getString("totalAvg"));
+                    int ratingsCount = tmp.getJSONObject("rating").getInt("ratingsCount");
+
                     // Update UI based on data
 
-                    updateUI(new User(userid, firstName, lastName, createdAt));
+                    updateUI(new User(userid, firstName, lastName, createdAt), avgSkills, avgOnTime, avgBehavior, totalAvg, ratingsCount);
 
                     // Load User ratings
 
@@ -234,7 +240,7 @@ public class ProfileActivity extends AppCompatActivity
      * @param user data
      */
 
-    private void updateUI(User user)
+    private void updateUI(User user, float avgSkills, float avgOnTime, float avgBehavior, float totalAvg, int ratingCount)
     {
         // Update profile data with their values
 
@@ -250,6 +256,12 @@ public class ProfileActivity extends AppCompatActivity
         }
 
         profileGames.setText("Έπαιξε\n" + 0 + " παιχνίδια");
+        onTimeRating.setRating(avgOnTime);
+        skillRating.setRating(avgSkills);
+        behaviorRating.setRating(avgBehavior);
+        overallRatingBar.setRating(totalAvg);
+        overallText.setText(totalAvg + "");
+        totalText.setText("(" + ratingCount + ")");
     }
 
     /**
@@ -271,23 +283,6 @@ public class ProfileActivity extends AppCompatActivity
         {
             ratingText.setVisibility(View.GONE);
             ratingsList.setVisibility(View.VISIBLE);
-
-            int totalOnTime = 0, totalSkill = 0, totalBehavior = 0;
-
-            for(Rating rate : ratings)
-            {
-                totalOnTime += rate.getOnTime();
-                totalSkill += rate.getSkills();
-                totalBehavior += rate.getBehavior();
-            }
-
-            onTimeRating.setRating(totalOnTime / ratings.size());
-            skillRating.setRating(totalSkill / ratings.size());
-            behaviorRating.setRating(totalBehavior / ratings.size());
-            overallRatingBar.setRating(((totalOnTime / ratings.size()) + (totalSkill / ratings.size()) + (totalBehavior / ratings.size())) / 3.0f);
-            overallText.setText(String.format(Locale.getDefault(), "%.1f", ((totalOnTime / ratings.size()) + (totalSkill / ratings.size()) + (totalBehavior / ratings.size())) / 3.0));
-
-            totalText.setText("(" + ratings.size() + ")");
 
             ratingsList.setAdapter(new RatingsAdapter(ratings, getApplicationContext()));
         }

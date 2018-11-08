@@ -16,9 +16,10 @@ public class Game
     private String gameDate;
     private String phone;
     private String comment;
+    private String status;
     private String gameCreated;
 
-    public Game(int gameID, String userId, String name, int type, int size, boolean opponents, String locationCity, String locationAddress, String locationCountry, double locationLat, double locationLong, String gameDate, String phone, String comment, String gameCreated)
+    public Game(int gameID, String userId, String name, int type, int size, boolean opponents, String locationCity, String locationAddress, String locationCountry, double locationLat, double locationLong, String gameDate, String phone, String comment, String status, String gameCreated)
     {
         this.gameID = gameID;
         this.userId = userId;
@@ -34,6 +35,7 @@ public class Game
         this.gameDate = gameDate;
         this.phone = phone;
         this.comment = comment;
+        this.status = status;
         this.gameCreated = gameCreated;
     }
 
@@ -107,13 +109,13 @@ public class Game
         return comment;
     }
 
+    public String getStatus()
+    {
+        return status;
+    }
+
     public String getGameCreated()
     {
         return gameCreated;
-    }
-
-    public int getStatus() // 0 open, 1 pending, 2 completed
-    {
-        return 0;
     }
 }

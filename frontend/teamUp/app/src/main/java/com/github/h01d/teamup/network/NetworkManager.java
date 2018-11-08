@@ -66,7 +66,7 @@ public class NetworkManager
                 {
                     JSONObject jsonObject = new JSONObject(response);
 
-                    if(jsonObject.getJSONObject("status").getString("result").equals("success"))
+                    if(jsonObject.getJSONObject("result").getString("status").equals("success"))
                     {
                         listener.getResult(jsonObject.getJSONArray("payload"));
                     }

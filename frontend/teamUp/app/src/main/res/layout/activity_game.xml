@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#efefef">
+    android:background="#fafafa">
 
     <include
         android:id="@+id/actionbar"
@@ -15,21 +15,22 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/actionbar"
-        android:padding="8dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="4dp">
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:cardUseCompatPadding="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
                 android:paddingStart="12dp"
-                android:paddingEnd="12dp">
+                android:paddingTop="5dp"
+                android:paddingEnd="12dp"
+                android:paddingBottom="5dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -47,11 +48,11 @@
                         android:id="@+id/a_game_phone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
                         android:layout_marginStart="8dp"
                         android:layout_toEndOf="@id/phone"
-                        android:layout_centerVertical="true"
-                        android:text="+30 6969696969"
-                        android:maxLines="1"/>
+                        android:maxLines="1"
+                        android:text="+30 6969696969" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -71,11 +72,11 @@
                         android:id="@+id/a_game_date"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
                         android:layout_marginStart="8dp"
                         android:layout_toEndOf="@id/date"
-                        android:layout_centerVertical="true"
-                        android:text="31 November 2018, 19:00"
-                        android:maxLines="1"/>
+                        android:maxLines="1"
+                        android:text="31 November 2018, 19:00" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -95,11 +96,11 @@
                         android:id="@+id/a_game_location"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
                         android:layout_marginStart="8dp"
                         android:layout_toEndOf="@id/location"
-                        android:layout_centerVertical="true"
-                        android:text="Kappa keepou 31, Thessaloniki 54635"
-                        android:maxLines="1"/>
+                        android:maxLines="1"
+                        android:text="Kappa keepou 31, Thessaloniki 54635" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -119,11 +120,11 @@
                         android:id="@+id/a_game_comment"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
                         android:layout_marginStart="8dp"
                         android:layout_toEndOf="@id/comment"
-                        android:layout_centerVertical="true"
-                        android:text="Bitch, I'm silly Up the chopper"
-                        android:maxLines="2"/>
+                        android:maxLines="2"
+                        android:text="Bitch, I'm silly Up the chopper" />
                 </RelativeLayout>
 
             </LinearLayout>
@@ -131,7 +132,71 @@
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:cardUseCompatPadding="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="ΟΜΑΔΕΣ"
+                    android:textAlignment="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Ομάδα Α"
+                        android:textAlignment="center"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Ομάδα Β"
+                        android:textAlignment="center"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:divider="?android:attr/listDivider"
+                    android:orientation="horizontal"
+                    android:showDividers="middle"
+                    android:weightSum="2">
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/a_game_team1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/a_game_team2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                </LinearLayout>
+            </LinearLayout>
 
 
         </android.support.v7.widget.CardView>

@@ -162,7 +162,7 @@ public class GamesFragment extends Fragment
                         int size = tmp.getInt("size");
                         String city = tmp.getJSONObject("Location").getString("city");
 
-                        games.add(new Game(gameid, "", name, type, size, true, city, "", "", 0, 0, gameDate, "", "", ""));
+                        games.add(new Game(gameid, "", name, type, size, true, city, "", "", 0, 0, gameDate, "", "", "", ""));
                     }
 
                     // Update UI based on data

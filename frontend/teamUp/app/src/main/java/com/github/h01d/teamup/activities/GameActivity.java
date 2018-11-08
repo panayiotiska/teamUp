@@ -3,6 +3,9 @@ package com.github.h01d.teamup.activities;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Window;
@@ -11,7 +14,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.h01d.teamup.R;
+import com.github.h01d.teamup.adapters.TeamsAdapter;
 import com.github.h01d.teamup.models.Game;
+import com.github.h01d.teamup.models.User;
 import com.github.h01d.teamup.network.NetworkManager;
 import com.github.h01d.teamup.network.NetworkManagerListener;
 
@@ -21,6 +26,7 @@ import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -110,6 +116,7 @@ public class GameActivity extends AppCompatActivity
                     String gameDate = tmp.getString("eventDate");
                     String comments = tmp.getString("description");
                     String phone = tmp.getString("contact");
+                    String status = tmp.getString("status");
                     String city = tmp.getJSONObject("location").getString("city");
                     String address = tmp.getJSONObject("location").getString("address");
                     String countryCode = tmp.getJSONObject("location").getString("countryCode");
@@ -118,7 +125,61 @@ public class GameActivity extends AppCompatActivity
 
                     // Update UI based on data
 
-                    updateUI(new Game(gameid, userid, name, type, size, opponents, city, address, countryCode, locLat, locLong, gameDate, phone, comments, createdDate));
+                    updateUI(new Game(gameid, userid, name, type, size, opponents, city, address, countryCode, locLat, locLong, gameDate, phone, comments, status, createdDate));
+
+                    //
+
+                    if(!tmp.isNull("teams"))
+                    {
+                        ArrayList<User> team1 = new ArrayList<>();
+                        ArrayList<User> team2 = new ArrayList<>();
+
+                        JSONArray teams = tmp.getJSONArray("teams");
+
+                        if(!teams.isNull(0))
+                        {
+                            JSONArray team_1 = teams.getJSONArray(0);
+
+                            for(int i = 0; i < team_1.length(); i++)
+                            {
+                                JSONObject player = team_1.getJSONObject(i);
+
+                                String id = player.getString("id");
+                                String firstName = player.getString("firstName");
+                                String lastName = player.getString("lastName");
+
+                                team1.add(new User(id, firstName, lastName, ""));
+                            }
+
+                            RecyclerView first = findViewById(R.id.a_game_team1);
+                            first.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                            first.setHasFixedSize(true);
+                            first.addItemDecoration(new DividerItemDecoration(getApplicationContext(), LinearLayoutManager.VERTICAL));
+                            first.setAdapter(new TeamsAdapter(team1, getApplicationContext()));
+                        }
+
+                        if(!teams.isNull(1))
+                        {
+                            JSONArray team_2 = teams.getJSONArray(1);
+
+                            for(int i = 0; i < team_2.length(); i++)
+                            {
+                                JSONObject player = team_2.getJSONObject(i);
+
+                                String id = player.getString("id");
+                                String firstName = player.getString("firstName");
+                                String lastName = player.getString("lastName");
+
+                                team2.add(new User(id, firstName, lastName, ""));
+                            }
+
+                            RecyclerView second = findViewById(R.id.a_game_team2);
+                            second.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                            second.setHasFixedSize(true);
+                            second.addItemDecoration(new DividerItemDecoration(getApplicationContext(), LinearLayoutManager.VERTICAL));
+                            second.setAdapter(new TeamsAdapter(team2, getApplicationContext()));
+                        }
+                    }
                 }
                 catch(JSONException e)
                 {
