@@ -152,22 +152,23 @@ Connection: close
 		"error": null
 	},
 	"payload": {
-		"id": 18,
+		"id": 4,
 		"name": "John's Game",
 		"type": 1,
 		"size": 5,
+		"status": "active",
 		"opponents": true,
 		"description": "We can win as we always do.",
 		"eventDate": "2018-11-25T17:00:00.000Z",
-		"firstTeamId": 35,
-		"secondTeamId": 36,
+		"firstTeamId": 7,
+		"secondTeamId": 8,
 		"location": {
-			"id": 6,
+			"id": 4,
 			"city": "Thessaloniki",
 			"address": "Makedonikis Aminis 1",
 			"countryCode": "GR",
-			"latitude": 40.6379,
-			"longitude": 22.9448
+			"latitude": 40.6378543,
+			"longitude": 22.9447702
 		}
 	}
 }
