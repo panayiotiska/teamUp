@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
     User.belongsToMany(models.Team, { as: 'Player', through: 'teamPlayers', foreignKey: 'userId' });
 
     // User belongsTo avgRatings
-    User.hasOne(models.avgRatings, { foreignKey: 'userId' });
+    User.hasOne(models.avgRatings, { foreignKey: {field: 'userId', unique: true}});
   };
   return User;
 };

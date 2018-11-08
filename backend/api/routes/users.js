@@ -159,76 +159,41 @@ users.post('/:id/ratings', async (req, res) => {
                 // Add rating to user
                 await user.addRating(rating);
 
-                async function calculateAverages(rating, ratingsCount, avgSkills, avgOnTime, avgBehavior){
-                    // Increment ratingsCount
-                    const newRatingsCount = ratingsCount + 1;
+                // Get current averages
+                const ratingsCount = user.avgRating.dataValues.ratingsCount;
+                const avgSkills = user.avgRating.dataValues.avgSkills;
+                const avgOnTime = user.avgRating.dataValues.avgOnTime;
+                const avgBehavior = user.avgRating.dataValues.avgBehavior;
 
-                    // The following calculations are based on this formula
-                    /* 
-                        newAverage = (((oldAverage * numberOfRatings) + newAverage) / numberOfRatings + 1 ) 
-                    */
+                // Increment ratingsCount
+                const newRatingsCount = ratingsCount + 1;
 
-                    // Calculate new averages for skills, onTime, behavior and totalAvg
-                    const newAvgSkills = (((avgSkills * ratingsCount) + rating.dataValues.skills) / newRatingsCount);
-                    const newAvgOnTime = (((avgOnTime * ratingsCount) + rating.dataValues.onTime) / newRatingsCount);
-                    const newAvgBehavior = (((avgBehavior * ratingsCount) + rating.dataValues.behavior) / newRatingsCount);
-                    const newTotalAvg = ((newAvgSkills + newAvgOnTime + newAvgBehavior) / 3);
+                // The following calculations are based on this formula
+                /* 
+                    newAverage = (((oldAverage * numberOfRatings) + newAverage) / numberOfRatings + 1 ) 
+                */
 
-                    return {
-                        newAvgSkills: newAvgSkills,
-                        newAvgOnTime: newAvgOnTime,
-                        newAvgBehavior: newAvgBehavior,
-                        newTotalAvg: newTotalAvg,
-                        newRatingsCount: newRatingsCount
-                    };
-
-                }
-
-                // Update averages - User already has ratings
-                if(user.avgRating !== null){
-                    // Get current averages
-                    const ratingsCount = user.avgRating.dataValues.ratingsCount;
-                    const avgSkills = user.avgRating.dataValues.avgSkills;
-                    const avgOnTime = user.avgRating.dataValues.avgOnTime;
-                    const avgBehavior = user.avgRating.dataValues.avgBehavior;
-
-                    // Calculate new averages
-                    const newAverages = await calculateAverages(rating, ratingsCount, avgSkills, avgOnTime, avgBehavior);
+                // Calculate new averages for skills, onTime, behavior and totalAvg
+                const newAvgSkills = (((avgSkills * ratingsCount) + rating.dataValues.skills) / newRatingsCount);
+                const newAvgOnTime = (((avgOnTime * ratingsCount) + rating.dataValues.onTime) / newRatingsCount);
+                const newAvgBehavior = (((avgBehavior * ratingsCount) + rating.dataValues.behavior) / newRatingsCount);
+                const newTotalAvg = ((newAvgSkills + newAvgOnTime + newAvgBehavior) / 3);
                     
-                    // Find existing avgRating
-                    const avgRating = await avgRatings.findOne({
-                        where: {
-                            userId: user.id
-                        }
-                    });                  
-
-                    // Update avgRating
-                    await avgRating.update({
-                        avgSkills: newAverages.newAvgSkills,
-                        avgOnTime: newAverages.newAvgOnTime,
-                        avgBehavior: newAverages.newAvgBehavior,
-                        totalAvg: newAverages.newTotalAvg,
-                        ratingsCount: newAverages.newRatingsCount
-                    });
-                } else {
-                    // Create averages - User just got the first rating
-                    const averages = await calculateAverages(rating, 0, rating.dataValues.skills, rating.dataValues.onTime, rating.dataValues.behavior);
-                    // Create avgRating
-                    const avgRating = await avgRatings.build({
-                        avgSkills: averages.newAvgSkills,
-                        avgOnTime: averages.newAvgOnTime,
-                        avgBehavior: averages.newAvgBehavior,
-                        totalAvg: averages.newTotalAvg,
-                        ratingsCount: averages.newRatingsCount,
+                // Find existing avgRating
+                const avgRating = await avgRatings.findOne({
+                    where: {
                         userId: user.id
-                    });
-
-                    // Validate data against avgRating model
-                    await avgRating.validate();
-
-                    // Commit into the db
-                    await avgRating.save();
-                }
+                    }
+                });
+                
+                // Update avgRating
+                await avgRating.update({
+                    avgSkills: newAvgSkills,
+                    avgOnTime: newAvgOnTime,
+                    avgBehavior: newAvgBehavior,
+                    totalAvg: newTotalAvg,
+                    ratingsCount: newRatingsCount
+                });
 
                 // Modify rating JSON values
                 delete rating.dataValues.createdBy;

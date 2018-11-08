@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   avgRatings.associate = function(models) {
     // avgRatings belongsTo User
-    avgRatings.belongsTo(models.User, { foreignKey: 'userId' });
+    avgRatings.belongsTo(models.User, { foreignKey: {field: 'userId', unique: true} });
   };
   return avgRatings;
 };
