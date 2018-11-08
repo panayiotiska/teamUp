@@ -48,6 +48,7 @@ games.post('/', async (req, res) => {
                     name: req.body.name,
                     type: req.body.type,
                     size: req.body.size,
+                    status: 'active',
                     opponents: req.body.opponents,
                     description: req.body.description,
                     eventDate: req.body.eventDate,
