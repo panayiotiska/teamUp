@@ -201,7 +201,7 @@ games.get('/:id', async (req, res) => {
         
         
         // Send response - HTTP 200 OK
-        sendCustomResponse(res, 200, game);
+        sendCustomResponse(res, 200, [game]);
     } catch (error) {
         // TODO: Log error
         console.log(error);
