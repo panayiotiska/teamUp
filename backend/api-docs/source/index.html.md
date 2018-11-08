@@ -88,11 +88,18 @@ Updates user account details.
 
 Deletes a user account.
 
+# Games
 
+Use the `/games` resource to create, update and show details for games.
 
-> Get the profile data of the currently authenticated user
+## Create game
 
+`POST /api/v1/games/`
+
+Request body
+
+> Sample request
 ```http
-GET /api/v1/users/me HTTP/1.1
+POST /api/v1/games HTTP/1.1
+Host: api.teamup-dev.local
 ```
-
