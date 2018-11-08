@@ -28,25 +28,25 @@ module.exports = {
         size: 5,
         type: 0,
         opponents: true,
-        eventDate: new Date(),
+        eventDate: "2018-11-20T21:00:00.000Z",
         locationId: 1
       },
       {
         name: "Panayiotis's Game",
         description: "I only see the best results. More shoots than you can count.",
-        size: 11,
+        size: 6,
         type: 1,
         opponents: true,
-        eventDate: new Date(),
+        eventDate: "2018-11-13T14:00:00.000Z",
         locationId: 2
       },
       {
         name: "Aldi's Game",
         description: "Don't forget to bring your own attitude. You're gonna need it.",
-        size: 6,
+        size: 11,
         type: 0,
         opponents: true,
-        eventDate: new Date(),
+        eventDate: "2018-11-18T18:00:00.000Z",
         locationId: 3
       }
   ], {});
@@ -81,17 +81,5 @@ module.exports = {
     await gameOneSecondTeam.addPlayer(users[19], {through: 'teamPlayers'});
     await gameOneSecondTeam.addPlayer(users[13], {through: 'teamPlayers'});
     
-
-    
-  },
-
-  down: (queryInterface, Sequelize) => {
-    /*
-      Add reverting commands here.
-      Return a promise to correctly handle asynchronicity.
-
-      Example:
-      return queryInterface.bulkDelete('Person', null, {});
-    */
   }
 };
