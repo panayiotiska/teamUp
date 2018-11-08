@@ -8,6 +8,56 @@ const User = require('../models').User;
 const Rating = require('../models').Rating;
 const Sequelize = require('../models').Sequelize;
 
+// Create user
+users.post('/', async (req, res) => {
+    try {
+        // Check if the user is already in our database
+        // TODO: Use a combination of user id and firebase token to check if the user is already registered
+        const userAccount = await User.findOne({
+                where: {
+                    $or: {
+                        id: req.body.id
+                    }
+                }
+            });
+
+            // User account doesn't exist
+            if(userAccount === null){
+                // Build new User instance
+                const user = await User.build({
+                    id: req.body.id,
+                    firstName: req.body.firstName,
+                    lastName: req.body.lastName,
+                    phoneNumber: req.body.phoneNumber,
+                    createdAt: new Date()
+                });
+
+                // Guard
+                // Validate the input data against the User model
+                await user.validate();
+
+                // Create user
+                await user.save();
+
+                // Delete timestamps
+                delete user.dataValues.createdAt;
+                delete user.dataValues.updatedAt;
+
+                // Send response - HTTP 201 Created
+                sendCustomResponse(res, 201, user);
+            } else {
+                // TODO: Log error
+                // User already exists in our database
+                sendCustomErrorResponse(res, 409, "Couldn't create user. Already exists.")
+            }
+    } catch (error) {
+        // TODO: Log error
+        console.log(error);
+        // Send error response - 500 Internal Server Error
+        sendCustomErrorResponse(res, 500, "Couldn't create user.");
+    }
+});
+
 // Get user profile
 users.get('/:id', async (req, res) => {
     try {
@@ -81,55 +131,6 @@ users.get('/:id/ratings', async (req, res) => {
         console.log(error);
         // Send error response - HTTP 500 Internal Server Error
         sendCustomErrorResponse(res, 500, "Couldn't get ratings.");
-    }
-});
-
-// Create new user
-users.post('/', async (req, res) => {
-    try {
-        // Check if the user is already in our database
-        // TODO: Use a combination of user id and device token to check if the user is already registered
-        const userAccount = await User.findOne({
-                where: {
-                    $or: {
-                        id: req.body.data[0].id,
-                        deviceToken: req.body.data[0].deviceToken
-                    }
-                }
-            });
-
-            // User account doesn't exist
-            if(userAccount === null){
-                // Build a new User instance
-                const user = await User.build({
-                    id: req.body.data[0].id,
-                    firstName: req.body.data[0].firstName,
-                    lastName: req.body.data[0].lastName,
-                    createdAt: dateFormat("dd-mm-yyyy HH:MM"),
-                    phoneNumber: req.body.data[0].phoneNumber,
-                    deviceToken: req.body.data[0].deviceToken,
-                    authToken: req.body.data[0].authToken
-                });
-
-                // Guard
-                // Validate the data against the User model
-                await user.validate();
-
-                // Create user
-                await user.save();
-
-                // Send response - HTTP 201 Created
-                sendCustomResponse(res, 201, null);
-            } else {
-                // TODO: Log error
-                // User already exists in our database
-                sendCustomErrorResponse(res, 409, "Couldn't create user. Already exists.")
-            }
-    } catch (error) {
-        // TODO: Log error
-        console.log(error);
-        // Send error response - 500 Internal Server Error
-        sendCustomErrorResponse(res, 500, "Couldn't create user.");
     }
 });
 
