@@ -241,6 +241,14 @@
                   </li>
               </ul>
           </li>
+          <li>
+            <a href="#games" class="toc-h1 toc-link" data-title="Games">Games</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#create-game" class="toc-h2 toc-link" data-title="Create game">Create game</a>
+                  </li>
+              </ul>
+          </li>
       </ul>
         <ul class="toc-footer">
             <li><a href='https://github.com/lord/slate'>Documentation Powered by Slate</a></li>
@@ -266,42 +274,42 @@ All resources are using JSON as the format to receive and send data.</p>
 <blockquote>
 <p>Sample request</p>
 </blockquote>
-<pre class="highlight http tab-http"><code><span class="err">  </span><span class="nf">POST</span> <span class="nn">/api/v1/users</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
-<span class="s">  Host: http://localhost:3000/api/v1/</span>
-<span class="s">  Content-Type: application/json</span>
-<span class="s">  cache-control: no-cache</span>
+<pre class="highlight http tab-http"><code><span class="nf">POST</span> <span class="nn">/api/v1/users</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">http://localhost:3000/api/v1/</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
+<span class="na">cache-control</span><span class="p">:</span> <span class="s">no-cache</span>
 
-  {
-    "id": "100000273909112",
-    "firstName": "John",
-    "lastName": "Doe",
-    "phoneNumber": "+86 764 564 9052"
-  }
-</code></pre>
+<span class="p">{</span><span class="w">
+  </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"100000273909112"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"firstName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"John"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"lastName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Doe"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"phoneNumber"</span><span class="p">:</span><span class="w"> </span><span class="s2">"+86 764 564 9052"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
 <blockquote>
 <p>Sample response</p>
 </blockquote>
-<pre class="highlight http tab-http"><code><span class="err">  </span><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">201</span> <span class="ne">Created</span>
-<span class="s">  X-Powered-By: Express</span>
-<span class="s">  Content-Type: application/json; charset=utf-8</span>
-<span class="s">  Content-Length: 99</span>
-<span class="s">  ETag: W/"63-U+3pylDx44qevKKpDSJ/98oGNAQ"</span>
-<span class="s">  Date: Wed, 07 Nov 2018 23:22:25 GMT</span>
-<span class="s">  Connection: keep-alive</span>
+<pre class="highlight http tab-http"><code><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">201</span> <span class="ne">Created</span>
+<span class="na">X-Powered-By</span><span class="p">:</span> <span class="s">Express</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json; charset=utf-8</span>
+<span class="na">Content-Length</span><span class="p">:</span> <span class="s">99</span>
+<span class="na">ETag</span><span class="p">:</span> <span class="s">W/"63-U+3pylDx44qevKKpDSJ/98oGNAQ"</span>
+<span class="na">Date</span><span class="p">:</span> <span class="s">Wed, 07 Nov 2018 23:22:25 GMT</span>
+<span class="na">Connection</span><span class="p">:</span> <span class="s">keep-alive</span>
 
-  {
-    "result": {
-        "status": "success",
-        "error": null
-    },
-    "payload": {
-        "id": "100000273909112",
-        "firstName": "John",
-        "lastName": "Doe",
-        "phoneNumber": "+86 764 564 9052"
-    }
-}
-</code></pre><h2 id='get-user'>Get user</h2>
+<span class="p">{</span><span class="w">
+  </span><span class="s2">"result"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"success"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"error"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="s2">"payload"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"100000273909112"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"firstName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"John"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"lastName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Doe"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"phoneNumber"</span><span class="p">:</span><span class="w"> </span><span class="s2">"+86 764 564 9052"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre><h2 id='get-user'>Get user</h2>
 <p><code>GET /api/v1/users/{id}</code></p>
 
 <p>Retrieves user account details.</p>
@@ -313,12 +321,86 @@ All resources are using JSON as the format to receive and send data.</p>
 <p><code>DELETE /api/v1/users/{id}</code></p>
 
 <p>Deletes a user account.</p>
+<h1 id='games'>Games</h1>
+<p>Use the <code>/games</code> resource to create, update and show details for games.</p>
+<h2 id='create-game'>Create game</h2>
+<p><code>POST /api/v1/games/</code></p>
+
+<p>Request body</p>
+
+<aside class="notice">
+You must replace `{YOUR-AUTH-TOKEN}` with your personal authentication key.
+</aside>
 
 <blockquote>
-<p>Get the profile data of the currently authenticated user</p>
+<p>Sample request</p>
 </blockquote>
-<pre class="highlight http tab-http"><code><span class="nf">GET</span> <span class="nn">/api/v1/users/me</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
-</code></pre>
+<pre class="highlight http tab-http"><code><span class="nf">POST</span> <span class="nn">/api/v1/games/</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json</span>
+<span class="na">auth-token</span><span class="p">:</span> <span class="s">{YOUR-AUTH-TOKEN}</span>
+<span class="na">cache-control</span><span class="p">:</span> <span class="s">no-cache</span>
+<span class="na">User-Agent</span><span class="p">:</span> <span class="s">PostmanRuntime/7.3.0</span>
+<span class="na">Accept</span><span class="p">:</span> <span class="s">*/*</span>
+<span class="na">Host</span><span class="p">:</span> <span class="s">localhost:3000</span>
+<span class="na">Accept-Encoding</span><span class="p">:</span> <span class="s">gzip, deflate</span>
+<span class="na">Content-Length</span><span class="p">:</span> <span class="s">364</span>
+<span class="na">Connection</span><span class="p">:</span> <span class="s">close</span>
+
+<span class="p">{</span><span class="w">
+    </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"John's Game"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"size"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"opponents"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"eventDate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2018-11-25T17:00:00.000Z"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"We can win as we always do."</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"location"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"city"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Thessaloniki"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"address"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Makedonikis Aminis 1"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"country"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Greece"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"countryCode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"GR"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"postalCode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"54631"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"latitude"</span><span class="p">:</span><span class="w"> </span><span class="mf">40.6378543</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"longitude"</span><span class="p">:</span><span class="w"> </span><span class="mf">22.9447702</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+<blockquote>
+<p>Sample response</p>
+</blockquote>
+<pre class="highlight http tab-http"><code><span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">201</span> <span class="ne">Created</span>
+<span class="na">X-Powered-By</span><span class="p">:</span> <span class="s">Express</span>
+<span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/json; charset=utf-8</span>
+<span class="na">Content-Length</span><span class="p">:</span> <span class="s">371</span>
+<span class="na">ETag</span><span class="p">:</span> <span class="s">W/"173-E/TbcajRqNFfDHruMTZ0/BSZ+go"</span>
+<span class="na">Date</span><span class="p">:</span> <span class="s">Thu, 08 Nov 2018 01:17:30 GMT</span>
+<span class="na">Connection</span><span class="p">:</span> <span class="s">close</span>
+
+<span class="p">{</span><span class="w">
+    </span><span class="s2">"result"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"success"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"error"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="s2">"payload"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">18</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"John's Game"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"size"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"opponents"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"We can win as we always do."</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"eventDate"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2018-11-25T17:00:00.000Z"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"firstTeamId"</span><span class="p">:</span><span class="w"> </span><span class="mi">35</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"secondTeamId"</span><span class="p">:</span><span class="w"> </span><span class="mi">36</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"location"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"city"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Thessaloniki"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"address"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Makedonikis Aminis 1"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"countryCode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"GR"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"latitude"</span><span class="p">:</span><span class="w"> </span><span class="mf">40.6379</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"longitude"</span><span class="p">:</span><span class="w"> </span><span class="mf">22.9448</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
       </div>
       <div class="dark-box">
           <div class="lang-selector">
