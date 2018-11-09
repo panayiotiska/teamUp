@@ -85,7 +85,7 @@ games.post('/', async (req, res) => {
                 game.dataValues.location = location.dataValues;
 
                 // Send response - HTTP 201 Created
-                sendCustomResponse(res, 201, game);
+                sendCustomResponse(res, 201, [game]);
             } else {
                 sendCustomErrorResponse(res, 401, "Unauthorized")
             }
@@ -123,7 +123,7 @@ games.get('/', async (req, res) => {
         });
 
         // Send response - HTTP 200 OK
-        sendCustomResponse(res, 200, games);
+        sendCustomResponse(res, 200, [games]);
     } catch (error) {
         // TODO: Log errors
         // Send error response - HTTP 500 Internal Server Error
@@ -291,10 +291,20 @@ games.post('/:gameId/teams/:teamId', async (req, res) => {
                 // TODO: Check if the user is already part of the team 
                 if (req.params.teamId == game.firstTeamId) {
                     const firstTeam = await game.getFirstTeam();
-                    firstTeam.addPlayer(user, { through: 'teamPlayers' });
+                    // Check if first team is full
+                    if(firstTeam.length < game.size){
+                        firstTeam.addPlayer(user, { through: 'teamPlayers' });
+                    }else{
+                        sendCustomErrorResponse(res, 500, "Cannot join first team. Team full.");
+                    }
                 } else {
                     const secondTeam = await game.getSecondTeam();
-                    secondTeam.addPlayer(user, { through: 'teamPlayers' });
+                    // Check if second team is full
+                    if(secondTeam.length < game.size){
+                        secondTeam.addPlayer(user, { through: 'teamPlayers' });
+                    }else{
+                        sendCustomErrorResponse(res, 500, "Cannot join the  team. Team full.");
+                    }
                 }
 
                 sendCustomResponse(res, 200, null);
