@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -75,6 +74,7 @@ public class GameActivity extends AppCompatActivity
         window.setStatusBarColor(statusColor);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(getIntent().getExtras().getInt("type") == 0 ? "Ποδόσφαιρο" : "Μπάσκετ");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(barColor));
@@ -145,7 +145,7 @@ public class GameActivity extends AppCompatActivity
 
                     updateUI(new Game(gameid, userid, name, type, size, opponents, city, address, countryCode, locLat, locLong, gameDate, phone, comments, status, createdDate));
 
-                    //
+                    // Extract teams
 
                     if(!tmp.isNull("teams"))
                     {
@@ -154,7 +154,7 @@ public class GameActivity extends AppCompatActivity
 
                         JSONArray teams = tmp.getJSONArray("teams");
 
-                        if(!teams.isNull(0))
+                        if(!teams.isNull(0)) // If team 1 exists
                         {
                             JSONArray team_1 = teams.getJSONArray(0);
 
@@ -170,7 +170,7 @@ public class GameActivity extends AppCompatActivity
                             }
                         }
 
-                        if(!teams.isNull(1))
+                        if(!teams.isNull(1)) // If team 2 exists
                         {
                             JSONArray team_2 = teams.getJSONArray(1);
 
@@ -193,7 +193,8 @@ public class GameActivity extends AppCompatActivity
                 {
                     Log.d(TAG, e.getMessage());
 
-                    //TODO: kill the process, show error message something went wrong
+                    Toast.makeText(getApplicationContext(), "Πρόβλημα κατα την επεξεργασία.\nΠαρακαλόυμε δοκιμάστε ξανα.", Toast.LENGTH_SHORT).show();
+                    finish();
 
                     e.printStackTrace();
                 }
@@ -204,13 +205,13 @@ public class GameActivity extends AppCompatActivity
             {
                 Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
 
-                //TODO: kill the process, show error message something went wrong
+                finish();
             }
         });
     }
 
     /**
-     * updateUI will update all components values
+     * updateUI (game)  will update all basic components values
      *
      * @param game the object we are getting the data from
      */
@@ -219,7 +220,14 @@ public class GameActivity extends AppCompatActivity
     {
         // Update all components with their values
 
-        getSupportActionBar().setTitle(game.getName() + " (" + game.getSize() + "x" + game.getSize() + ")");
+        if(game.getType() == 0)
+        {
+            getSupportActionBar().setTitle("Ποδόσφαιρο " + game.getSize() + "x" + game.getSize());
+        }
+        else
+        {
+            getSupportActionBar().setTitle("Μπάσκετ " + game.getSize() + "x" + game.getSize());
+        }
 
         gameLocation.setText(game.getLocationAddress() + ", " + game.getLocationCity());
         gamePhone.setText(game.getPhone());
@@ -237,6 +245,13 @@ public class GameActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * UpdateUI (teams) will update all teams
+     * @param size the game size
+     * @param team1 the first team
+     * @param team2 the second teeam
+     */
+
     private void updateUI(int size, ArrayList<User> team1, ArrayList<User> team2)
     {
         team1Recycler.setAdapter(new TeamsAdapter(team1, getApplicationContext()));
@@ -245,10 +260,21 @@ public class GameActivity extends AppCompatActivity
         {
             team1Button.setVisibility(View.VISIBLE);
 
+            // In case their is a difference in teams add margin to fill the void of buttons
+
             if(team1.size() < team2.size())
             {
                 ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) team1Button.getLayoutParams();
-                params.topMargin = (int) (38 * (team2.size() - team1.size()) * getResources().getDisplayMetrics().density) + 2;
+
+                if(team2.size() == size)
+                {
+                    params.topMargin = (int) (38 * ((team2.size() - team1.size()) - 1) * getResources().getDisplayMetrics().density) + 2;
+                }
+                else
+                {
+                    params.topMargin = (int) (38 * (team2.size() - team1.size()) * getResources().getDisplayMetrics().density) + 2;
+                }
+
                 team1Button.requestLayout();
             }
         }
@@ -265,9 +291,20 @@ public class GameActivity extends AppCompatActivity
 
             if(team2.size() < team1.size())
             {
+                // In case their is a difference in teams add margin to fill the void of buttons
+
                 ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) team2Button.getLayoutParams();
-                params.topMargin = (int) (38 * (team1.size() - team2.size()) * getResources().getDisplayMetrics().density) + 2;
-                team1Button.requestLayout();
+
+                if(team1.size() == size)
+                {
+                    params.topMargin = (int) (38 * ((team1.size() - team2.size()) - 1) * getResources().getDisplayMetrics().density) + 2;
+                }
+                else
+                {
+                    params.topMargin = (int) (38 * (team1.size() - team2.size()) * getResources().getDisplayMetrics().density) + 2;
+                }
+
+                team2Button.requestLayout();
             }
         }
         else
