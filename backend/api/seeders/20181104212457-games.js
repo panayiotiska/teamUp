@@ -72,7 +72,7 @@ module.exports = {
     const gameOneFirstTeam = await games[0].getFirstTeam();
     const gameOneSecondTeam = await games[0].getSecondTeam();
 
-    await gameOneFirstTeam.addPlayer(users[0], {through: 'teamPlayers'});
+    //await gameOneFirstTeam.addPlayer(users[0], {through: 'teamPlayers'});
     await gameOneFirstTeam.addPlayer(users[3], {through: 'teamPlayers'});
     await gameOneFirstTeam.addPlayer(users[4], {through: 'teamPlayers'});
     await gameOneFirstTeam.addPlayer(users[6], {through: 'teamPlayers'});
@@ -82,7 +82,7 @@ module.exports = {
     await gameOneSecondTeam.addPlayer(users[1], {through: 'teamPlayers'});
     await gameOneSecondTeam.addPlayer(users[8], {through: 'teamPlayers'});
     await gameOneSecondTeam.addPlayer(users[19], {through: 'teamPlayers'});
-    await gameOneSecondTeam.addPlayer(users[13], {through: 'teamPlayers'});
+    //await gameOneSecondTeam.addPlayer(users[13], {through: 'teamPlayers'});
     
   }
 };
