@@ -53,8 +53,8 @@ public class GameActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        // Setting up ActionBar
 
+        // Setting up ActionBar
         int barColor, statusColor;
 
         if(getIntent().getExtras().getInt("type") == 0)
@@ -168,7 +168,7 @@ public class GameActivity extends AppCompatActivity
                                 String firstName = player.getString("firstName");
                                 String lastName = player.getString("lastName");
 
-                                team1.add(new User(id, firstName, lastName, ""));
+                                team1.add(new User(id, firstName, lastName, "1"));
                             }
                         }
 
@@ -184,7 +184,7 @@ public class GameActivity extends AppCompatActivity
                                 String firstName = player.getString("firstName");
                                 String lastName = player.getString("lastName");
 
-                                team2.add(new User(id, firstName, lastName, ""));
+                                team2.add(new User(id, firstName, lastName, "1"));
                             }
                         }
 
@@ -247,18 +247,28 @@ public class GameActivity extends AppCompatActivity
 
     /**
      * UpdateUI (teams) will update all teams
-     * @param size the game size
+     *
+     * @param size  the game size
      * @param team1 the first team
      * @param team2 the second teeam
      */
 
-    private void updateUI(int size, ArrayList<User> team1, ArrayList<User> team2, final int firstTeamId, final int secondTeamId)
+    private void updateUI(int size, ArrayList<User> team1, final ArrayList<User> team2, final int firstTeamId, final int secondTeamId)
     {
         team1Recycler.setAdapter(new TeamsAdapter(team1, getApplicationContext()));
 
-        if(team1.size() < size)
+        if(team1.size() < size && !team1.contains(new User("100000273909010", "Rafaellos", "Monoyios", "1")))
         {
             team1Button.setVisibility(View.VISIBLE);
+
+            if(team2.contains(new User("100000273909010", "Rafaellos", "Monoyios", "")))
+            {
+                team1Button.setText("ΑΛΛΑΓΗ");
+            }
+            else
+            {
+                team1Button.setText("ΕΙΣΟΔΟΣ");
+            }
 
             // In case their is a difference in teams add margin to fill the void of buttons
 
@@ -266,7 +276,7 @@ public class GameActivity extends AppCompatActivity
             {
                 ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) team1Button.getLayoutParams();
 
-                if(team2.size() == size)
+                if(team2.size() == size || team2.size() == 1)
                 {
                     params.topMargin = (int) (38 * ((team2.size() - team1.size()) - 1) * getResources().getDisplayMetrics().density) + 2;
                 }
@@ -289,6 +299,15 @@ public class GameActivity extends AppCompatActivity
                         public void getResult(JSONArray result)
                         {
                             loadData();
+
+                            if(team1Button.getText().equals("ΑΛΛΑΓΗ"))
+                            {
+                                Toast.makeText(getApplicationContext(), "Άλλαξες ομάδα", Toast.LENGTH_SHORT).show();
+                            }
+                            else
+                            {
+                                Toast.makeText(getApplicationContext(), "Μπήκες στο παιχνίδι", Toast.LENGTH_SHORT).show();
+                            }
                         }
 
                         @Override
@@ -307,9 +326,18 @@ public class GameActivity extends AppCompatActivity
 
         team2Recycler.setAdapter(new TeamsAdapter(team2, getApplicationContext()));
 
-        if(team2.size() < size)
+        if(team2.size() < size && !team2.contains(new User("100000273909010", "Rafaellos", "Monoyios", "")))
         {
             team2Button.setVisibility(View.VISIBLE);
+
+            if(team1.contains(new User("100000273909010", "Rafaellos", "Monoyios", "")))
+            {
+                team2Button.setText("ΑΛΛΑΓΗ");
+            }
+            else
+            {
+                team2Button.setText("ΕΙΣΟΔΟΣ");
+            }
 
             if(team2.size() < team1.size())
             {
@@ -317,7 +345,7 @@ public class GameActivity extends AppCompatActivity
 
                 ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) team2Button.getLayoutParams();
 
-                if(team1.size() == size)
+                if(team1.size() == size || team1.size() == 1)
                 {
                     params.topMargin = (int) (38 * ((team1.size() - team2.size()) - 1) * getResources().getDisplayMetrics().density) + 2;
                 }
@@ -340,6 +368,15 @@ public class GameActivity extends AppCompatActivity
                         public void getResult(JSONArray result)
                         {
                             loadData();
+
+                            if(team2Button.getText().equals("ΑΛΛΑΓΗ"))
+                            {
+                                Toast.makeText(getApplicationContext(), "Άλλαξες ομάδα", Toast.LENGTH_SHORT).show();
+                            }
+                            else
+                            {
+                                Toast.makeText(getApplicationContext(), "Μπήκες στο παιχνίδι", Toast.LENGTH_SHORT).show();
+                            }
                         }
 
                         @Override
