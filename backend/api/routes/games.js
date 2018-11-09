@@ -55,8 +55,8 @@ async function getGameTeams(gameId) {
         });
 
         return {
-            firstTeam: firstTeam,
-            secondTeam: secondTeam
+            firstTeam: firstTeam.Player,
+            secondTeam: secondTeam.Player
         }
 
     } catch (error) {
@@ -65,7 +65,7 @@ async function getGameTeams(gameId) {
 }
 
 async function getUserGame(gameId, authToken) {
-    // Returns a user object only if the given game has been created by the authenticated user
+    // Returns a user object only if the given game has been created by the currently authenticated user
     return await User.findOne({
         where: {
             authToken: authToken
@@ -172,7 +172,7 @@ games.post('/', async (req, res) => {
 // Get game
 games.get('/:id', async (req, res) => {
     try {
-        // Get game details based on its id
+        // Get game based id
         const game = await Game.findOne({
             where: {
                 id: req.params.id
@@ -199,49 +199,25 @@ games.get('/:id', async (req, res) => {
             }
         });
 
-        // Rename Location attribute to location
-        game.dataValues.location = game.Location;
-        delete game.dataValues.Location;
+        // Game found
+        if (game !== null) {
+            // Get first and second team
+            const teams = await getGameTeams(game.id);
 
-        // Get players of the first team       
-        const firstTeam = await game.getFirstTeam({
-            include: {
-                model: User,
-                as: 'Player',
-                through: 'teamPlayers',
-                through: {
-                    attributes: []
-                },
-                attributes: ['id', 'firstName', 'lastName']
-            },
-            attributes: {
-                exclude: ['createdAt', 'updatedAt']
-            }
-        });
+            // Modify game JSON object
+            // Rename 'Location' attribute to 'location'
+            game.dataValues.location = game.Location;
+            delete game.dataValues.Location;
 
-        // get players of the second team
-        const secondTeam = await game.getSecondTeam({
-            include: {
-                model: User,
-                as: 'Player',
-                through: 'teamPlayers',
-                through: {
-                    attributes: []
-                },
-                attributes: ['id', 'firstName', 'lastName']
-            },
-            attributes: {
-                exclude: ['createdAt', 'updatedAt']
-            }
-        });
+            // Include first and second team
+            game.dataValues.teams = [teams.firstTeam];
+            game.dataValues.teams[1] = teams.secondTeam;
 
-        // Include teams
-        game.dataValues.teams = [firstTeam.Player];
-        game.dataValues.teams[1] = secondTeam.Player;
-
-
-        // Send response - HTTP 200 OK
-        sendCustomResponse(res, 200, [game]);
+            // Send response - HTTP 200 OK
+            sendCustomResponse(res, 200, [game]);
+        } else {
+            sendCustomErrorResponse(res, 404, "No game with such id.");
+        }
     } catch (error) {
         // TODO: Log error
         console.log(error);
@@ -272,14 +248,19 @@ games.get('/', async (req, res) => {
             order: [['eventDate', 'ASC']]
         });
 
-        // Send response - HTTP 200 OK
-        sendCustomResponse(res, 200, games);
+        if (games !== null) {
+            // Send response - HTTP 200 OK
+            sendCustomResponse(res, 200, games);
+        } else {
+            // Send response - HTTP 200 OK
+            sendCustomResponse(res, 200, []);
+        }
     } catch (error) {
         // TODO: Log errors
-        // Send error response - HTTP 500 Internal Server Error
-        sendCustomErrorResponse(res, 500, "Couldn't get games.");
         console.log(error);
 
+        // Send error response - HTTP 500 Internal Server Error
+        sendCustomErrorResponse(res, 500, "Error while listing games.");
     }
 });
 
@@ -328,12 +309,12 @@ games.get('/:id/teams', async (req, res) => {
         const teams = await getGameTeams(req.params.id);
 
         // Send response - HTTP 200 OK
-        sendCustomResponse(res, 200, [teams.firstTeam.Player, teams.secondTeam.Player]);
+        sendCustomResponse(res, 200, [teams.firstTeam, teams.secondTeam]);
     } catch (error) {
         //TODO: Log error
         console.log(error);
         // Send error response - HTTP 500 Internal Server Error      
-        sendCustomErrorResponse(res, 500, "Couldn't get teams.")
+        sendCustomErrorResponse(res, 500, "Error while listing game teams.");
     }
 });
 
@@ -388,13 +369,13 @@ games.post('/:gameId/teams/:teamId', async (req, res) => {
                 if (firstTeam.id == req.params.teamId) {
                     // Join first team
                     // Check if the user is already part of the first team
-                    if (teams.firstTeam.Player.find(usr => usr.id === user.id)) {
+                    if (teams.firstTeam.find(usr => usr.id === user.id)) {
                         sendCustomErrorResponse(res, 409, "User is already member of the team.");
                     } else {
                         // Check if first team is not full
-                        if (teams.firstTeam.Player.length < game.size) {
+                        if (teams.firstTeam.length < game.size) {
                             // Check if user is part of the second team on this game
-                            if (teams.secondTeam.Player.find(usr => usr.id === user.id)) {
+                            if (teams.secondTeam.find(usr => usr.id === user.id)) {
                                 // Remove user from second team
                                 await secondTeam.removePlayer(user, { through: 'teamPlayers' });
                             }
@@ -407,13 +388,13 @@ games.post('/:gameId/teams/:teamId', async (req, res) => {
                 } else if (secondTeam.id == req.params.teamId) {
                     // Join second team
                     // Check if user is already part of the second team
-                    if (teams.secondTeam.Player.find(usr => usr.id === user.id)) {
+                    if (teams.secondTeam.find(usr => usr.id === user.id)) {
                         sendCustomErrorResponse(res, 409, "User is already member of the team.");
                     } else {
                         // Check if second team is not full                       
-                        if (teams.secondTeam.Player.length < game.size) {
+                        if (teams.secondTeam.length < game.size) {
                             // Check if user is part of the first team on this game
-                            if (teams.firstTeam.Player.find(usr => usr.id === user.id)) {
+                            if (teams.firstTeam.find(usr => usr.id === user.id)) {
                                 // Remove user from second team
                                 await firstTeam.removePlayer(user, { through: 'teamPlayers' });
                             }
@@ -423,7 +404,6 @@ games.post('/:gameId/teams/:teamId', async (req, res) => {
                             sendCustomErrorResponse(res, 500, "Cannot join team. Team full.");
                         }
                     }
-
                 } else {
                     // Team doesn't belong to the specified game
                     // Invalid combination of gameId and teamId
@@ -431,7 +411,7 @@ games.post('/:gameId/teams/:teamId', async (req, res) => {
                 }
 
             } else {
-                sendCustomResponse(res, 404, "Couldn't find the specified game.");
+                sendCustomErrorResponse(res, 404, "Couldn't find the specified game.");
             }
         } else {
             sendCustomErrorResponse(res, 401, "You are unauthorized to perform this action. Unrecognized User.");
@@ -441,12 +421,13 @@ games.post('/:gameId/teams/:teamId', async (req, res) => {
     } catch (error) {
         // TODO: Log error
         console.log(error);
-        sendCustomErrorResponse(res, 500, "Couldn't join team");
+        sendCustomErrorResponse(res, 500, "Error while joining team.");
     }
 });
 
-// Remove User from Game Team
+// Remove user from game team
 games.delete('/:gameId/teams/:teamId', (req, res) => {
+    //TODO: Implement
     res.json({ msg: "Remove a player from the team" });
 });
 
