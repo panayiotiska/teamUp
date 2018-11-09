@@ -24,12 +24,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
-
 public class ProfileActivity extends AppCompatActivity
 {
     private final String TAG = "ProfileActivity";
@@ -42,7 +37,7 @@ public class ProfileActivity extends AppCompatActivity
 
     private RecyclerView ratingsList;
     private RatingBar onTimeRating, skillRating, behaviorRating, overallRatingBar;
-    private TextView overallText, totalText, profileSince, profileGames, ratingText;
+    private TextView overallText, totalText, ratingText;
 
     private ShimmerFrameLayout shimmerFrameLayout;
 
@@ -72,8 +67,6 @@ public class ProfileActivity extends AppCompatActivity
         overallRatingBar = findViewById(R.id.a_profile_overall_ratingbar);
         overallText = findViewById(R.id.a_profile_overall_text);
         totalText = findViewById(R.id.a_profile_total_text);
-        profileSince = findViewById(R.id.a_profile_since);
-        profileGames = findViewById(R.id.a_profile_games);
         ratingText = findViewById(R.id.a_profile_rating_norating);
 
         ratingsList = findViewById(R.id.a_profile_rating_recycler);
@@ -244,18 +237,6 @@ public class ProfileActivity extends AppCompatActivity
     {
         // Update profile data with their values
 
-        try
-        {
-            Date date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).parse(user.getCreatedAt());
-
-            profileSince.setText("Μέλος από\n" + new SimpleDateFormat("d MMM yyyy", Locale.getDefault()).format(date));
-        }
-        catch(ParseException e)
-        {
-            e.printStackTrace();
-        }
-
-        profileGames.setText("Έπαιξε\n" + 0 + " παιχνίδια");
         onTimeRating.setRating(avgOnTime);
         skillRating.setRating(avgSkills);
         behaviorRating.setRating(avgBehavior);

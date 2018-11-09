@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.github.h01d.teamup_v2"
+        applicationId "com.github.h01d.teamup"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 1

@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity
 
     // Dummy user for now, will be cached in memory
 
-    private final User user = new User("100000273909010", "Rafaellos", "M.", "27-10-2018 10:42");
+    private final User user = new User("100000273909010", "Rafaellos", "Monoyios", "27-10-2018 10:42");
 
     // Layout views
 

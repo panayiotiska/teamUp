@@ -8,8 +8,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +45,8 @@ public class GameActivity extends AppCompatActivity
     // Layout views
 
     private TextView gameDate, gamePhone, gameLocation, gameComment;
+    private Button team1Button, team2Button;
+    private RecyclerView team1Recycler, team2Recycler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -83,6 +89,18 @@ public class GameActivity extends AppCompatActivity
         gameDate = findViewById(R.id.a_game_date);
         gamePhone = findViewById(R.id.a_game_phone);
         gameComment = findViewById(R.id.a_game_comment);
+        team1Button = findViewById(R.id.a_game_team1_button);
+        team2Button = findViewById(R.id.a_game_team2_button);
+
+        team1Recycler = findViewById(R.id.a_game_team1);
+        team1Recycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        team1Recycler.setHasFixedSize(true);
+        team1Recycler.addItemDecoration(new DividerItemDecoration(getApplicationContext(), LinearLayoutManager.VERTICAL));
+
+        team2Recycler = findViewById(R.id.a_game_team2);
+        team2Recycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        team2Recycler.setHasFixedSize(true);
+        team2Recycler.addItemDecoration(new DividerItemDecoration(getApplicationContext(), LinearLayoutManager.VERTICAL));
 
         // Load data for a first time
 
@@ -150,12 +168,6 @@ public class GameActivity extends AppCompatActivity
 
                                 team1.add(new User(id, firstName, lastName, ""));
                             }
-
-                            RecyclerView first = findViewById(R.id.a_game_team1);
-                            first.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                            first.setHasFixedSize(true);
-                            first.addItemDecoration(new DividerItemDecoration(getApplicationContext(), LinearLayoutManager.VERTICAL));
-                            first.setAdapter(new TeamsAdapter(team1, getApplicationContext()));
                         }
 
                         if(!teams.isNull(1))
@@ -172,13 +184,9 @@ public class GameActivity extends AppCompatActivity
 
                                 team2.add(new User(id, firstName, lastName, ""));
                             }
-
-                            RecyclerView second = findViewById(R.id.a_game_team2);
-                            second.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                            second.setHasFixedSize(true);
-                            second.addItemDecoration(new DividerItemDecoration(getApplicationContext(), LinearLayoutManager.VERTICAL));
-                            second.setAdapter(new TeamsAdapter(team2, getApplicationContext()));
                         }
+
+                        updateUI(size, team1, team2);
                     }
                 }
                 catch(JSONException e)
@@ -211,9 +219,9 @@ public class GameActivity extends AppCompatActivity
     {
         // Update all components with their values
 
-        getSupportActionBar().setTitle(game.getName() + " (" +game.getSize() + "x" + game.getSize() + ")");
+        getSupportActionBar().setTitle(game.getName() + " (" + game.getSize() + "x" + game.getSize() + ")");
 
-        gameLocation.setText(game.getLocationAddress());
+        gameLocation.setText(game.getLocationAddress() + ", " + game.getLocationCity());
         gamePhone.setText(game.getPhone());
         gameComment.setText(game.getComment());
 
@@ -226,6 +234,45 @@ public class GameActivity extends AppCompatActivity
         catch(ParseException e)
         {
             e.printStackTrace();
+        }
+    }
+
+    private void updateUI(int size, ArrayList<User> team1, ArrayList<User> team2)
+    {
+        team1Recycler.setAdapter(new TeamsAdapter(team1, getApplicationContext()));
+
+        if(team1.size() < size)
+        {
+            team1Button.setVisibility(View.VISIBLE);
+
+            if(team1.size() < team2.size())
+            {
+                ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) team1Button.getLayoutParams();
+                params.topMargin = (int) (38 * (team2.size() - team1.size()) * getResources().getDisplayMetrics().density) + 2;
+                team1Button.requestLayout();
+            }
+        }
+        else
+        {
+            team1Button.setVisibility(View.GONE);
+        }
+
+        team2Recycler.setAdapter(new TeamsAdapter(team2, getApplicationContext()));
+
+        if(team2.size() < size)
+        {
+            team2Button.setVisibility(View.VISIBLE);
+
+            if(team2.size() < team1.size())
+            {
+                ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) team2Button.getLayoutParams();
+                params.topMargin = (int) (38 * (team1.size() - team2.size()) * getResources().getDisplayMetrics().density) + 2;
+                team1Button.requestLayout();
+            }
+        }
+        else
+        {
+            team2Button.setVisibility(View.GONE);
         }
     }
 }
