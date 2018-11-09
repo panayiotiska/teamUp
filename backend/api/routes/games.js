@@ -6,14 +6,14 @@ const uuid = require('uuid/v4');
 // Custom Response Handler
 const { sendCustomResponse, sendCustomErrorResponse } = require('../handlers/customResponse');
 
-// // Database models
+// Sequelize models
 const User = require('../models').User;
 const Game = require('../models').Game;
 const Team = require('../models').Team;
 const Location = require('../models').Location;
 
-// List game teams
 async function getGameTeams(gameId) {
+    // Returns the first and second team of a given game
     try {
         // Find game
         const game = await Game.findOne({
@@ -62,6 +62,23 @@ async function getGameTeams(gameId) {
     } catch (error) {
         console.log(error);
     }
+}
+
+async function getUserGame(gameId, authToken) {
+    // Returns a user object only if the given game has been created by the authenticated user
+    return await User.findOne({
+        where: {
+            authToken: authToken
+        },
+        include: [{
+            model: Game,
+            through: 'userGames',
+            where: {
+                id: gameId
+            },
+            required: true
+        }]
+    });
 }
 
 // Create game
@@ -331,30 +348,12 @@ games.get('/:id/teams', async (req, res) => {
 // Delete game
 games.delete('/:id', async (req, res) => {
     try {
-        // Find user
-        // Returns a user object only if the given game has been created by the authenticated user
-        const user = await User.findOne({
-            where: {
-                authToken: req.headers['auth-token']
-            },
-            include: [{
-                model: Game,
-                through: 'userGames',
-                where: {
-                    id: req.params.id
-                },
-                required: true
-            }]
-        });
+        // Get the game if user is its creator
+        const userGame = await getUserGame(req.params.id, req.headers['auth-token']);
 
         // User found
-        if (user !== null) {
-            // Delete game
-            const game = await Game.destroy({
-                where: {
-                    id: req.params.id
-                }
-            });
+        if (userGame !== null) {
+            await userGame.Games[0].destroy();
             sendCustomResponse(res, 200, null);
         } else {
             // User is not the creator of this game
