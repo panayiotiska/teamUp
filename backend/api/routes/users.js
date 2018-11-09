@@ -104,50 +104,6 @@ users.get('/:id', async (req, res) => {
 
         // User has been found successfully
         if (user) {
-
-            // Find the number of games that the user has joined a team AND the game has a status of 'completed'
-            const gamesCount = await Game.findAndCountAll({
-                where: {
-                    status: 'completed'
-                },
-                include: [
-                    {
-                        model: Team,
-                        as: 'firstTeam',
-                        include: [
-                            {
-                                model: User,
-                                as: 'Player',
-                                through: 'teamPlayers',
-                                through: {
-                                    where: {
-                                        userId: user.id
-                                    }
-                                }, required: true
-                            }
-                        ]
-                    },
-                    {
-                        model: Team,
-                        as: 'secondTeam',
-                        include: [
-                            {
-                                model: User,
-                                as: 'Player',
-                                through: 'teamPlayers',
-                                through: {
-                                    where: {
-                                        userId: user.id
-                                    }
-                                },
-                                 required: true
-                            }
-                        ]
-                    }
-                ]
-            });
-
-            user.dataValues.gamesPlayed = gamesCount.count;
             //user.dataValues.gamesPlayed = gamesCount.length;
 
             // Modify user JSON object
