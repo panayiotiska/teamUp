@@ -13,21 +13,24 @@ module.exports = {
       return queryInterface.bulkInsert('Locations', [
         {
           city: "Σταυρούπολη",
-          address: "Οδυσσέα Ελύτη 4, Σταυρούπολη 564 30",
+          address: "Οδυσσέα Ελύτη 4",
+          postalCode: "564 30",
           countryCode: "GR",
           latitude: 40.6519117,
           longitude: 22.9385447 
         },
         {
           city: "Θεσσαλονίκη",
-          address: "Αλ. Παπαναστασίου 158, Θεσσαλονίκη 542 49",
+          address: "Αλ. Παπαναστασίου 158",
+          postalCode: "542 49",
           countryCode: "GR",
           latitude: 40.6001553,
           longitude: 22.9691805 
         },
         {
           city: "Καλαμαριά",
-          address: "Πόντου 115, Καλαμαριά 551 33",
+          address: "Πόντου 115",
+          postalCode: "551 33",
           countryCode: "GR",
           latitude: 40.58523,
           longitude: 22.961799

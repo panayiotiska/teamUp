@@ -8,7 +8,6 @@ const Rating = require('../models').Rating;
 const Game = require('../models').Game;
 const Team = require('../models').Team;
 const Sequelize = require('../models').Sequelize;
-const Op = Sequelize.Op
 const avgRatings = require('../models').avgRatings;
 
 // Create user
