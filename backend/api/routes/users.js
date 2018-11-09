@@ -5,7 +5,10 @@ const { sendCustomResponse, sendCustomErrorResponse } = require('../handlers/cus
 
 const User = require('../models').User;
 const Rating = require('../models').Rating;
+const Game = require('../models').Game;
+const Team = require('../models').Team;
 const Sequelize = require('../models').Sequelize;
+const Op = Sequelize.Op
 const avgRatings = require('../models').avgRatings;
 
 // Create user
@@ -91,7 +94,7 @@ users.get('/:id', async (req, res) => {
             include: [{
                 model: avgRatings,
                 attributes: {
-                    exclude: ['id', 'createdAt', 'updatedAt', 'userId']
+                    exclude: ['id', 'createdAt', 'updatedAt', 'UserId']
                 }
             }],
             attributes: {
@@ -101,6 +104,47 @@ users.get('/:id', async (req, res) => {
 
         // User has been found successfully
         if (user) {
+
+            // Find the number of games that the user has joined a team AND the game has a status of 'completed'
+            const gamesCount = await Game.findAndCountAll({
+                where: {
+                    status: 'completed'
+                },
+                through: 'userGames',
+                include: [{
+                    model: Team,
+                    as: 'firstTeam',
+                    include: [{
+                        model: User,
+                        as: 'Player',
+                        through: 'teamPlayers',
+                        where: {
+                            id: user.id
+                        },
+                        required: true
+                    }],
+                    required: true
+                },
+                {
+                    model: Team,
+                    as: 'secondTeam',
+                    include: [{
+                        model: User,
+                        as: 'Player',
+                        through: 'teamPlayers',
+                        where: {
+                            id: user.id
+                        },
+                        required: true
+                    }],
+                    required: true
+                   
+                }]
+            });
+
+            user.dataValues.gamesPlayed = gamesCount;
+            //user.dataValues.gamesPlayed = gamesCount.length;
+
             // Modify user JSON object
             user.dataValues.rating = user.dataValues.avgRating;
             delete user.dataValues.avgRating;
@@ -111,6 +155,8 @@ users.get('/:id', async (req, res) => {
         }
     } catch (error) {
         // TODO: Log the error
+        console.log(error);
+
         // Send error request - HTTP 500 Internal Server Error
         sendCustomErrorResponse(res, 500, "Couldn't search for user.")
     }
