@@ -130,6 +130,8 @@ public class GameActivity extends AppCompatActivity
                     String name = tmp.getString("name");
                     int type = tmp.getInt("type");
                     int size = tmp.getInt("size");
+                    int firstTeamId = tmp.getInt("firstTeamId");
+                    int secondTeamId = tmp.getInt("secondTeamId");
                     boolean opponents = tmp.getBoolean("opponents");
                     String gameDate = tmp.getString("eventDate");
                     String comments = tmp.getString("description");
@@ -186,7 +188,7 @@ public class GameActivity extends AppCompatActivity
                             }
                         }
 
-                        updateUI(size, team1, team2);
+                        updateUI(size, team1, team2, firstTeamId, secondTeamId);
                     }
                 }
                 catch(JSONException e)
@@ -204,8 +206,6 @@ public class GameActivity extends AppCompatActivity
             public void getError(String error, int code)
             {
                 Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
-
-                finish();
             }
         });
     }
@@ -252,7 +252,7 @@ public class GameActivity extends AppCompatActivity
      * @param team2 the second teeam
      */
 
-    private void updateUI(int size, ArrayList<User> team1, ArrayList<User> team2)
+    private void updateUI(int size, ArrayList<User> team1, ArrayList<User> team2, final int firstTeamId, final int secondTeamId)
     {
         team1Recycler.setAdapter(new TeamsAdapter(team1, getApplicationContext()));
 
@@ -277,6 +277,28 @@ public class GameActivity extends AppCompatActivity
 
                 team1Button.requestLayout();
             }
+
+            team1Button.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    NetworkManager.getInstance().postData("http://104.223.87.94:3000/api/v1/games/" + gameID + "/teams/" + firstTeamId, new JSONObject(), new NetworkManagerListener()
+                    {
+                        @Override
+                        public void getResult(JSONArray result)
+                        {
+                            loadData();
+                        }
+
+                        @Override
+                        public void getError(String error, int code)
+                        {
+                            Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            });
         }
         else
         {
@@ -306,6 +328,28 @@ public class GameActivity extends AppCompatActivity
 
                 team2Button.requestLayout();
             }
+
+            team2Button.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    NetworkManager.getInstance().postData("http://104.223.87.94:3000/api/v1/games/" + gameID + "/teams/" + secondTeamId, new JSONObject(), new NetworkManagerListener()
+                    {
+                        @Override
+                        public void getResult(JSONArray result)
+                        {
+                            loadData();
+                        }
+
+                        @Override
+                        public void getError(String error, int code)
+                        {
+                            Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            });
         }
         else
         {
