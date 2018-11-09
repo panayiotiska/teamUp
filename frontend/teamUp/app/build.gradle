@@ -35,4 +35,5 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'com.facebook.shimmer:shimmer:0.3.0'
+    implementation 'com.github.markushi:circlebutton:1.1'
 }
