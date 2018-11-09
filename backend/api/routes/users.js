@@ -110,39 +110,44 @@ users.get('/:id', async (req, res) => {
                 where: {
                     status: 'completed'
                 },
-                through: 'userGames',
-                include: [{
-                    model: Team,
-                    as: 'firstTeam',
-                    include: [{
-                        model: User,
-                        as: 'Player',
-                        through: 'teamPlayers',
-                        where: {
-                            id: user.id
-                        },
-                        required: true
-                    }],
-                    required: true
-                },
-                {
-                    model: Team,
-                    as: 'secondTeam',
-                    include: [{
-                        model: User,
-                        as: 'Player',
-                        through: 'teamPlayers',
-                        where: {
-                            id: user.id
-                        },
-                        required: true
-                    }],
-                    required: true
-                   
-                }]
+                include: [
+                    {
+                        model: Team,
+                        as: 'firstTeam',
+                        include: [
+                            {
+                                model: User,
+                                as: 'Player',
+                                through: 'teamPlayers',
+                                through: {
+                                    where: {
+                                        userId: user.id
+                                    }
+                                }, required: true
+                            }
+                        ]
+                    },
+                    {
+                        model: Team,
+                        as: 'secondTeam',
+                        include: [
+                            {
+                                model: User,
+                                as: 'Player',
+                                through: 'teamPlayers',
+                                through: {
+                                    where: {
+                                        userId: user.id
+                                    }
+                                },
+                                 required: true
+                            }
+                        ]
+                    }
+                ]
             });
 
-            user.dataValues.gamesPlayed = gamesCount;
+            user.dataValues.gamesPlayed = gamesCount.count;
             //user.dataValues.gamesPlayed = gamesCount.length;
 
             // Modify user JSON object
