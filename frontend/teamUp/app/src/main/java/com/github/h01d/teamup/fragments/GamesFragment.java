@@ -65,7 +65,6 @@ public class GamesFragment extends Fragment
         recyclerView = view.findViewById(R.id.f_games_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);
-        //recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
 
         relativeLayout = view.findViewById(R.id.f_games_relative);
         errorImage = view.findViewById(R.id.f_games_icon);
