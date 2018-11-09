@@ -286,19 +286,11 @@ games.get('/', async (req, res) => {
 // Update game
 games.patch('/:id', async (req, res) => {
     try {
-        // TODO: First you need to check if the user that tries to edit this game is also authorized to perform this action.
-        // TODO: Check if the user is the one who created this game. If so, then authorize the action
+        // Check if the authenticated user has created the requested game
+        const userGame = await getUserGame(req.params.id, req.headers['auth-token']);
 
-        // Find the specified game
-        const game = await Game.findOne({
-            where: {
-                id: req.params.id
-            }
-        });
-
-        // Found the game
-        if (game !== null) {
-            const tmpGame = await game.update({
+        if (userGame !== null) {
+            const game = await userGame.Games[0].update({
                 name: req.body.data[0].name,
                 type: req.body.data[0].type,
                 size: req.body.data[0].size,
@@ -309,21 +301,21 @@ games.patch('/:id', async (req, res) => {
 
             // Guard
             // Validate the data against the Game model
-            await tmpGame.validate();
+            await game.validate();
 
             // Update game details
-            await tmpGame.save();
+            await game.save();
 
             // Send response - HTTP 200 OK
             sendCustomResponse(res, 200, null);
         } else {
-            // We don't have to expose that the game doesn't exist in our database.
             // Send error response - HTTP 401 Unauthorized
-            sendCustomErrorResponse(res, 401, "You are unauthorized to perform this action. - DEBUG: Game doesn't exist");
+            sendCustomErrorResponse(res, 401, "You are unauthorized to perform this action. ");
         }
 
     } catch (error) {
         // TODO: Log error
+        console.log(error);
         // Send error response - HTTP 500 Internal Server Error
         sendCustomErrorResponse(res, 500, "Couldn't update game details.");
     }
