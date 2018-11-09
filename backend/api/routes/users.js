@@ -104,8 +104,6 @@ users.get('/:id', async (req, res) => {
 
         // User has been found successfully
         if (user) {
-            //user.dataValues.gamesPlayed = gamesCount.length;
-
             // Modify user JSON object
             user.dataValues.rating = user.dataValues.avgRating;
             delete user.dataValues.avgRating;
