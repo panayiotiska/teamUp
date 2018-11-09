@@ -175,7 +175,7 @@ games.get('/', async (req, res) => {
         });
 
         // Send response - HTTP 200 OK
-        sendCustomResponse(res, 200, [games]);
+        sendCustomResponse(res, 200, games);
     } catch (error) {
         // TODO: Log errors
         // Send error response - HTTP 500 Internal Server Error
