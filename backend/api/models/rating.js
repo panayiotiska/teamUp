@@ -8,8 +8,11 @@ module.exports = (sequelize, DataTypes) => {
     behavior: DataTypes.INTEGER
   }, {});
   Rating.associate = function(models) {
-    // associations can be defined here
+    // Rating belongsToMany User
     Rating.belongsToMany(models.User, { through: 'userRatings', foreignKey: 'ratingId' });
+
+    // Rating belongsToMany Field
+    Rating.belongsToMany(models.Field, { through: 'fieldRatings', foreignKey: 'ratingId' });
   };
   return Rating;
 };

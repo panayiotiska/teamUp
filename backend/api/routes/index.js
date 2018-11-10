@@ -5,8 +5,9 @@ router.get('/', (req, res) => {
     res.send("Welcome to the teamUp's API service.");
 });
 
-// API endpoints
+// REST API resources
 router.use('/users', require('./users'));
 router.use('/games', require('./games'));
+router.use('/fields', require('./fields'));
 
 module.exports = router;

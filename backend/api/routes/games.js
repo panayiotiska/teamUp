@@ -252,10 +252,15 @@ games.get('/', async (req, res) => {
         });
 
         if (games !== null) {
+            // Rename Location attribute to location
+            games.map((game) => {
+                game.dataValues.location = game.Location;
+                delete game.dataValues.Location;
+            });
             // Send response - HTTP 200 OK
             sendCustomResponse(res, 200, games);
         } else {
-            // Send response - HTTP 200 OK
+            // Send empty array of games
             sendCustomResponse(res, 200, []);
         }
     } catch (error) {
