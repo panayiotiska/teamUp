@@ -17,6 +17,7 @@ import android.support.design.widget.NavigationView;
 import android.widget.TextView;
 
 import com.github.h01d.teamup.activities.ProfileActivity;
+import com.github.h01d.teamup.fragments.FieldsFragment;
 import com.github.h01d.teamup.fragments.GamesFragment;
 import com.github.h01d.teamup.models.User;
 
@@ -73,6 +74,14 @@ public class MainActivity extends AppCompatActivity
                         fragmentTransaction.commit();
 
                         getSupportActionBar().setTitle("Παιχνίδια");
+                        menuItem.setChecked(true);
+                        break;
+                    case R.id.nav_fields:
+                        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                        fragmentTransaction.replace(R.id.main_frame_holder, new FieldsFragment());
+                        fragmentTransaction.commit();
+
+                        getSupportActionBar().setTitle("Γήπεδα");
                         menuItem.setChecked(true);
                         break;
                     case R.id.nav_profile:

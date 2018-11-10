@@ -194,4 +194,72 @@ public class NetworkManager
         jsObjRequest.setShouldCache(false); // Prevent caching response on LTE networks
         requestQueue.add(jsObjRequest);
     }
+
+    public void deleteData(String URL, JSONObject jsonObject, final NetworkManagerListener listener)
+    {
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.DELETE, URL, jsonObject, new Response.Listener<JSONObject>()
+        {
+            @Override
+            public void onResponse(final JSONObject response)
+            {
+                try
+                {
+                    if(response.getJSONObject("result").getString("status").equals("success"))
+                    {
+                        if(!response.isNull("payload"))
+                        {
+                            listener.getResult(response.getJSONArray("payload"));
+                        }
+                        else
+                        {
+                            listener.getResult(new JSONArray());
+                        }
+                    }
+                    else
+                    {
+                        listener.getError(response.getJSONObject("result").getString("error"), 1);
+                    }
+
+                }
+                catch(JSONException e)
+                {
+                    e.printStackTrace();
+
+                    listener.getError(e.getMessage(), 1);
+                }
+            }
+        }, new Response.ErrorListener()
+        {
+            @Override
+            public void onErrorResponse(VolleyError error)
+            {
+                if(error instanceof TimeoutError || error instanceof NoConnectionError)
+                {
+                    listener.getError("Δεν υπάρχει πρόσβαση στο διαδίκτυο.", 0);
+                }
+                else
+                {
+                    listener.getError("Παρουσιάστηκε ένα άγνωστο σφάλμα.\nΠαρακαλούμε δοκιμάστε αργότερα.", 1);
+                }
+
+                if((error.getMessage() != null))
+                {
+                    Log.d(TAG, error.getMessage());
+                }
+            }
+        })
+        {
+            @Override
+            public Map<String, String> getHeaders()
+            {
+                Map<String, String> params = new HashMap<>();
+                params.put("auth-token", "rafAuthToken");
+
+                return params;
+            }
+        };
+
+        jsObjRequest.setShouldCache(false); // Prevent caching response on LTE networks
+        requestQueue.add(jsObjRequest);
+    }
 }

@@ -1,6 +1,8 @@
 package com.github.h01d.teamup.activities;
 
+import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -8,6 +10,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -40,6 +44,8 @@ public class GameActivity extends AppCompatActivity
     // Current game ID
 
     private int gameID;
+    private boolean isOwner = false;
+    private int teamId = -1;
 
     // Layout views
 
@@ -107,12 +113,115 @@ public class GameActivity extends AppCompatActivity
         loadData();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.game_player_menu, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.m_game_quit:
+                if(isOwner)
+                {
+                    AlertDialog.Builder deleteBuilder = new AlertDialog.Builder(getApplicationContext());
+                    deleteBuilder.setTitle("ΔΙΑΓΡΑΦΗ");
+                    deleteBuilder.setMessage("Είσαι σίγουρος ότι θέλεις να διαγράψεις το παιχνίδι;");
+                    deleteBuilder.setPositiveButton("ΝΑΙ", new DialogInterface.OnClickListener()
+                    {
+                        public void onClick(DialogInterface dialog, int id)
+                        {
+
+                        }
+                    });
+                    deleteBuilder.setNegativeButton("ΟΧΙ", new DialogInterface.OnClickListener()
+                    {
+                        public void onClick(DialogInterface dialog, int id)
+                        {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog deleteDialog = deleteBuilder.create();
+                    deleteDialog.show();
+                }
+                else
+                {
+                    if(teamId == -1)
+                    {
+                        Toast.makeText(getApplicationContext(), "Δεν είσαι σε κάποια ομάδα.", Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                    {
+                        AlertDialog.Builder deleteBuilder = new AlertDialog.Builder(getApplicationContext());
+                        deleteBuilder.setTitle("ΕΞΟΔΟΣ");
+                        deleteBuilder.setMessage("Είσαι σίγουρος ότι θέλεις να βγεις από το παιχνίδι;");
+                        deleteBuilder.setPositiveButton("ΝΑΙ", new DialogInterface.OnClickListener()
+                        {
+                            public void onClick(DialogInterface dialog, int id)
+                            {
+                                JSONObject tmp = new JSONObject();
+
+                                try
+                                {
+                                    tmp.put("userId", "100000273909010");
+                                }
+                                catch(JSONException e)
+                                {
+                                    e.printStackTrace();
+
+                                    Log.d(TAG, e.getMessage());
+                                }
+
+                                NetworkManager.getInstance(getApplicationContext()).deleteData("http://104.223.87.94:3000/api/v1/games/" + gameID + "/teams/" + teamId, tmp, new NetworkManagerListener()
+                                {
+                                    @Override
+                                    public void getResult(JSONArray result)
+                                    {
+                                        loadData();
+
+                                        Toast.makeText(getApplicationContext(), "Βγήκες από το παιχνίδι.", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                    @Override
+                                    public void getError(String error, int code)
+                                    {
+                                        Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
+
+                                        Log.d(TAG, error);
+                                    }
+                                });
+                            }
+                        });
+                        deleteBuilder.setNegativeButton("ΟΧΙ", new DialogInterface.OnClickListener()
+                        {
+                            public void onClick(DialogInterface dialog, int id)
+                            {
+                                dialog.dismiss();
+                            }
+                        });
+                        AlertDialog deleteDialog = deleteBuilder.create();
+                        deleteDialog.show();
+                    }
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     /**
      * loadData will load game data from the API
      */
 
     private void loadData()
     {
+        teamId = -1;
+
         NetworkManager.getInstance(getApplicationContext()).getData("http://104.223.87.94:3000/api/v1/games/" + gameID, new NetworkManagerListener()
         {
             @Override
@@ -125,7 +234,7 @@ public class GameActivity extends AppCompatActivity
                     JSONObject tmp = result.getJSONObject(0);
 
                     int gameid = tmp.getInt("id");
-                    String userid = tmp.getString("id");
+                    String userid = tmp.getString("createdBy");
                     String createdDate = tmp.getString("createdAt");
                     String name = tmp.getString("name");
                     int type = tmp.getInt("type");
@@ -142,6 +251,11 @@ public class GameActivity extends AppCompatActivity
                     String countryCode = tmp.getJSONObject("location").getString("countryCode");
                     Double locLong = tmp.getJSONObject("location").getDouble("longitude");
                     Double locLat = tmp.getJSONObject("location").getDouble("latitude");
+
+                    if(userid.equals("100000273909010")) // cached
+                    {
+                        isOwner = true;
+                    }
 
                     // Update UI based on data
 
@@ -168,6 +282,11 @@ public class GameActivity extends AppCompatActivity
                                 String firstName = player.getString("firstName");
                                 String lastName = player.getString("lastName");
 
+                                if(id.equals("100000273909010")) // cached
+                                {
+                                    teamId = firstTeamId;
+                                }
+
                                 team1.add(new User(id, firstName, lastName, "1"));
                             }
                         }
@@ -183,6 +302,11 @@ public class GameActivity extends AppCompatActivity
                                 String id = player.getString("id");
                                 String firstName = player.getString("firstName");
                                 String lastName = player.getString("lastName");
+
+                                if(id.equals("100000273909010")) // cached
+                                {
+                                    teamId = secondTeamId;
+                                }
 
                                 team2.add(new User(id, firstName, lastName, "1"));
                             }

@@ -159,7 +159,7 @@ public class GamesFragment extends Fragment
                         String gameDate = tmp.getString("eventDate");
                         int type = tmp.getInt("type");
                         int size = tmp.getInt("size");
-                        String city = tmp.getJSONObject("Location").getString("city");
+                        String city = tmp.getJSONObject("location").getString("city");
 
                         games.add(new Game(gameid, "", name, type, size, true, city, "", "", 0, 0, gameDate, "", "", "", ""));
                     }

@@ -2,15 +2,60 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#fafafa">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/f_fields_recycler"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/f_fields_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/f_fields_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="8dp"
+            android:scrollbars="none">
+
+        </android.support.v7.widget.RecyclerView>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <RelativeLayout
+        android:id="@+id/f_fields_relative"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="8dp"
-        android:scrollbars="none">
+        android:visibility="invisible">
 
-    </android.support.v7.widget.RecyclerView>
+        <ImageView
+            android:id="@+id/f_fields_icon"
+            android:layout_width="125dp"
+            android:layout_height="125dp"
+            android:layout_above="@+id/f_fields_error"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/ic_cloud_off_black_24dp" />
+
+        <TextView
+            android:id="@+id/test"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+        <TextView
+            android:id="@+id/f_fields_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/test"
+            android:fontFamily="sans-serif-condensed"
+            android:text="No internet connection"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textColor="#999"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+
+    </RelativeLayout>
 
 </RelativeLayout>
