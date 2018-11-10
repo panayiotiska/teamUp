@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     type: DataTypes.INTEGER,
     sponsored: DataTypes.BOOLEAN,
     contactPhone: DataTypes.STRING,
-    imgUrl: DataTypes.STRING
+    imageUrl: DataTypes.STRING
   }, {
     charset: 'utf8',
     collate: 'utf8_unicode_ci'

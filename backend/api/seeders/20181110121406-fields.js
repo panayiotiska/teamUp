@@ -39,7 +39,7 @@ module.exports = {
         contactPhone: "+30 2310472242",
         type: 0,
         sponsored: false,
-        imgUrl: "http://www.footballsportcenter.gr/upload/imgproc/91583_eb.jpg",
+        imageUrl: "http://www.footballsportcenter.gr/upload/imgproc/91583_eb.jpg",
         locationId: locations[0].id
       },
       {
@@ -47,7 +47,7 @@ module.exports = {
         contactPhone: "+30 6973055499",
         type: 0,
         sponsored: false,
-        imgUrl: "http://www.athleticpark.gr/images/cobalt_thumbs/gallery23-85/726/b32354b0e69ccb9a1605278544496aa9.jpg",
+        imageUrl: "http://www.athleticpark.gr/images/cobalt_thumbs/gallery23-85/726/b32354b0e69ccb9a1605278544496aa9.jpg",
         locationId: locations[1].id
       },
       {
@@ -55,7 +55,7 @@ module.exports = {
         contactPhone: "+30 2310435000",
         type: 0,
         sponsored: true,
-        imgUrl: "",
+        imageUrl: "",
         locationId: locations[2].id
       }
     ]);
