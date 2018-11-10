@@ -142,6 +142,9 @@ games.post('/', async (req, res) => {
                 // Link game to user
                 await user.addGame(game, { through: 'userGames' });
 
+                // Automatically add user to the first team
+                firstTeam.addPlayer(user, { through: 'teamPlayers' });
+
                 // Delete timestamps
                 delete game.dataValues.createdAt;
                 delete game.dataValues.updatedAt;
@@ -407,7 +410,7 @@ games.post('/:gameId/teams/:teamId', async (req, res) => {
                 } else {
                     // Team doesn't belong to the specified game
                     // Invalid combination of gameId and teamId
-                    sendCustomErrorResponse(res, 500, "Wrong team / game combination.");
+                    sendCustomErrorResponse(res, 500, "Wrong game / team combination.");
                 }
 
             } else {
@@ -416,8 +419,6 @@ games.post('/:gameId/teams/:teamId', async (req, res) => {
         } else {
             sendCustomErrorResponse(res, 401, "You are unauthorized to perform this action. Unrecognized User.");
         }
-
-
     } catch (error) {
         // TODO: Log error
         console.log(error);
@@ -426,9 +427,77 @@ games.post('/:gameId/teams/:teamId', async (req, res) => {
 });
 
 // Remove user from game team
-games.delete('/:gameId/teams/:teamId', (req, res) => {
-    //TODO: Implement
-    res.json({ msg: "Remove a player from the team" });
+games.delete('/:gameId/teams/:teamId', async (req, res) => {
+    try {
+        const user = await getUserGame(req.params.gameId, req.headers['auth-token']);
+
+        // User has created this game
+        if (user !== null) {
+            // Get game
+            const userGame = user.Games[0];
+
+            // Add extra check to see if game actually belongs to user
+            if (userGame !== null) {
+                // Find target user
+                const targetUser = await User.findOne({
+                    where: {
+                        id: req.body.userId
+                    }
+                });
+                // Check if target user exists
+                if (targetUser !== null) {
+                    const teams = await getGameTeams(req.params.gameId);
+                    const firstTeam = await userGame.getFirstTeam();
+                    const secondTeam = await userGame.getSecondTeam();
+
+                    if (firstTeam.id == req.params.teamId) {
+                        // Remove from first team
+                        // Check if the user is part of the first team
+                        if (teams.firstTeam.find(usr => usr.id === targetUser.id)) {
+                            // Check if first team is not empty
+                            if (teams.firstTeam.length >= 1) {
+                                await firstTeam.removePlayer(targetUser, { through: 'teamPlayers' });
+                                sendCustomResponse(res, 200, null);
+                            } else {
+                                sendCustomErrorResponse(res, 500, "Cannot remove user from team. Looks like team is empty.");
+                            }
+                        } else {
+                            sendCustomErrorResponse(res, 409, "User is not a member of this team.");
+                        }
+                    } else if (secondTeam.id == req.params.teamId) {
+                        // Remove from second team
+                        // Check if user is part of the second team
+                        if (teams.secondTeam.find(usr => usr.id === targetUser.id)) {
+                            // Check if second team is not empty                       
+                            if (teams.secondTeam.length >= 1) {
+                                // Check if user is part of the first team on this game
+                                await teams.firstTeam.removePlayer(targetUser, { through: 'teamPlayers' });
+                                sendCustomResponse(res, 200, null);
+                            } else {
+                                sendCustomErrorResponse(res, 500, "Cannot remove user from team. Looks like team is empty.");
+                            }
+                        } else {
+                            sendCustomErrorResponse(res, 409, "User is already member of the team.");
+                        }
+                    } else {
+                        // Team doesn't belong to the specified game
+                        // Invalid combination of gameId and teamId
+                        sendCustomErrorResponse(res, 500, "Wrong game / team combination.");
+                    }
+                } else {
+                    sendCustomErrorResponse(res, 500, "An error has occurred while removing user from team.");
+                }
+            } else {
+                sendCustomErrorResponse(res, 500, "An error occurred while retrieving user game.");
+            }
+        } else {
+            sendCustomErrorResponse(res, 401, "You are unauthorized to perform this action.");
+        }
+    } catch (error) {
+        // TODO: Log error
+        console.log(error);
+        sendCustomErrorResponse(res, 500, "An error occurred while trying to remove player from team.");
+    }
 });
 
 module.exports = games;
