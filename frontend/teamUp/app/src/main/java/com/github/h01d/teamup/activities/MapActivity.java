@@ -93,6 +93,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v)
             {
+                /*
                 JSONObject locationObj = new JSONObject();
                 try
                 {
@@ -114,9 +115,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback
                 JSONArray jsonArray = new JSONArray();
 
                 jsonArray.put(locationObj);
+                */
 
                 
-                CreateActivity.addedAddress = location;
+                //CreateActivity.addedAddress = location;
                 Toast.makeText(getBaseContext(), location.toUpperCase(),Toast.LENGTH_LONG).show();
 
                 Toast.makeText(getBaseContext(), location.toUpperCase(), Toast.LENGTH_LONG).show();
@@ -176,8 +178,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback
                     e.printStackTrace();
                 }
 
-                String whole_address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-                location = whole_address.substring(0, whole_address.indexOf(",")); //returns the text before first comma
+                if (addresses.get(0).getAddressLine(0) != null)
+                {
+                    String whole_address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+                    location = whole_address.substring(0, whole_address.indexOf(",")); //returns the text before first comma
+                }
+
 
                 TextView location_tv = findViewById(R.id.tvAddress);
                 location_tv.setText(location.toUpperCase());

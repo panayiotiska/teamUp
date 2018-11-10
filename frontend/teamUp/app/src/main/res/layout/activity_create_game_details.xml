@@ -25,7 +25,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginTop="20dp"
+            android:inputType="number"
+            android:maxLength="1"/>
     </LinearLayout>
 
     <LinearLayout
@@ -78,7 +80,7 @@
         android:id="@+id/dateTimeButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Επιλογή ωρας/ημερομηνίας"/>
+        android:text="Επιλογη ωρας/ημερομηνίας"/>
 
 
 
