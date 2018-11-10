@@ -1,5 +1,6 @@
 package com.github.h01d.teamup.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.github.h01d.teamup.R;
@@ -87,8 +88,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        Button test = findViewById(R.id.doneButton);
-        test.setOnClickListener(new View.OnClickListener()
+        Button done = findViewById(R.id.doneButton);
+        done.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -111,14 +112,21 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback
                 JSONArray jsonArray = new JSONArray();
 
                 jsonArray.put(locationObj);
-
+                
+                CreateActivity.addedAddress = location;
                 Toast.makeText(getBaseContext(), location.toUpperCase(),Toast.LENGTH_LONG).show();
 
+                /*
                 TextView txtView = ((CreateActivity.addressTv).findViewById(R.id.tv_show_address));
                 txtView.setTypeface(txtView.getTypeface(), Typeface.BOLD_ITALIC);
                 txtView.setText(location);
+                */
 
-                finish();
+                //finish();
+                final Intent intent;
+                intent = new Intent(MapActivity.this, CreateGameDetails.class);
+                startActivity(intent);
+
             }
         });
     }

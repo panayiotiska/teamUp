@@ -3,7 +3,9 @@ package com.github.h01d.teamup.activities;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 
 import android.app.DatePickerDialog;
@@ -40,17 +42,15 @@ import at.markushi.ui.CircleButton;
 
 import com.github.h01d.teamup.R;
 
-public class CreateActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, OnMapReadyCallback
+public class CreateActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener
 {
-    public static TextView addressTv;
-    TextView dateTimeTv;
-
     public static LatLng latLong = null;
+    public static String addedAddress = null;
 
-    CircleButton dateTimeButton;
-    private Spinner spinnerType, spinnerSize, spinnerFor;
-
-    private GoogleMap mMap;
+    Button dateTimeButton;
+    private Spinner spinnerType, spinnerSize, spinnerFor,spinnerPlayground;
+    ArrayAdapter<String> dataAdapterPlayground;
+    int itemAddedTwice = 0; //
 
     int day, month, year, hour, minute;
     int dayFinal, monthFinal, yearFinal, hourFinal, minuteFinal;
@@ -63,9 +63,6 @@ public class CreateActivity extends AppCompatActivity implements DatePickerDialo
         setContentView(R.layout.activity_create);
 
         dateTimeButton = findViewById(R.id.dateTimeButton);
-
-        addressTv = findViewById(R.id.tv_show_address);
-        dateTimeTv = findViewById(R.id.tv_show_date_time);
 
         /* ADD ITEMS ON SPINNERS*/
         addItemsOnSpinners();
@@ -89,45 +86,25 @@ public class CreateActivity extends AppCompatActivity implements DatePickerDialo
                 datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
             }
         });
-
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
     }
 
-
     @Override
-    protected void onResume()
-    {
+    public void onResume(){
         super.onResume();
-
-        if(mMap != null && latLong != null)
+        if (addedAddress != null)
         {
-                mMap.addMarker(new MarkerOptions().position(latLong).title("Game Location"));
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLong));
-                mMap.animateCamera(CameraUpdateFactory.zoomTo(16.0f));
-        }
-    }
-
-    @Override
-    public void onMapReady(final GoogleMap googleMap)
-    {
-        mMap = googleMap;
-
-        LatLng thessaloniki = new LatLng(40.6401, 22.9444);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(thessaloniki));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(10.0f));
-
-        /* NAVIGATE TO MAPS ACTIVITY (ON-MAP-CLICK)*/
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener()
-        {
-            @Override
-            public void onMapClick(LatLng arg0)
+            itemAddedTwice++;
+            if (itemAddedTwice == 2)
             {
-                startActivity(new Intent(CreateActivity.this, MapActivity.class));
+                dataAdapterPlayground.remove(spinnerPlayground.getItemAtPosition(3).toString());
+                itemAddedTwice--;
             }
-        });
-    }
+            dataAdapterPlayground.add(addedAddress);
+            dataAdapterPlayground.notifyDataSetChanged();
+            spinnerPlayground.setSelection(3);
+        }
 
+    }
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth)
@@ -180,8 +157,8 @@ public class CreateActivity extends AppCompatActivity implements DatePickerDialo
                     "Hour: " + hourFinal + "\n" +
                     "Minute: " + minuteFinal + "\n", Toast.LENGTH_LONG).show();
 
-            dateTimeTv.setText(dayFinal + "/" + monthFinal + "/" + yearFinal + " στις " + hourFinal + ":" + minuteFinal);
-            dateTimeTv.setTypeface(dateTimeTv.getTypeface(), Typeface.BOLD_ITALIC);
+            dateTimeButton.setText(dayFinal + "/" + monthFinal + "/" + yearFinal + " στις " + hourFinal + ":" + minuteFinal);
+            dateTimeButton.setTypeface(dateTimeButton.getTypeface(), Typeface.BOLD_ITALIC);
         }
     }
 
@@ -190,6 +167,43 @@ public class CreateActivity extends AppCompatActivity implements DatePickerDialo
         spinnerType = findViewById(R.id.d_create_type_spinner);
         spinnerSize = findViewById(R.id.d_create_size_spinner);
         spinnerFor = findViewById(R.id.d_opponents_teammates_spinner);
+        spinnerPlayground = findViewById(R.id.d_playground_spinner);
+
+        spinnerPlayground.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            public void onClick(View v) {
+            }
+
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View view,
+                                       int position, long row_id) {
+                final Intent intent;
+
+                if(row_id == 0)
+                {
+                    intent = new Intent(CreateActivity.this, MapActivity.class);
+                    startActivity(intent);
+                }
+
+                /*
+                switch(row_id)
+                {
+                    case 0:
+                        intent = new Intent(CreateActivity.this, MapActivity.class);
+                        startActivity(intent);
+                        break;
+                    case 1:
+                        intent = new Intent(CurrentActivity.this, TargetActivity2.class);
+                        break;
+                }
+                */
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                // TODO Auto-generated method stub
+            }
+        });
 
         List<String> list = new ArrayList<>();
         list.add("Ποδόσφαιρο");
@@ -218,5 +232,15 @@ public class CreateActivity extends AppCompatActivity implements DatePickerDialo
                 android.R.layout.simple_spinner_item, list3);
         dataAdapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerFor.setAdapter(dataAdapter3);
+
+        List<String> list4 = new ArrayList<>();
+        list4.add("ΠΡΟΣΘΗΚΗ ΔΙΕΥΘΥΝΣΗΣ");
+        list4.add("ΧΑΝΘ (Ν. Γερμανού 1)");
+        list4.add("Top Fitness All Star (Αγίου Δημητρίου 159Α");
+
+        dataAdapterPlayground = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, list4);
+        dataAdapterPlayground.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerPlayground.setAdapter(dataAdapterPlayground);
     }
 }
