@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -21,24 +20,13 @@
             app:expandedTitleGravity="bottom|center_horizontal"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            <RelativeLayout
+            <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimary"
                 android:fitsSystemWindows="true"
-                app:layout_collapseMode="parallax">
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/main.backdrop"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:layout_centerInParent="true"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/profile"
-                    app:civ_border_width="2dp"
-                    app:civ_border_color="#fff"/>
-
-            </RelativeLayout>
+                android:scaleType="centerCrop"
+                android:src="@drawable/toumpa_stadium"
+                app:layout_collapseMode="parallax" />
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -53,18 +41,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#efefef"
-        android:padding="4dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <include layout="@layout/ghost_profile"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone"/>
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="3dp">
 
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
@@ -72,21 +55,19 @@
                 app:cardUseCompatPadding="true">
 
                 <RelativeLayout
-                    android:id="@+id/relativeLayout2"
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:background="#FFFFFF"
+                    android:layout_height="match_parent"
                     android:padding="8dp">
 
                     <RelativeLayout
-                        android:id="@+id/firstRelative"
+                        android:id="@+id/relative"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="8dp">
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true">
 
                         <TextView
-                            android:id="@+id/a_profile_overall_text"
+                            android:id="@+id/a_field_overall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerHorizontal="true"
@@ -95,21 +76,21 @@
                             android:textSize="36sp" />
 
                         <RatingBar
-                            android:id="@+id/a_profile_overall_ratingbar"
+                            android:id="@+id/a_field_overallbar"
                             style="@android:style/Widget.DeviceDefault.Light.RatingBar.Small"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/a_profile_overall_text"
+                            android:layout_below="@id/a_field_overall"
                             android:isIndicator="true"
                             android:numStars="5"
                             android:stepSize="0.5"
                             android:theme="@style/RatingBarYellow" />
 
                         <TextView
-                            android:id="@+id/a_profile_total_text"
+                            android:id="@+id/a_field_total"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/a_profile_overall_ratingbar"
+                            android:layout_below="@id/a_field_overallbar"
                             android:layout_centerHorizontal="true"
                             android:layout_centerVertical="true"
                             android:layout_marginStart="24dp"
@@ -117,86 +98,74 @@
                             android:text="(0)" />
                     </RelativeLayout>
 
-                    <RelativeLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
-                        android:layout_alignParentEnd="true">
+                        android:layout_toStartOf="@id/relative">
 
-                        <RatingBar
-                            android:id="@+id/a_profile_tupikotita_ratingbar"
-                            style="@style/Widget.AppCompat.RatingBar.Small"
+                        <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignTop="@+id/textView11"
-                            android:layout_marginTop="4dp"
-                            android:layout_toEndOf="@+id/textView11"
-                            android:isIndicator="true"
-                            android:numStars="5"
-                            android:stepSize="0.5"
-                            android:theme="@style/RatingBarYellow" />
+                            android:background="@drawable/ic_location_on_black_24dp" />
 
-                        <RatingBar
-                            android:id="@+id/a_profile_ikanotita_ratingbar"
-                            style="@style/Widget.AppCompat.RatingBar.Small"
+                        <TextView
+                            android:id="@+id/a_field_address"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="4dp"
+                            android:text="Address" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginTop="4dp"
+                        android:layout_toStartOf="@id/relative">
+
+                        <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignTop="@+id/textView9"
-                            android:layout_marginTop="4dp"
-                            android:layout_toEndOf="@+id/textView9"
-                            android:isIndicator="true"
-                            android:numStars="5"
-                            android:stepSize="0.5"
-                            android:theme="@style/RatingBarYellow" />
+                            android:background="@drawable/ic_date_range_black_24dp" />
 
-                        <RatingBar
-                            android:id="@+id/a_profile_sumperifora_ratingbar"
-                            style="@style/Widget.AppCompat.RatingBar.Small"
+                        <TextView
+                            android:id="@+id/a_field_days"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="4dp"
+                            android:text="Monday - Friday" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginTop="4dp"
+                        android:layout_toStartOf="@id/relative">
+
+                        <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignTop="@+id/textView12"
-                            android:layout_marginTop="4dp"
-                            android:layout_toEndOf="@+id/textView12"
-                            android:isIndicator="true"
-                            android:numStars="5"
-                            android:stepSize="0.5"
-                            android:theme="@style/RatingBarYellow" />
+                            android:background="@drawable/ic_access_time_black_24dp" />
 
                         <TextView
-                            android:id="@+id/textView11"
-                            android:layout_width="105dp"
+                            android:id="@+id/a_field_hours"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignParentTop="true"
-                            android:text="Τυπικότητα"
-                            android:textAlignment="viewStart"
-                            android:textColor="#262626"
-                            android:textSize="16sp" />
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="4dp"
+                            android:text="09:00 - 21:00" />
+                    </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/textView9"
-                            android:layout_width="105dp"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
-                            android:layout_centerVertical="true"
-                            android:text="Ικανότητες"
-                            android:textAlignment="viewStart"
-                            android:textColor="#262626"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:id="@+id/textView12"
-                            android:layout_width="105dp"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignParentBottom="true"
-                            android:text="Συμπεριφορά"
-                            android:textAlignment="viewStart"
-                            android:textColor="#262626"
-                            android:textSize="16sp" />
-
-                    </RelativeLayout>
                 </RelativeLayout>
+
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
@@ -219,7 +188,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/a_profile_rating_norating"
+                        android:id="@+id/a_fields_rating_norating"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="4dp"
@@ -228,7 +197,7 @@
                         android:visibility="gone"/>
 
                     <android.support.v7.widget.RecyclerView
-                        android:id="@+id/a_profile_rating_recycler"
+                        android:id="@+id/a_fields_rating_recycler"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:visibility="visible"/>
@@ -236,7 +205,9 @@
                 </LinearLayout>
 
             </android.support.v7.widget.CardView>
+
         </LinearLayout>
+
     </android.support.v4.widget.NestedScrollView>
 
 </android.support.design.widget.CoordinatorLayout>

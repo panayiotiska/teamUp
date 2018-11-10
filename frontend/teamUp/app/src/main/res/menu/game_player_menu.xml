@@ -4,13 +4,5 @@
 
     <item
         android:id="@+id/m_game_quit"
-        android:title="Quit game" />
-
-    <item
-        android:id="@+id/m_game_report"
-        android:title="Report game" />
-
-    <item
-        android:id="@+id/m_game_delete"
-        android:title="Delete Game" />
+        android:title="Έξοδος" />
 </menu>

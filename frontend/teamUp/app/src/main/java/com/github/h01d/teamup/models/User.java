@@ -34,4 +34,12 @@ public class User
     {
         return createdAt;
     }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if(obj == null) return false;
+
+        return this.getUserID().equals(((User) obj).getUserID());
+    }
 }

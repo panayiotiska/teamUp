@@ -1,6 +1,8 @@
 package com.github.h01d.teamup.activities;
 
+import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -8,6 +10,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -40,6 +44,8 @@ public class GameActivity extends AppCompatActivity
     // Current game ID
 
     private int gameID;
+    private boolean isOwner = false;
+    private int teamId = -1;
 
     // Layout views
 
@@ -53,8 +59,8 @@ public class GameActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        // Setting up ActionBar
 
+        // Setting up ActionBar
         int barColor, statusColor;
 
         if(getIntent().getExtras().getInt("type") == 0)
@@ -107,12 +113,115 @@ public class GameActivity extends AppCompatActivity
         loadData();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.game_player_menu, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.m_game_quit:
+                if(isOwner)
+                {
+                    AlertDialog.Builder deleteBuilder = new AlertDialog.Builder(getApplicationContext());
+                    deleteBuilder.setTitle("ΔΙΑΓΡΑΦΗ");
+                    deleteBuilder.setMessage("Είσαι σίγουρος ότι θέλεις να διαγράψεις το παιχνίδι;");
+                    deleteBuilder.setPositiveButton("ΝΑΙ", new DialogInterface.OnClickListener()
+                    {
+                        public void onClick(DialogInterface dialog, int id)
+                        {
+
+                        }
+                    });
+                    deleteBuilder.setNegativeButton("ΟΧΙ", new DialogInterface.OnClickListener()
+                    {
+                        public void onClick(DialogInterface dialog, int id)
+                        {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog deleteDialog = deleteBuilder.create();
+                    deleteDialog.show();
+                }
+                else
+                {
+                    if(teamId == -1)
+                    {
+                        Toast.makeText(getApplicationContext(), "Δεν είσαι σε κάποια ομάδα.", Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                    {
+                        AlertDialog.Builder deleteBuilder = new AlertDialog.Builder(getApplicationContext());
+                        deleteBuilder.setTitle("ΕΞΟΔΟΣ");
+                        deleteBuilder.setMessage("Είσαι σίγουρος ότι θέλεις να βγεις από το παιχνίδι;");
+                        deleteBuilder.setPositiveButton("ΝΑΙ", new DialogInterface.OnClickListener()
+                        {
+                            public void onClick(DialogInterface dialog, int id)
+                            {
+                                JSONObject tmp = new JSONObject();
+
+                                try
+                                {
+                                    tmp.put("userId", "100000273909010");
+                                }
+                                catch(JSONException e)
+                                {
+                                    e.printStackTrace();
+
+                                    Log.d(TAG, e.getMessage());
+                                }
+
+                                NetworkManager.getInstance(getApplicationContext()).deleteData("http://104.223.87.94:3000/api/v1/games/" + gameID + "/teams/" + teamId, tmp, new NetworkManagerListener()
+                                {
+                                    @Override
+                                    public void getResult(JSONArray result)
+                                    {
+                                        loadData();
+
+                                        Toast.makeText(getApplicationContext(), "Βγήκες από το παιχνίδι.", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                    @Override
+                                    public void getError(String error, int code)
+                                    {
+                                        Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
+
+                                        Log.d(TAG, error);
+                                    }
+                                });
+                            }
+                        });
+                        deleteBuilder.setNegativeButton("ΟΧΙ", new DialogInterface.OnClickListener()
+                        {
+                            public void onClick(DialogInterface dialog, int id)
+                            {
+                                dialog.dismiss();
+                            }
+                        });
+                        AlertDialog deleteDialog = deleteBuilder.create();
+                        deleteDialog.show();
+                    }
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     /**
      * loadData will load game data from the API
      */
 
     private void loadData()
     {
+        teamId = -1;
+
         NetworkManager.getInstance(getApplicationContext()).getData("http://104.223.87.94:3000/api/v1/games/" + gameID, new NetworkManagerListener()
         {
             @Override
@@ -125,7 +234,7 @@ public class GameActivity extends AppCompatActivity
                     JSONObject tmp = result.getJSONObject(0);
 
                     int gameid = tmp.getInt("id");
-                    String userid = tmp.getString("id");
+                    String userid = tmp.getString("createdBy");
                     String createdDate = tmp.getString("createdAt");
                     String name = tmp.getString("name");
                     int type = tmp.getInt("type");
@@ -142,6 +251,11 @@ public class GameActivity extends AppCompatActivity
                     String countryCode = tmp.getJSONObject("location").getString("countryCode");
                     Double locLong = tmp.getJSONObject("location").getDouble("longitude");
                     Double locLat = tmp.getJSONObject("location").getDouble("latitude");
+
+                    if(userid.equals("100000273909010")) // cached
+                    {
+                        isOwner = true;
+                    }
 
                     // Update UI based on data
 
@@ -168,7 +282,12 @@ public class GameActivity extends AppCompatActivity
                                 String firstName = player.getString("firstName");
                                 String lastName = player.getString("lastName");
 
-                                team1.add(new User(id, firstName, lastName, ""));
+                                if(id.equals("100000273909010")) // cached
+                                {
+                                    teamId = firstTeamId;
+                                }
+
+                                team1.add(new User(id, firstName, lastName, "1"));
                             }
                         }
 
@@ -184,7 +303,12 @@ public class GameActivity extends AppCompatActivity
                                 String firstName = player.getString("firstName");
                                 String lastName = player.getString("lastName");
 
-                                team2.add(new User(id, firstName, lastName, ""));
+                                if(id.equals("100000273909010")) // cached
+                                {
+                                    teamId = secondTeamId;
+                                }
+
+                                team2.add(new User(id, firstName, lastName, "1"));
                             }
                         }
 
@@ -247,18 +371,28 @@ public class GameActivity extends AppCompatActivity
 
     /**
      * UpdateUI (teams) will update all teams
-     * @param size the game size
+     *
+     * @param size  the game size
      * @param team1 the first team
      * @param team2 the second teeam
      */
 
-    private void updateUI(int size, ArrayList<User> team1, ArrayList<User> team2, final int firstTeamId, final int secondTeamId)
+    private void updateUI(int size, ArrayList<User> team1, final ArrayList<User> team2, final int firstTeamId, final int secondTeamId)
     {
         team1Recycler.setAdapter(new TeamsAdapter(team1, getApplicationContext()));
 
-        if(team1.size() < size)
+        if(team1.size() < size && !team1.contains(new User("100000273909010", "Rafaellos", "Monoyios", "1")))
         {
             team1Button.setVisibility(View.VISIBLE);
+
+            if(team2.contains(new User("100000273909010", "Rafaellos", "Monoyios", "")))
+            {
+                team1Button.setText("ΑΛΛΑΓΗ");
+            }
+            else
+            {
+                team1Button.setText("ΕΙΣΟΔΟΣ");
+            }
 
             // In case their is a difference in teams add margin to fill the void of buttons
 
@@ -266,7 +400,7 @@ public class GameActivity extends AppCompatActivity
             {
                 ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) team1Button.getLayoutParams();
 
-                if(team2.size() == size)
+                if(team2.size() == size || team2.size() == 1)
                 {
                     params.topMargin = (int) (38 * ((team2.size() - team1.size()) - 1) * getResources().getDisplayMetrics().density) + 2;
                 }
@@ -289,6 +423,15 @@ public class GameActivity extends AppCompatActivity
                         public void getResult(JSONArray result)
                         {
                             loadData();
+
+                            if(team1Button.getText().equals("ΑΛΛΑΓΗ"))
+                            {
+                                Toast.makeText(getApplicationContext(), "Άλλαξες ομάδα", Toast.LENGTH_SHORT).show();
+                            }
+                            else
+                            {
+                                Toast.makeText(getApplicationContext(), "Μπήκες στο παιχνίδι", Toast.LENGTH_SHORT).show();
+                            }
                         }
 
                         @Override
@@ -307,9 +450,18 @@ public class GameActivity extends AppCompatActivity
 
         team2Recycler.setAdapter(new TeamsAdapter(team2, getApplicationContext()));
 
-        if(team2.size() < size)
+        if(team2.size() < size && !team2.contains(new User("100000273909010", "Rafaellos", "Monoyios", "")))
         {
             team2Button.setVisibility(View.VISIBLE);
+
+            if(team1.contains(new User("100000273909010", "Rafaellos", "Monoyios", "")))
+            {
+                team2Button.setText("ΑΛΛΑΓΗ");
+            }
+            else
+            {
+                team2Button.setText("ΕΙΣΟΔΟΣ");
+            }
 
             if(team2.size() < team1.size())
             {
@@ -317,7 +469,7 @@ public class GameActivity extends AppCompatActivity
 
                 ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) team2Button.getLayoutParams();
 
-                if(team1.size() == size)
+                if(team1.size() == size || team1.size() == 1)
                 {
                     params.topMargin = (int) (38 * ((team1.size() - team2.size()) - 1) * getResources().getDisplayMetrics().density) + 2;
                 }
@@ -340,6 +492,15 @@ public class GameActivity extends AppCompatActivity
                         public void getResult(JSONArray result)
                         {
                             loadData();
+
+                            if(team2Button.getText().equals("ΑΛΛΑΓΗ"))
+                            {
+                                Toast.makeText(getApplicationContext(), "Άλλαξες ομάδα", Toast.LENGTH_SHORT).show();
+                            }
+                            else
+                            {
+                                Toast.makeText(getApplicationContext(), "Μπήκες στο παιχνίδι", Toast.LENGTH_SHORT).show();
+                            }
                         }
 
                         @Override
