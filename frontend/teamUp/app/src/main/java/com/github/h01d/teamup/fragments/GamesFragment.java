@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.github.h01d.teamup.activities.CreateActivity;
+import com.github.h01d.teamup.activities.CreateGameType;
 import com.github.h01d.teamup.adapters.GamesAdapter;
 import com.github.h01d.teamup.R;
 import com.github.h01d.teamup.models.Game;
@@ -120,7 +121,7 @@ public class GamesFragment extends Fragment
         switch(item.getItemId())
         {
             case R.id.m_create:
-                startActivity(new Intent(getContext(), CreateActivity.class));
+                startActivity(new Intent(getContext(), CreateGameType.class));
                 return true;
 
             default:
