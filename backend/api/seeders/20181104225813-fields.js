@@ -5,6 +5,9 @@ module.exports = {
 
     const Location = require('../models').Location;
     const Field = require('../models').Field;
+    const fieldRating = require('../models').fieldRating;
+    const User = require('../models').User;
+    const users = await User.findAll();
 
     const locations = await Location.bulkCreate([
       {
@@ -33,7 +36,7 @@ module.exports = {
       }
     ]);
 
-    await Field.bulkCreate([
+    const fields = await Field.bulkCreate([
       {
         name: "FOOTBALL SPORT CENTER",
         contactPhone: "+30 2310472242",
@@ -59,6 +62,34 @@ module.exports = {
         locationId: locations[2].id
       }
     ]);
+
+    const fieldRatings = await fieldRating.bulkCreate([
+      {
+        createdBy: users[1].id,
+        comment: "Very nice tacticts.",
+        rating: 4
+      },
+      {
+        createdBy: users[6].id,
+        comment: "Very fast moving in the field. Would like you in my team.",
+        rating: 3
+      },
+      {
+        createdBy: users[2].id,
+        comment: "This field is freakin awesome.",
+        rating: 5
+      },
+      {
+        createdBy: users[8].id,
+        comment: "Not so good of a stadium",
+        rating: 1
+      }
+    ]);
+
+    // Add ratings to fields
+    await fields[0].addFieldRatings(fieldRatings[0], { through: 'fieldRatingsData' });
+    await fields[1].addFieldRatings(fieldRatings[1], { through: 'fieldRatingsData' });
+    await fields[2].addFieldRatings(fieldRatings[2], { through: 'fieldRatingsData' });
   },
 
   down: (queryInterface, Sequelize) => {

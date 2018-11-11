@@ -4,15 +4,10 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
 
    const Rating = require('../models').Rating;
-   const fieldRating = require('../models').fieldRating;
-   const Field = require('../models').Field;
+   
    const User = require('../models').User;
 
-   const users = await User.findAll();
-   const fields = await Field.findAll();
-
-   console.log(fields);
-   
+   const users = await User.findAll();   
 
    // Create some ratings
    const ratings = await Rating.bulkCreate([
@@ -45,48 +40,12 @@ module.exports = {
       behavior: 3
     }
    ]);
-
-   const fieldRatings = await fieldRating.bulkCreate([
-    {
-      createdBy: users[1].id,
-      comment: "Very nice tacticts.",
-      rating: 4
-    },
-    {
-      createdBy: users[6].id,
-      comment: "Very fast moving in the field. Would like you in my team.", 
-      rating: 3
-    },
-    {
-      createdBy: users[2].id,
-      comment: "This field is freakin awesome.",
-      rating: 5
-    },
-    {
-      createdBy: users[8].id,
-      comment: "Not so good of a stadium",
-      rating: 1
-    }
-   ]);
-
    // Add ratings to user
 
    await users[0].addRating(ratings[0], {through: 'userRatings'});
    await users[0].addRating(ratings[1], {through: 'userRatings'});
    await users[0].addRating(ratings[2], {through: 'userRatings'});
    await users[0].addRating(ratings[3], {through: 'userRatings'});
-
-   // Add ratings to fields
-   await fields[0].addFieldRating(fieldRatings[0], { through: 'fieldRatingsData' });
-   await fields[1].addFieldRating(fieldRatings[1], { through: 'fieldRatingsData' });
-   await fields[2].addFieldRating(fieldRatings[2], { through: 'fieldRatingsData' });
-   await fields[3].addFieldRating(fieldRatings[3], { through: 'fieldRatingsData' });
-
-  //  // Add field ratings to user
-  //  await users[0].addRating(fieldRatings[0], {through: 'userRatings'});
-  //  await users[0].addRating(fieldRatings[1], {through: 'userRatings'});
-  //  await users[0].addRating(fieldRatings[2], {through: 'userRatings'});
-  //  await users[0].addRating(fieldRatings[3], {through: 'userRatings'});
   },
 
   down: (queryInterface, Sequelize) => {

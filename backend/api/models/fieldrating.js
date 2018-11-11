@@ -8,9 +8,6 @@ module.exports = (sequelize, DataTypes) => {
   fieldRating.associate = function (models) {
     // fieldRating belongsToMany Field
     fieldRating.belongsToMany(models.Field, { through: 'fieldRatingsData', foreignKey: 'fieldRatingId' });
-
-    // fieldRating belongsToMany Field
-    fieldRating.belongsToMany(models.User, { through: 'userRatings', foreignKey: 'ratingId' });
   };
   return fieldRating;
 };
