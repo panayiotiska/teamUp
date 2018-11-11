@@ -432,7 +432,7 @@ games.post('/:gameId/teams/:teamId', async (req, res) => {
 });
 
 // Remove user from game team
-games.delete('/:gameId/teams/:teamId', async (req, res) => {
+games.delete('/:gameId/teams/:teamId/users/:userId', async (req, res) => {
     try {
         const user = await getUserGame(req.params.gameId, req.headers['auth-token']);
 
@@ -446,7 +446,7 @@ games.delete('/:gameId/teams/:teamId', async (req, res) => {
                 // Find target user
                 const targetUser = await User.findOne({
                     where: {
-                        id: req.body.userId
+                        id: req.params.userId
                     }
                 });
                 // Check if target user exists

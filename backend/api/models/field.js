@@ -14,8 +14,8 @@ module.exports = (sequelize, DataTypes) => {
     // A field has a location
     Field.belongsTo(models.Location, { foreignKey: 'locationId' });
 
-    // Field belongsToMany Rating
-    Field.belongsToMany(models.Rating, { through: 'fieldRatings', foreignKey: 'fieldId' });
+    // Field belongsToMany fieldRating
+    Field.belongsToMany(models.fieldRating, { through: 'fieldRatingsData', foreignKey: 'fieldId' });
   };
   return Field;
 };
