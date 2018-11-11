@@ -1,6 +1,5 @@
 package com.github.h01d.teamup.activities;
 import com.github.h01d.teamup.R;
-
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,7 +7,6 @@ import android.view.View;
 
 public class CreateGameType extends AppCompatActivity
 {
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -24,15 +22,8 @@ public class CreateGameType extends AppCompatActivity
             public void onClick(View v)
             {
                 Intent i = new Intent(CreateGameType.this, CreateGameField.class);
-                i.putExtra("MyData", 1); //value 1 for basketball game
+                i.putExtra("GameType", "1"); //value 1 for basketball game
                 startActivity(i);
-
-
-                /*
-                Then in the destination class do this...
-
-                String data= getIntent().getStringExtra("MyData");
-                */
             }
         });
 
@@ -42,17 +33,9 @@ public class CreateGameType extends AppCompatActivity
             public void onClick(View v)
             {
                 Intent i = new Intent(CreateGameType.this, CreateGameField.class);
-                i.putExtra("MyData", 2); //value 2 for football game
+                i.putExtra("GameType", "0"); //value 0 for football game
                 startActivity(i);
-
-
-                /*
-                Then in the destination class do this...
-
-                String data= getIntent().getStringExtra("MyData");
-                */
             }
         });
-
     }
 }

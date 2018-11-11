@@ -22,8 +22,8 @@ public class CreateGameField extends AppCompatActivity
 
         customLocation = findViewById(R.id.fb_custom_location);
 
-        String selectedAddress = getIntent().getStringExtra("MyData"); //maybe put inside onResume
-        //Toast.makeText(getBaseContext(), selectedAddress, Toast.LENGTH_LONG).show();
+        String dataGameType= getIntent().getStringExtra("GameType");
+        Toast.makeText(getBaseContext(), "Game type : " + dataGameType + " (parsed)", Toast.LENGTH_LONG).show();
 
         customLocation.setOnClickListener(new View.OnClickListener()
         {

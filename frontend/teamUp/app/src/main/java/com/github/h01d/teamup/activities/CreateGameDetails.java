@@ -37,6 +37,9 @@ public class CreateGameDetails extends AppCompatActivity implements DatePickerDi
 
         dateTimeButton = findViewById(R.id.dateTimeButton);
 
+        String dataSelectedAddress = getIntent().getStringExtra("SelectedAddress");
+        Toast.makeText(getBaseContext(), "Address : " + dataSelectedAddress + " (parsed)", Toast.LENGTH_LONG).show();
+
         /* ADD ITEMS ON SPINNERS*/
         addItemsOnSpinners();
 
@@ -79,8 +82,6 @@ public class CreateGameDetails extends AppCompatActivity implements DatePickerDi
         Calendar c = Calendar.getInstance();
         hour = c.get(Calendar.HOUR_OF_DAY);
         minute = c.get(Calendar.MINUTE);
-
-
 
         TimePickerDialog timePickerDialog = new TimePickerDialog(CreateGameDetails.this, CreateGameDetails.this,
                 hour, minute, DateFormat.is24HourFormat(this));
