@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.CreateGameType"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/football_layout"
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+
+
+        <ImageView
+            android:id="@+id/iv_football"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:srcCompat="@drawable/football_type"
+            android:scaleType="centerCrop"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingTop="120dp"
+            android:text="ΠΟΔΟΣΦΑΙΡΟ"
+            android:textColor="@color/common_google_signin_btn_text_dark_default"
+            android:textSize="40dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/basketball_layout"
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+
+
+        <ImageView
+            android:id="@+id/iv_basketball"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:srcCompat="@drawable/basketball_type"
+            android:scaleType="centerCrop"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingTop="120dp"
+            android:text="ΚΑΛΑΘΟΣΦΑΙΡΙΣΗ"
+            android:textColor="@color/common_google_signin_btn_text_dark_default"
+            android:textSize="40dp" />
+    </RelativeLayout>
+</LinearLayout>
