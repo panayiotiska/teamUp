@@ -462,7 +462,6 @@ games.delete('/:gameId/teams/:teamId/users/:userId', async (req, res) => {
                             // Check if first team is not empty
                             if (teams.firstTeam.length >= 1) {
                                 await firstTeam.removePlayer(targetUser, { through: 'teamPlayers' });
-                                
                                 sendCustomResponse(res, 200, null);
                             } else {
                                 sendCustomErrorResponse(res, 500, "Cannot remove user from team. Looks like team is empty.");

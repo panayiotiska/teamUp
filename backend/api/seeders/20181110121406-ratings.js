@@ -15,7 +15,6 @@ module.exports = {
    
 
    // Create some ratings
-
    const ratings = await Rating.bulkCreate([
     {
       createdBy: users[13].id,
