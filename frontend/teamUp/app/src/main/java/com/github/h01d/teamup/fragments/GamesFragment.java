@@ -19,7 +19,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.github.h01d.teamup.activities.CreateActivity;
 import com.github.h01d.teamup.activities.CreateGameType;
 import com.github.h01d.teamup.adapters.GamesAdapter;
 import com.github.h01d.teamup.R;

@@ -1,33 +1,30 @@
 package com.github.h01d.teamup.activities;
+
 import com.github.h01d.teamup.R;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.Spinner;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.graphics.Typeface;
-import android.text.format.DateFormat;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.DatePicker;
-import android.widget.TextView;
+import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
-import com.google.android.gms.maps.model.LatLng;
-import java.util.ArrayList;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.List;
+import java.util.Date;
+import java.util.Locale;
 
-public class CreateGameDetails extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener
+public class CreateGameDetails extends AppCompatActivity
 {
-    Button dateTimeButton;
-    private Spinner spinnerFor;
+    private EditText gameType, gameField, gameSize, gamePhone, gameDate, gameComments;
 
-    int day, month, year, hour, minute;
-    int dayFinal, monthFinal, yearFinal, hourFinal, minuteFinal;
-    boolean mustCheckTime = false; //have to check for past time
+    private int id, type;
+    private String name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -35,100 +32,82 @@ public class CreateGameDetails extends AppCompatActivity implements DatePickerDi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_game_details);
 
-        dateTimeButton = findViewById(R.id.dateTimeButton);
+        id = getIntent().getIntExtra("id", -1);
+        type = getIntent().getIntExtra("id", -1);
+        name = getIntent().getStringExtra("name");
 
-        String dataSelectedAddress = getIntent().getStringExtra("SelectedAddress");
-        Toast.makeText(getBaseContext(), "Address : " + dataSelectedAddress + " (parsed)", Toast.LENGTH_LONG).show();
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Στοιχεία παιχνιδιού");
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        /* ADD ITEMS ON SPINNERS*/
-        addItemsOnSpinners();
+        gameType = findViewById(R.id.a_create_details_type);
+        gameField = findViewById(R.id.a_create_details_field);
+        gameSize = findViewById(R.id.a_create_details_size);
+        gamePhone = findViewById(R.id.a_create_details_phone);
+        gameComments = findViewById(R.id.a_create_details_comments);
 
-        /* NAVIGATE TO DATE/TIME FRAGMENT*/
-        dateTimeButton.setOnClickListener(new View.OnClickListener()
+        gameType.setText(type == 0 ? "Ποδόσφαιρο" : "Καλαθόσφαιρα");
+        gameField.setText(name);
+
+        gameDate = findViewById(R.id.a_create_details_date);
+        gameDate.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
                 Calendar c = Calendar.getInstance();
-                year = c.get(Calendar.YEAR);
-                month = c.get(Calendar.MONTH);
-                day = c.get(Calendar.DAY_OF_MONTH);
 
-                DatePickerDialog datePickerDialog = new DatePickerDialog(CreateGameDetails.this, CreateGameDetails.this,
-                        year, month, day);
+                final int todayYear = c.get(Calendar.YEAR);
+                final int todayMonth = c.get(Calendar.MONTH);
+                final int todayDay = c.get(Calendar.DAY_OF_MONTH);
+                final int todayHour = c.get(Calendar.HOUR_OF_DAY);
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(CreateGameDetails.this, new DatePickerDialog.OnDateSetListener()
+                {
+                    @Override
+                    public void onDateSet(DatePicker view, final int year, final int month, final int dayOfMonth)
+                    {
+                        TimePickerDialog timePickerDialog = new TimePickerDialog(CreateGameDetails.this, new TimePickerDialog.OnTimeSetListener()
+                        {
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay, int minute)
+                            {
+                                Calendar today = Calendar.getInstance();
+
+                                Calendar chosenTime = Calendar.getInstance();
+                                chosenTime.set(year, month, dayOfMonth, hourOfDay, minute);
+
+                                if(chosenTime.getTimeInMillis() <= today.getTimeInMillis())
+                                {
+                                    Toast.makeText(getBaseContext(), "INSERT A FUTURE TIME!", Toast.LENGTH_LONG).show();
+                                }
+                                else
+                                {
+                                    String timestamp = year + "-" + (month + 1) + "-" + dayOfMonth + "T" + hourOfDay + ":" + minute + ":00.000Z"; //2018-11-18T18:00:00.000Z
+
+                                    try
+                                    {
+                                        Date test = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).parse(timestamp);
+
+                                        gameDate.setText(new SimpleDateFormat("d MMMM yyyy HH:mm", Locale.getDefault()).format(test));
+                                    }
+                                    catch(ParseException e)
+                                    {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }, todayHour, 0, true);
+
+                        timePickerDialog.show();
+                    }
+                }, todayYear, todayMonth, todayDay);
 
                 datePickerDialog.show();
 
                 datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
             }
         });
-    }
-
-    @Override
-    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth)
-    {
-        yearFinal = year;
-        monthFinal = month + 1;
-        dayFinal = dayOfMonth;
-
-        /* CHECKS IF DAY IS TODAY */
-        Calendar today = Calendar.getInstance();
-        if (yearFinal == today.get(Calendar.YEAR) && monthFinal == today.get(Calendar.MONTH) + 1 && dayFinal == today.get(Calendar.DAY_OF_MONTH))
-        {
-            Toast.makeText(getBaseContext(), "day is today",Toast.LENGTH_LONG).show();
-            mustCheckTime = true;
-        }
-
-        Calendar c = Calendar.getInstance();
-        hour = c.get(Calendar.HOUR_OF_DAY);
-        minute = c.get(Calendar.MINUTE);
-
-        TimePickerDialog timePickerDialog = new TimePickerDialog(CreateGameDetails.this, CreateGameDetails.this,
-                hour, minute, DateFormat.is24HourFormat(this));
-
-        timePickerDialog.show();
-    }
-
-    @Override
-    public void onTimeSet(TimePicker view, int hourOfDay, int minute)
-    {
-        hourFinal = hourOfDay;
-        minuteFinal = minute;
-
-        Calendar today = Calendar.getInstance();
-        Calendar chosenTime = Calendar.getInstance();
-        chosenTime.set(Calendar.HOUR_OF_DAY, hourFinal);
-        chosenTime.set(Calendar.MINUTE, minuteFinal);
-
-        /*CHECKS FOR PAST TIME*/
-        if (mustCheckTime && chosenTime.getTimeInMillis() <= today.getTimeInMillis())
-        {
-            Toast.makeText(getBaseContext(), "INSERT A FUTURE TIME!", Toast.LENGTH_LONG).show();
-        }
-        else
-        {
-            Toast.makeText(getBaseContext(), "Year: " + yearFinal + "\n" +
-                    "Month: " + monthFinal + "\n" +
-                    "Day: " + dayFinal + "\n" +
-                    "Hour: " + hourFinal + "\n" +
-                    "Minute: " + minuteFinal + "\n", Toast.LENGTH_LONG).show();
-
-            dateTimeButton.setText(dayFinal + "/" + monthFinal + "/" + yearFinal + " στις " + hourFinal + ":" + minuteFinal);
-            dateTimeButton.setTypeface(dateTimeButton.getTypeface(), Typeface.BOLD_ITALIC);
-        }
-    }
-
-    public void addItemsOnSpinners() {
-        spinnerFor = findViewById(R.id.d_opponents_teammates_spinner);
-
-        List<String> list = new ArrayList<>();
-        list.add("Αντίπαλους&Συμπαίκτες");
-        list.add("Αντίπαλους");
-        list.add("Συμπαίκτες");
-
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, list);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerFor.setAdapter(dataAdapter);
     }
 }

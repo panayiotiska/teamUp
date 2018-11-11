@@ -1,87 +1,206 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusable="true"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    android:background="#fafafa">
 
-    <LinearLayout
-        android:orientation="horizontal"
+    <include
+        android:id="@+id/actionbar"
+        layout="@layout/actionbar_main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            android:id="@+id/d_create_size_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:text="Μέγεθος ομάδας:" />
+        android:layout_height="wrap_content" />
 
-        <EditText
-            android:id="@+id/et_size"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:inputType="number"
-            android:maxLength="1"/>
-    </LinearLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/a_create_details_fab"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:elevation="4dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_check_white_24dp"
+        android:backgroundTint="@color/colorPrimary"/>
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            android:id="@+id/d_opponents_teammates_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:text="Αναζήτηση για:" />
-
-        <Spinner
-            android:id="@+id/d_opponents_teammates_spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"/>
-    </LinearLayout>
-
-
-    <EditText
-        android:id="@+id/d_create_location"
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="5dp"
-        android:ems="10"
-        android:hint="Τηλέφωνο Επικοινωνίας"
-        android:inputType="textPersonName"
-        android:textAppearance="@style/TextAppearance.AppCompat" />
+        android:layout_below="@id/actionbar"
+        android:layout_margin="4dp"
+        app:cardUseCompatPadding="true">
 
-    <EditText
-        android:id="@+id/d_create_comment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="5dp"
-        android:ems="10"
-        android:gravity="top"
-        android:hint="Σχόλια για τον αγώνα: π.χ. Χρειαζόμαστε μπάλα"
-        android:inputType="textMultiLine"
-        android:textAppearance="@style/TextAppearance.AppCompat" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <Button
-        android:id="@+id/dateTimeButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Επιλογη ωρας/ημερομηνίας"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="2">
 
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:padding="8dp">
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Τύπος Παιχνιδιού:"
+                        android:textStyle="bold" />
 
-</LinearLayout>
+                    <EditText
+                        android:id="@+id/a_create_details_type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:inputType="none"
+                        android:text="Ποδόσφαιρο"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:padding="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Γήπεδο:"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/a_create_details_field"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:inputType="none"
+                        android:text="ΧΑΝΘ"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="2">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:padding="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Μέγεθος ομάδας:"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/a_create_details_size"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:hint="π.χ. 5"
+                        android:inputType="number"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:padding="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Κινητό τηλέφωνο:"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/a_create_details_phone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:hint="π.χ. 6912345678"
+                        android:inputType="phone"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ώρα και ημερομηνία:"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/a_create_details_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:inputType="datetime"
+                    android:hint="Επιλογή ώρας και ημερομηνίας"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Σχόλια για τον αγώνα:"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/a_create_details_comments"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:gravity="top"
+                    android:hint="π.χ. Χρειαζόμαστε μπάλα"
+                    android:inputType="textMultiLine"
+                    android:lines="5"
+                    android:maxLines="5"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+</RelativeLayout>

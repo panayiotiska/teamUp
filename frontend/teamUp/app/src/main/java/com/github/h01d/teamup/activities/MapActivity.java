@@ -1,97 +1,136 @@
 package com.github.h01d.teamup.activities;
+
 import android.content.Intent;
 import android.os.Bundle;
+
 import com.github.h01d.teamup.R;
+
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
+
 import java.io.IOException;
 import java.util.List;
 
-public class MapActivity extends FragmentActivity implements OnMapReadyCallback
+public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 {
     private GoogleMap mMap;
     String location;
     List<Address> addresses = null;
+
+    private MaterialSearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
 
-        Button searchButton = findViewById(R.id.searchButton);
-        searchButton.setOnClickListener(new View.OnClickListener()
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("Επιλογή Τοποθεσίας");
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        searchView = findViewById(R.id.search_view);
+        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener()
         {
             @Override
-            public void onClick(View v)
+            public boolean onQueryTextSubmit(final String query)
             {
-                EditText location_tf = findViewById(R.id.tfAddress);
-                TextView location_tv = findViewById(R.id.tvAddress);
-                location = location_tf.getText().toString();
+                location = query;
 
                 mMap.clear();
 
-                /*SEARCH FOR GIVEN LOCATION*/
                 if(location.length() != 0)
                 {
                     Geocoder geocoder = new Geocoder(getApplicationContext());
-                        try
-                        {
-                            if (geocoder.getFromLocationName(location, 1).size() != 0)
-                            {
-                                Address address = geocoder.getFromLocationName(location, 1).get(0);
 
-                                LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-                                CreateActivity.latLong = latLng; //parsing value in CreateGame2 for marker
-                                mMap.addMarker(new MarkerOptions().position(latLng).title("Game Location"));
-                                mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-
-                                location_tv.setText(location.toUpperCase());
-                            }
-                            else
-                            {
-                                Toast.makeText(getBaseContext(), "ΔΕΝ ΥΠΑΡΧΕΙ ΔΙΕΥΘΥΝΣΗ",Toast.LENGTH_LONG).show();
-                            }
-                        }
-                        catch(IOException e)
+                    try
+                    {
+                        if(geocoder.getFromLocationName(location, 1).size() != 0)
                         {
-                            e.printStackTrace();
+                            Address address = geocoder.getFromLocationName(location, 1).get(0);
+                            LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+
+                            mMap.addMarker(new MarkerOptions().position(latLng).title("Game Location"));
+                            mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+
+                            Snackbar.make(findViewById(R.id.myCoordinatorLayout), query, Snackbar.LENGTH_INDEFINITE).setAction("ΕΒΙΒΕΒΑΙΩΣΗ", new View.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(View v)
+                                {
+                                    Intent i = new Intent(MapActivity.this, CreateGameDetails.class);
+                                    i.putExtra("SelectedAddress", query);
+                                    startActivity(i);
+                                }
+                            }).show();
                         }
+                        else
+                        {
+                            Toast.makeText(getBaseContext(), "ΔΕΝ ΥΠΑΡΧΕΙ ΔΙΕΥΘΥΝΣΗ", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                    catch(IOException e)
+                    {
+                        e.printStackTrace();
+                    }
                 }
-            }
-        });
 
-        Button done = findViewById(R.id.doneButton);
-        done.setOnClickListener(new View.OnClickListener()
-        {
+                searchView.closeSearch();
+                return true;
+            }
+
             @Override
-            public void onClick(View v)
+            public boolean onQueryTextChange(String newText)
             {
-                Toast.makeText(getBaseContext(), location.toUpperCase(),Toast.LENGTH_LONG).show();
-
-                Intent i = new Intent(MapActivity.this, CreateGameDetails.class);
-                i.putExtra("SelectedAddress", location);
-                startActivity(i);
+                //Do some magic
+                return false;
             }
         });
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        if(searchView.isSearchOpen())
+        {
+            searchView.closeSearch();
+        }
+        else
+        {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.search_menu, menu);
+
+        MenuItem item = menu.findItem(R.id.m_search);
+        searchView.setMenuItem(item);
+        return true;
     }
 
     @Override
@@ -103,6 +142,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback
         //mMap.addMarker(new MarkerOptions().position(thessaloniki).title("Game Location").icon(BitmapDescriptorFactory.fromBitmap(createCustomMarker())));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(thessaloniki));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(14.0f));
+
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
         {
             // TODO: Consider calling
@@ -126,17 +166,29 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback
                     e.printStackTrace();
                 }
 
-                if (addresses.size() != 0)
+                if(addresses.size() != 0)
                 {
                     mMap.addMarker(new MarkerOptions().position(latLng));
+
                     String whole_address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
                     location = whole_address.substring(0, whole_address.indexOf(",")); //returns the text before first comma
-                    TextView location_tv = findViewById(R.id.tvAddress);
-                    location_tv.setText(location.toUpperCase());
+
+                    Snackbar.make(findViewById(R.id.myCoordinatorLayout), location, Snackbar.LENGTH_INDEFINITE).setAction("ΕΒΙΒΕΒΑΙΩΣΗ", new View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View v)
+                        {
+                            Toast.makeText(getBaseContext(), location.toUpperCase(), Toast.LENGTH_LONG).show();
+
+                            Intent i = new Intent(MapActivity.this, CreateGameDetails.class);
+                            i.putExtra("SelectedAddress", location);
+                            startActivity(i);
+                        }
+                    }).show();
                 }
                 else
                 {
-                    Toast.makeText(getBaseContext(), "ΔΕΝ ΥΠΑΡΧΕΙ ΔΙΕΥΘΥΝΣΗ",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getBaseContext(), "ΔΕΝ ΥΠΑΡΧΕΙ ΔΙΕΥΘΥΝΣΗ", Toast.LENGTH_LONG).show();
                 }
             }
 

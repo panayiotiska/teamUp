@@ -236,13 +236,13 @@ public class FieldsFragment extends Fragment
 
         if(sponsoredFields.size() > 0)
         {
-            sponsored = new FieldsAdapter(getContext(), sponsoredFields, "Προτεινόμενα γήπεδα");
+            sponsored = new FieldsAdapter(getContext(), sponsoredFields, "Προτεινόμενα γήπεδα", true);
             sectionedRecyclerViewAdapter.addSection(sponsored);
         }
 
         if(publicFields.size() > 0)
         {
-            publics = new FieldsAdapter(getContext(), sponsoredFields, "Δημόσια γήπεδα");
+            publics = new FieldsAdapter(getContext(), sponsoredFields, "Δημόσια γήπεδα", true);
             sectionedRecyclerViewAdapter.addSection(publics);
         }
 

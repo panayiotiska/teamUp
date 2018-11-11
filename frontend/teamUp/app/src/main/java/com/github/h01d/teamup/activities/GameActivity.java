@@ -59,8 +59,8 @@ public class GameActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-
         // Setting up ActionBar
+
         int barColor, statusColor;
 
         if(getIntent().getExtras().getInt("type") == 0)

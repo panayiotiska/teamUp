@@ -24,27 +24,31 @@
         </activity>
         <activity
             android:name=".activities.GameActivity"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".activities.ProfileActivity"
             android:parentActivityName=".MainActivity" />
         <activity
-            android:name=".activities.CreateActivity"
+            android:name=".activities.FieldActivity"
+            android:parentActivityName=".MainActivity" />
+
+        <activity
+            android:name=".activities.CreateGameType"
             android:parentActivityName=".MainActivity" />
         <activity
-            android:name=".activities.FieldActivity"
-            android:parentActivityName=".MainActivity"/>
+            android:name=".activities.CreateGameDetails"
+            android:parentActivityName=".activities.CreateGameField" />
+        <activity
+            android:name=".activities.CreateGameField"
+            android:parentActivityName=".activities.CreateGameType" />
         <activity
             android:name=".activities.MapActivity"
-            android:parentActivityName=".activities.CreateActivity" />
+            android:parentActivityName=".activities.CreateGameField" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".activities.CreateGameType" />
-        <activity android:name=".activities.CreateGameDetails" />
-        <activity android:name=".activities.CreateGameField"></activity>
     </application>
 
 </manifest>

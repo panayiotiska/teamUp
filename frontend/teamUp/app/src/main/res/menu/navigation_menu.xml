@@ -14,7 +14,7 @@
 
                 <item
                     android:id="@+id/nav_fields"
-                    android:icon="@drawable/ic_dashboard_black_24dp"
+                    android:icon="@drawable/ic_my_location_black_24dp"
                     android:title="Γήπεδα" />
             </group>
         </menu>

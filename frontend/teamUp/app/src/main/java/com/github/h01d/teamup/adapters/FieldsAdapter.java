@@ -19,14 +19,16 @@ public class FieldsAdapter extends StatelessSection
     private ArrayList<Field> data;
     private String title;
     private Context context;
+    private boolean flag;
 
-    public FieldsAdapter(Context context, ArrayList<Field> data, String title)
+    public FieldsAdapter(Context context, ArrayList<Field> data, String title, boolean flag)
     {
         super(SectionParameters.builder().itemResourceId(R.layout.field_layout).headerResourceId(R.layout.header_layout).build());
 
         this.context = context;
         this.data = data;
         this.title = title;
+        this.flag = flag;
     }
 
 
@@ -47,7 +49,7 @@ public class FieldsAdapter extends StatelessSection
     {
         FieldViewHolder itemViewHolder = (FieldViewHolder) holder;
 
-        itemViewHolder.setView(data.get(position));
+        itemViewHolder.setView(data.get(position), flag);
     }
 
     @Override

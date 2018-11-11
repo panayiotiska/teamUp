@@ -12,6 +12,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.github.h01d.teamup.R;
+import com.github.h01d.teamup.activities.CreateGameDetails;
 import com.github.h01d.teamup.activities.FieldActivity;
 import com.github.h01d.teamup.models.Field;
 import com.squareup.picasso.Picasso;
@@ -29,9 +30,9 @@ public class FieldViewHolder extends RecyclerView.ViewHolder
         this.context = context;
     }
 
-    public void setView(final Field field)
+    public void setView(final Field field, final boolean flag)
     {
-        ImageView image = view.findViewById(R.id.l_field_image);
+        final ImageView image = view.findViewById(R.id.l_field_image);
         TextView name = view.findViewById(R.id.l_field_name);
         TextView type = view.findViewById(R.id.l_field_type);
         TextView address = view.findViewById(R.id.l_field_address);
@@ -58,11 +59,22 @@ public class FieldViewHolder extends RecyclerView.ViewHolder
             @Override
             public void onClick(View v)
             {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("field", field);
-                Intent intent = new Intent(context, FieldActivity.class);
-                intent.putExtras(bundle);
-                context.startActivity(intent);
+                if(flag)
+                {
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("field", field);
+                    Intent intent = new Intent(context, FieldActivity.class);
+                    intent.putExtras(bundle);
+                    context.startActivity(intent);
+                }
+                else
+                {
+                    Intent intent = new Intent(context, CreateGameDetails.class);
+                    intent.putExtra("id", field.getFieldId());
+                    intent.putExtra("type", field.getType());
+                    intent.putExtra("name", field.getName());
+                    context.startActivity(intent);
+                }
             }
         });
     }
