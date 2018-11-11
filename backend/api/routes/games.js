@@ -435,6 +435,10 @@ games.post('/:gameId/teams/:teamId', async (req, res) => {
 games.delete('/:gameId/teams/:teamId/users/:userId', async (req, res) => {
     try {
         const user = await getUserGame(req.params.gameId, req.headers['auth-token']);
+        // TODO: Scenario 1, if user created this game, he can delete any user of that game
+        // TODO: Scenario 2, if user didn't create this game , he can only delete himself on one of the teams.
+
+
 
         // User has created this game
         if (user !== null) {
@@ -496,7 +500,76 @@ games.delete('/:gameId/teams/:teamId/users/:userId', async (req, res) => {
                 sendCustomErrorResponse(res, 500, "An error occurred while retrieving user game.");
             }
         } else {
-            sendCustomErrorResponse(res, 401, "You are unauthorized to perform this action.");
+            // Whoops, user is not the creator of this game, check if he tries to only remove himself from one of the teams
+
+            // Add extra check to see if game actually belongs to user
+            // Find target user
+            const targetUser = await User.findOne({
+                where: {
+                    authToken: req.headers['auth-token']
+                }
+            });
+            // Check if target user exists
+            if (targetUser !== null) {
+                const userGame = await Game.findOne({
+                    where: {
+                        id: req.params.gameId
+                    }
+                });
+                if (userGame !== null) {
+                    if (targetUser.id == req.params.userId) {
+                        // The requested user id matches the currently authenticated user's id
+                        // Safely remove the user from one of the teams
+
+                        const teams = await getGameTeams(req.params.gameId);
+
+                        const firstTeam = await userGame.getFirstTeam();
+                        const secondTeam = await userGame.getSecondTeam();
+
+                        if (firstTeam.id == req.params.teamId) {
+                            // Remove from first team
+                            // Check if the user is part of the first team
+                            if (teams.firstTeam.find(usr => usr.id === targetUser.id)) {
+                                // Check if first team is not empty
+                                if (teams.firstTeam.length >= 1) {
+                                    await firstTeam.removePlayer(targetUser, { through: 'teamPlayers' });
+                                    sendCustomResponse(res, 200, null);
+                                } else {
+                                    sendCustomErrorResponse(res, 500, "Cannot remove user from team. Looks like team is empty.");
+                                }
+                            } else {
+                                sendCustomErrorResponse(res, 409, "User is not a member of this team.");
+                            }
+                        } else if (secondTeam.id == req.params.teamId) {
+                            // Remove from second team
+                            // Check if user is part of the second team
+                            if (teams.secondTeam.find(usr => usr.id === targetUser.id)) {
+                                // Check if second team is not empty                       
+                                if (teams.secondTeam.length >= 1) {
+                                    // Check if user is part of the first team on this game
+                                    await secondTeam.removePlayer(targetUser, { through: 'teamPlayers' });
+                                    sendCustomResponse(res, 200, null);
+                                } else {
+                                    sendCustomErrorResponse(res, 500, "Cannot remove user from team. Looks like team is empty.");
+                                }
+                            } else {
+                                sendCustomErrorResponse(res, 409, "User is not member of the team.");
+                            }
+                        } else {
+                            // Team doesn't belong to the specified game
+                            // Invalid combination of gameId and teamId
+                            sendCustomErrorResponse(res, 500, "Wrong game / team combination.");
+                        }
+                    } else {
+                        sendCustomErrorResponse(res, 401, "You are unauthorized to perform this action.");
+                    }
+                } else {
+                    sendCustomErrorResponse(res, 500, "An error occurred while retrieving user game.");
+                }
+            } else {
+                sendCustomErrorResponse(res, 401, "You are unauthorized to perform this action.");
+            }
+
         }
     } catch (error) {
         // TODO: Log error
