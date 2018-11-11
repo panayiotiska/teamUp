@@ -13,26 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
-            android:id="@+id/d_create_type_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:text="Άθλημα:" />
-
-        <Spinner
-            android:id="@+id/d_create_type_spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
             android:id="@+id/d_create_size_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -40,12 +20,14 @@
             android:layout_marginTop="20dp"
             android:text="Μέγεθος ομάδας:" />
 
-        <Spinner
-            android:id="@+id/d_create_size_spinner"
+        <EditText
+            android:id="@+id/et_size"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginTop="20dp"
+            android:inputType="number"
+            android:maxLength="1"/>
     </LinearLayout>
 
     <LinearLayout
@@ -68,25 +50,6 @@
             android:layout_marginTop="20dp"/>
     </LinearLayout>
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            android:id="@+id/d_playground_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:text="Επιλογή γηπέδου:" />
-
-        <Spinner
-            android:id="@+id/d_playground_spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"/>
-    </LinearLayout>
 
     <EditText
         android:id="@+id/d_create_location"
@@ -117,6 +80,8 @@
         android:id="@+id/dateTimeButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Επιλογή ημερομηνίας"/>
+        android:text="Επιλογη ωρας/ημερομηνίας"/>
+
+
 
 </LinearLayout>
