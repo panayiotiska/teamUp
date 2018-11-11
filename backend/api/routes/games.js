@@ -462,6 +462,7 @@ games.delete('/:gameId/teams/:teamId/users/:userId', async (req, res) => {
                             // Check if first team is not empty
                             if (teams.firstTeam.length >= 1) {
                                 await firstTeam.removePlayer(targetUser, { through: 'teamPlayers' });
+                                
                                 sendCustomResponse(res, 200, null);
                             } else {
                                 sendCustomErrorResponse(res, 500, "Cannot remove user from team. Looks like team is empty.");
@@ -476,13 +477,13 @@ games.delete('/:gameId/teams/:teamId/users/:userId', async (req, res) => {
                             // Check if second team is not empty                       
                             if (teams.secondTeam.length >= 1) {
                                 // Check if user is part of the first team on this game
-                                await firstTeam.removePlayer(targetUser, { through: 'teamPlayers' });
+                                await secondTeam.removePlayer(targetUser, { through: 'teamPlayers' });
                                 sendCustomResponse(res, 200, null);
                             } else {
                                 sendCustomErrorResponse(res, 500, "Cannot remove user from team. Looks like team is empty.");
                             }
                         } else {
-                            sendCustomErrorResponse(res, 409, "User is already member of the team.");
+                            sendCustomErrorResponse(res, 409, "User is not member of the team.");
                         }
                     } else {
                         // Team doesn't belong to the specified game
