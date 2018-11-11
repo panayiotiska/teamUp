@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,6 +19,7 @@ import com.github.h01d.teamup.models.Field;
 import com.github.h01d.teamup.models.FieldRating;
 import com.github.h01d.teamup.network.NetworkManager;
 import com.github.h01d.teamup.network.NetworkManagerListener;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,6 +35,7 @@ public class FieldActivity extends AppCompatActivity
     private TextView overallRating, totalRating, ratingText;
     private RatingBar overallRatingBar;
     private RecyclerView recyclerView;
+    private ImageView fieldImage;
 
     private int fieldId;
 
@@ -61,9 +64,10 @@ public class FieldActivity extends AppCompatActivity
         overallRating = findViewById(R.id.a_field_overall);
         totalRating = findViewById(R.id.a_field_total);
         overallRatingBar = findViewById(R.id.a_field_overallbar);
-        ratingText = findViewById(R.id.a_fields_rating_norating);
+        ratingText = findViewById(R.id.a_field_rating_norating);
+        fieldImage = findViewById(R.id.a_field_image);
 
-        recyclerView = findViewById(R.id.a_fields_rating_recycler);
+        recyclerView = findViewById(R.id.a_field_rating_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
@@ -89,7 +93,7 @@ public class FieldActivity extends AppCompatActivity
                             "\t\t\"id\":1,\n" +
                             "\t\t\"name\":\"Toumba Stadium\",\n" +
                             "\t\t\"type\":0,\n" +
-                            "\t\t\"imageUrl\":\"\",\n" +
+                            "\t\t\"imageUrl\":\"https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Thessalonioki%2C_Stadium_of_PAOK_-_panoramio.jpg/1280px-Thessalonioki%2C_Stadium_of_PAOK_-_panoramio.jpg\",\n" +
                             "\t\t\"sponsored\":true,\n" +
                             "\t\t\"contactPhone\":\"6969696969\",\n" +
                             "\t\t\"location\":\n" +
@@ -254,6 +258,15 @@ public class FieldActivity extends AppCompatActivity
         overallRating.setText("" + field.getAverageRating());
         totalRating.setText("(" + field.getTotalRatings() + ")");
         overallRatingBar.setRating(field.getAverageRating());
+
+        if(!field.getImage().isEmpty())
+        {
+            Picasso.with(getApplicationContext())
+                    .load(field.getImage())
+                    .placeholder(R.drawable.background_solid)
+                    .error(R.drawable.background_solid)
+                    .into(fieldImage);
+        }
     }
 
     private void updateUI(ArrayList<FieldRating> ratings)

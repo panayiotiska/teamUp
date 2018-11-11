@@ -14,11 +14,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.github.h01d.teamup.R;
 import com.github.h01d.teamup.adapters.FieldsAdapter;
-import com.github.h01d.teamup.adapters.GamesAdapter;
 import com.github.h01d.teamup.models.Field;
-import com.github.h01d.teamup.models.Game;
 import com.github.h01d.teamup.network.NetworkManager;
 import com.github.h01d.teamup.network.NetworkManagerListener;
 
@@ -39,6 +38,8 @@ public class FieldsFragment extends Fragment
     private SwipeRefreshLayout swipeRefreshLayout;
     private ImageView errorImage;
     private TextView errorText;
+
+    private ShimmerFrameLayout shimmerFrameLayout;
 
     public FieldsFragment()
     {
@@ -68,6 +69,8 @@ public class FieldsFragment extends Fragment
             }
         });
 
+        shimmerFrameLayout = view.findViewById(R.id.f_fields_shimmer);
+
         return view;
     }
 
@@ -78,8 +81,8 @@ public class FieldsFragment extends Fragment
 
         swipeRefreshLayout.setRefreshing(false);
 
-        //shimmerFrameLayout.stopShimmer();
-        //shimmerFrameLayout.setVisibility(View.GONE);
+        shimmerFrameLayout.stopShimmer();
+        shimmerFrameLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -95,7 +98,7 @@ public class FieldsFragment extends Fragment
     private void loadData()
     {
         swipeRefreshLayout.setRefreshing(true);
-        //shimmerFrameLayout.startShimmer();
+        shimmerFrameLayout.startShimmer();
 
         NetworkManager.getInstance(getContext()).getData("http://104.223.87.94:3000/api/v1/fields/", new NetworkManagerListener()
         {
@@ -109,7 +112,7 @@ public class FieldsFragment extends Fragment
                             "\t\t\"id\":1,\n" +
                             "\t\t\"name\":\"Toumba Stadium\",\n" +
                             "\t\t\"type\":0,\n" +
-                            "\t\t\"imageUrl\":\"\",\n" +
+                            "\t\t\"imageUrl\":\"https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Thessalonioki%2C_Stadium_of_PAOK_-_panoramio.jpg/1280px-Thessalonioki%2C_Stadium_of_PAOK_-_panoramio.jpg\",\n" +
                             "\t\t\"sponsored\":true,\n" +
                             "\t\t\"contactPhone\":\"6969696969\",\n" +
                             "\t\t\"location\":\n" +
@@ -176,8 +179,8 @@ public class FieldsFragment extends Fragment
 
                     swipeRefreshLayout.setRefreshing(false);
 
-                    //shimmerFrameLayout.stopShimmer();
-                    //shimmerFrameLayout.setVisibility(View.GONE);
+                    shimmerFrameLayout.stopShimmer();
+                    shimmerFrameLayout.setVisibility(View.GONE);
 
                     // Show the error message
                     // TODO: make a method to take care of it
@@ -195,8 +198,8 @@ public class FieldsFragment extends Fragment
             {
                 swipeRefreshLayout.setRefreshing(false);
 
-                //shimmerFrameLayout.stopShimmer();
-                //shimmerFrameLayout.setVisibility(View.GONE);
+                shimmerFrameLayout.stopShimmer();
+                shimmerFrameLayout.setVisibility(View.GONE);
 
                 // Show the error message
                 // TODO: make a method to take care of it
@@ -224,8 +227,8 @@ public class FieldsFragment extends Fragment
 
         swipeRefreshLayout.setRefreshing(false);
 
-        //shimmerFrameLayout.stopShimmer();
-        //shimmerFrameLayout.setVisibility(View.GONE);
+        shimmerFrameLayout.stopShimmer();
+        shimmerFrameLayout.setVisibility(View.GONE);
 
         SectionedRecyclerViewAdapter sectionedRecyclerViewAdapter = new SectionedRecyclerViewAdapter();
 

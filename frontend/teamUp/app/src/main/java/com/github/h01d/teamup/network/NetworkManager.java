@@ -96,7 +96,7 @@ public class NetworkManager
                 }
                 else
                 {
-                    listener.getError("Παρουσιάστηκε ένα άγνωστο σφάλμα.\nΠαρακαλούμε δοκιμάστε αργότερα.", 1);
+                    listener.getError("Παρουσιάστηκε άγνωστο σφάλμα.\nΠαρακαλούμε δοκιμάστε αργότερα.", 1);
                 }
 
                 if((error.getMessage() != null))
@@ -122,9 +122,10 @@ public class NetworkManager
 
     /**
      * postData will handle all POST Requests to the API
-     * @param URL the API url
+     *
+     * @param URL        the API url
      * @param jsonObject the JSON object with the data
-     * @param listener the listener to make easier retuning data
+     * @param listener   the listener to make easier retuning data
      */
 
     public void postData(String URL, JSONObject jsonObject, final NetworkManagerListener listener)
@@ -171,7 +172,7 @@ public class NetworkManager
                 }
                 else
                 {
-                    listener.getError("Παρουσιάστηκε ένα άγνωστο σφάλμα.\nΠαρακαλούμε δοκιμάστε αργότερα.", 1);
+                    listener.getError("Παρουσιάστηκε άγνωστο σφάλμα.\nΠαρακαλούμε δοκιμάστε αργότερα.", 1);
                 }
 
                 if((error.getMessage() != null))
@@ -195,20 +196,22 @@ public class NetworkManager
         requestQueue.add(jsObjRequest);
     }
 
-    public void deleteData(String URL, JSONObject jsonObject, final NetworkManagerListener listener)
+    public void deleteData(String URL, final NetworkManagerListener listener)
     {
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.DELETE, URL, jsonObject, new Response.Listener<JSONObject>()
+        StringRequest stringRequest = new StringRequest(Request.Method.DELETE, URL, new Response.Listener<String>()
         {
             @Override
-            public void onResponse(final JSONObject response)
+            public void onResponse(final String response)
             {
                 try
                 {
-                    if(response.getJSONObject("result").getString("status").equals("success"))
+                    JSONObject jsonObject = new JSONObject(response);
+
+                    if(jsonObject.getJSONObject("result").getString("status").equals("success"))
                     {
-                        if(!response.isNull("payload"))
+                        if(!jsonObject.isNull("payload"))
                         {
-                            listener.getResult(response.getJSONArray("payload"));
+                            listener.getResult(jsonObject.getJSONArray("payload"));
                         }
                         else
                         {
@@ -217,7 +220,7 @@ public class NetworkManager
                     }
                     else
                     {
-                        listener.getError(response.getJSONObject("result").getString("error"), 1);
+                        listener.getError(jsonObject.getJSONObject("result").getString("error"), 1);
                     }
 
                 }
@@ -239,8 +242,10 @@ public class NetworkManager
                 }
                 else
                 {
-                    listener.getError("Παρουσιάστηκε ένα άγνωστο σφάλμα.\nΠαρακαλούμε δοκιμάστε αργότερα.", 1);
+                    listener.getError("Παρουσιάστηκε άγνωστο σφάλμα.\nΠαρακαλούμε δοκιμάστε αργότερα.", 1);
                 }
+
+                error.printStackTrace();
 
                 if((error.getMessage() != null))
                 {
@@ -259,7 +264,7 @@ public class NetworkManager
             }
         };
 
-        jsObjRequest.setShouldCache(false); // Prevent caching response on LTE networks
-        requestQueue.add(jsObjRequest);
+        stringRequest.setShouldCache(false); // Prevent caching response on LTE networks
+        requestQueue.add(stringRequest);
     }
 }

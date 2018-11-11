@@ -124,12 +124,12 @@ public class GameActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        switch (item.getItemId())
+        switch(item.getItemId())
         {
             case R.id.m_game_quit:
-                if(isOwner)
+                /*if(isOwner)
                 {
-                    AlertDialog.Builder deleteBuilder = new AlertDialog.Builder(getApplicationContext());
+                    /*AlertDialog.Builder deleteBuilder = new AlertDialog.Builder(getApplicationContext());
                     deleteBuilder.setTitle("ΔΙΑΓΡΑΦΗ");
                     deleteBuilder.setMessage("Είσαι σίγουρος ότι θέλεις να διαγράψεις το παιχνίδι;");
                     deleteBuilder.setPositiveButton("ΝΑΙ", new DialogInterface.OnClickListener()
@@ -150,63 +150,62 @@ public class GameActivity extends AppCompatActivity
                     deleteDialog.show();
                 }
                 else
+                {*/
+                if(teamId == -1)
                 {
-                    if(teamId == -1)
+                    Toast.makeText(getApplicationContext(), "Δεν είσαι σε κάποια ομάδα.", Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    AlertDialog.Builder deleteBuilder = new AlertDialog.Builder(GameActivity.this);
+                    deleteBuilder.setTitle("ΕΞΟΔΟΣ");
+                    deleteBuilder.setMessage("Είσαι σίγουρος ότι θέλεις να βγεις από το παιχνίδι;");
+                    deleteBuilder.setPositiveButton("ΝΑΙ", new DialogInterface.OnClickListener()
                     {
-                        Toast.makeText(getApplicationContext(), "Δεν είσαι σε κάποια ομάδα.", Toast.LENGTH_SHORT).show();
-                    }
-                    else
+                        public void onClick(DialogInterface dialog, int id)
+                        {
+                            JSONObject tmp = new JSONObject();
+
+                            try
+                            {
+                                tmp.put("userId", "100000273909010");
+                            }
+                            catch(JSONException e)
+                            {
+                                e.printStackTrace();
+
+                                Log.d(TAG, e.getMessage());
+                            }
+
+                            NetworkManager.getInstance(getApplicationContext()).deleteData("http://104.223.87.94:3000/api/v1/games/" + gameID + "/teams/" + teamId + "/users/" + "100000273909010", new NetworkManagerListener()
+                            {
+                                @Override
+                                public void getResult(JSONArray result)
+                                {
+                                    loadData();
+
+                                    Toast.makeText(getApplicationContext(), "Βγήκες από το παιχνίδι.", Toast.LENGTH_SHORT).show();
+                                }
+
+                                @Override
+                                public void getError(String error, int code)
+                                {
+                                    Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
+
+                                    Log.d(TAG, error);
+                                }
+                            });
+                        }
+                    });
+                    deleteBuilder.setNegativeButton("ΟΧΙ", new DialogInterface.OnClickListener()
                     {
-                        AlertDialog.Builder deleteBuilder = new AlertDialog.Builder(getApplicationContext());
-                        deleteBuilder.setTitle("ΕΞΟΔΟΣ");
-                        deleteBuilder.setMessage("Είσαι σίγουρος ότι θέλεις να βγεις από το παιχνίδι;");
-                        deleteBuilder.setPositiveButton("ΝΑΙ", new DialogInterface.OnClickListener()
+                        public void onClick(DialogInterface dialog, int id)
                         {
-                            public void onClick(DialogInterface dialog, int id)
-                            {
-                                JSONObject tmp = new JSONObject();
-
-                                try
-                                {
-                                    tmp.put("userId", "100000273909010");
-                                }
-                                catch(JSONException e)
-                                {
-                                    e.printStackTrace();
-
-                                    Log.d(TAG, e.getMessage());
-                                }
-
-                                NetworkManager.getInstance(getApplicationContext()).deleteData("http://104.223.87.94:3000/api/v1/games/" + gameID + "/teams/" + teamId, tmp, new NetworkManagerListener()
-                                {
-                                    @Override
-                                    public void getResult(JSONArray result)
-                                    {
-                                        loadData();
-
-                                        Toast.makeText(getApplicationContext(), "Βγήκες από το παιχνίδι.", Toast.LENGTH_SHORT).show();
-                                    }
-
-                                    @Override
-                                    public void getError(String error, int code)
-                                    {
-                                        Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
-
-                                        Log.d(TAG, error);
-                                    }
-                                });
-                            }
-                        });
-                        deleteBuilder.setNegativeButton("ΟΧΙ", new DialogInterface.OnClickListener()
-                        {
-                            public void onClick(DialogInterface dialog, int id)
-                            {
-                                dialog.dismiss();
-                            }
-                        });
-                        AlertDialog deleteDialog = deleteBuilder.create();
-                        deleteDialog.show();
-                    }
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog deleteDialog = deleteBuilder.create();
+                    deleteDialog.show();
                 }
                 return true;
             default:
@@ -229,6 +228,8 @@ public class GameActivity extends AppCompatActivity
             {
                 try
                 {
+                    Log.d(TAG, result.toString());
+
                     // Extract data from result
 
                     JSONObject tmp = result.getJSONObject(0);
@@ -404,7 +405,7 @@ public class GameActivity extends AppCompatActivity
                 {
                     params.topMargin = (int) (38 * ((team2.size() - team1.size()) - 1) * getResources().getDisplayMetrics().density) + 2;
                 }
-                else
+                else if(team1.size() != 0)
                 {
                     params.topMargin = (int) (38 * (team2.size() - team1.size()) * getResources().getDisplayMetrics().density) + 2;
                 }
@@ -473,7 +474,7 @@ public class GameActivity extends AppCompatActivity
                 {
                     params.topMargin = (int) (38 * ((team1.size() - team2.size()) - 1) * getResources().getDisplayMetrics().density) + 2;
                 }
-                else
+                else if(team2.size() != 0)
                 {
                     params.topMargin = (int) (38 * (team1.size() - team2.size()) * getResources().getDisplayMetrics().density) + 2;
                 }

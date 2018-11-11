@@ -21,6 +21,7 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <ImageView
+                android:id="@+id/a_field_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
@@ -188,7 +189,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/a_fields_rating_norating"
+                        android:id="@+id/a_field_rating_norating"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="4dp"
@@ -197,7 +198,7 @@
                         android:visibility="gone"/>
 
                     <android.support.v7.widget.RecyclerView
-                        android:id="@+id/a_fields_rating_recycler"
+                        android:id="@+id/a_field_rating_recycler"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:visibility="visible"/>

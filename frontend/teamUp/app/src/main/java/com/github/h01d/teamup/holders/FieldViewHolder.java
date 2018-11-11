@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.github.h01d.teamup.R;
 import com.github.h01d.teamup.activities.FieldActivity;
 import com.github.h01d.teamup.models.Field;
+import com.squareup.picasso.Picasso;
 
 public class FieldViewHolder extends RecyclerView.ViewHolder
 {
@@ -45,6 +46,12 @@ public class FieldViewHolder extends RecyclerView.ViewHolder
         average.setText("" + field.getAverageRating());
         total.setText("(" + field.getTotalRatings() + " Αξιολογήσεις)");
         ratingBar.setRating(field.getAverageRating());
+
+        Picasso.with(context)
+                .load(field.getImage())
+                .placeholder(R.drawable.background_solid)
+                .error(R.drawable.background_solid)
+                .into(image);
 
         linearLayout.setOnClickListener(new View.OnClickListener()
         {
