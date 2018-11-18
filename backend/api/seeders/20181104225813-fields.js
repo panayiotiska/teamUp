@@ -8,6 +8,7 @@ module.exports = {
     const fieldRating = require('../models').fieldRating;
     const User = require('../models').User;
     const users = await User.findAll();
+    const fieldAvgRatings = require('../models').fieldAvgRatings;
 
     const locations = await Location.bulkCreate([
       {
@@ -42,6 +43,8 @@ module.exports = {
         contactPhone: "+30 2310472242",
         type: 0,
         sponsored: false,
+        createdBy: users[12].id,
+        verified: true,
         imageUrl: "http://www.footballsportcenter.gr/upload/imgproc/91583_eb.jpg",
         locationId: locations[0].id
       },
@@ -50,6 +53,8 @@ module.exports = {
         contactPhone: "+30 6973055499",
         type: 0,
         sponsored: false,
+        createdBy: users[1].id,
+        verified: true,
         imageUrl: "http://www.athleticpark.gr/images/cobalt_thumbs/gallery23-85/726/b32354b0e69ccb9a1605278544496aa9.jpg",
         locationId: locations[1].id
       },
@@ -58,6 +63,8 @@ module.exports = {
         contactPhone: "+30 2310435000",
         type: 0,
         sponsored: true,
+        createdBy: users[3].id,
+        verified: true,
         imageUrl: "",
         locationId: locations[2].id
       }
@@ -86,10 +93,31 @@ module.exports = {
       }
     ]);
 
+    const avgRatings = await fieldAvgRatings.bulkCreate([
+      {
+        totalAvg: 4,
+        ratingsCount: 1
+      },
+      {
+        totalAvg: 3,
+        ratingsCount: 1
+      },
+      {
+        totalAvg: 5,
+        ratingsCount: 1
+      }
+    ]);
+
     // Add ratings to fields
     await fields[0].addFieldRatings(fieldRatings[0], { through: 'fieldRatingsData' });
     await fields[1].addFieldRatings(fieldRatings[1], { through: 'fieldRatingsData' });
     await fields[2].addFieldRatings(fieldRatings[2], { through: 'fieldRatingsData' });
+    await fields[1].addFieldRatings(fieldRatings[3], { through: 'fieldRatingsData' });
+
+    // Add field to avgRatings
+    await avgRatings[0].setField(fields[0]);
+    await avgRatings[1].setField(fields[1]);
+    await avgRatings[2].setField(fields[2]);
   },
 
   down: (queryInterface, Sequelize) => {
